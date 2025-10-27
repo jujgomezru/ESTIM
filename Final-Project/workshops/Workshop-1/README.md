@@ -1,8 +1,8 @@
 ## 📘 Documentation
 
-The following document describes the system from the user’s perspective:
+The following document describes the system from the user's perspective:
 
-📄 [**Workshop-1.pdf**](./Workshop-1.pdf)
+📄 [**Workshop-1.pdf**](https://github.com/jujgomezru/ESTIM/blob/main/Final-Project/workshops/Workshop-1/Workshop-1.pdf)
 
 This document includes:
 
@@ -12,7 +12,7 @@ We have defined 18 **Functional requirements** and 12 **Non-functional requireme
 
 ### User stories
 
-We defined illustrative User Stories based on the main functionality of the project. We selected the 17 most relevant User Stories, in order to explain the main 
+We defined illustrative User Stories based on the main functionality of the project. We selected the 17 most relevant User Stories, in order to explain the main functions we aim to achieve in the development of our project
 
 ### User story mapping
 
