@@ -12,7 +12,7 @@ We have defined 18 **Functional requirements** and 12 **Non-functional requireme
 
 ### User stories
 
-We defined illustrative User Stories based on the main functionality of the project. We selected the 17 most relevant User Stories, in order to explain the main functions we aim to achieve in the development of our project
+We defined illustrative User Stories based on the main functionality of the project. We selected the 17 most relevant User Stories, in order to explain the main functions we aim to achieve in the development of our project.
 
 ### User story mapping
 
