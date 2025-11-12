@@ -1,0 +1,8 @@
+[project]
+name = "estim-py-api"
+version = "0.0.1"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+]
