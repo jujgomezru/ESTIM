@@ -28,9 +28,21 @@ Below is the current simplified **project structure diagram**:
 <pre>
 Final-Project/
 │
+├── apps/
+│   └── java-backend/
+│   └── python-backend/
+├── db /
+│   └── migrations/
+│   └── seeds/
+│   └── smoke/
+├── web/
+├── workers/    
 ├── workshops/
 │   └── Workshop-1/
 │       ├── Workshop-1.pdf
+│       └── README.md
+│   └── Workshop-2/
+│       └── Workshop-2.pdf
 │       └── README.md
 │
 └── README.md
