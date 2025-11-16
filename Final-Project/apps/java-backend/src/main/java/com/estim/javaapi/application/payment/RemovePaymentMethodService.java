@@ -5,6 +5,7 @@ import com.estim.javaapi.domain.user.PaymentMethodId;
 import com.estim.javaapi.domain.user.User;
 import com.estim.javaapi.domain.user.UserId;
 import com.estim.javaapi.domain.user.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import java.util.UUID;
 /**
  * Application service for removing a payment method from a user.
  */
+@Service
 public class RemovePaymentMethodService {
 
     private final UserRepository userRepository;

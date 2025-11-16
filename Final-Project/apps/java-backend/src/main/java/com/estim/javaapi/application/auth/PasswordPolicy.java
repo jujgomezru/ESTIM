@@ -1,12 +1,9 @@
 package com.estim.javaapi.application.auth;
 
-import org.springframework.stereotype.Component;
-
 /**
  * Encapsulates password validation rules.
  * Implemented in the application/infrastructure layer (e.g. length, complexity).
  */
-@Component
 public interface PasswordPolicy {
 
     /**
