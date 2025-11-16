@@ -5,5 +5,7 @@ public record UpdateUserProfileRequest(
     String avatarUrl,
     String bio,
     String location,
-    PrivacySettingsResponse privacy
+    boolean showProfile,
+    boolean showActivity,
+    boolean showWishlist
 ) {}
