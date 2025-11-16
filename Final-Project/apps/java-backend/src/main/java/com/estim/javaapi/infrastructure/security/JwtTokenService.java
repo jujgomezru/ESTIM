@@ -3,6 +3,7 @@ package com.estim.javaapi.infrastructure.security;
 import com.estim.javaapi.application.auth.TokenService;
 import com.estim.javaapi.domain.user.UserId;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,13 +67,18 @@ public class JwtTokenService implements TokenService {
 
     @Override
     public UserId parseUserIdFromAccessToken(String token) {
-        Claims claims = Jwts.parser()
-            .setSigningKey(secretKey)
-            .parseClaimsJws(token)
-            .getBody();
+        try {
+            Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
 
-        String subject = claims.getSubject();
-        return new UserId(UUID.fromString(subject));
+            String subject = claims.getSubject();
+            return new UserId(UUID.fromString(subject));
+        } catch (JwtException | IllegalArgumentException ex) {
+            // Includes ExpiredJwtException, malformed token, bad signature, etc.
+            throw new IllegalArgumentException("Invalid or expired access token", ex);
+        }
     }
 
     @Override
