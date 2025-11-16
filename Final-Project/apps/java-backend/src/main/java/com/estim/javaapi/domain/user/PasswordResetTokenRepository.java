@@ -7,7 +7,6 @@ import java.util.Optional;
 /**
  * Repository port for PasswordResetToken aggregates.
  */
-@Repository
 public interface PasswordResetTokenRepository {
 
     PasswordResetToken save(PasswordResetToken token);

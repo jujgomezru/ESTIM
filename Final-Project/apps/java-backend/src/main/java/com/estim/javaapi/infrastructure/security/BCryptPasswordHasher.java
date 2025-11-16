@@ -3,6 +3,7 @@ package com.estim.javaapi.infrastructure.security;
 import com.estim.javaapi.application.auth.PasswordHasher;
 import com.estim.javaapi.domain.user.PasswordHash;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -21,7 +22,7 @@ public class BCryptPasswordHasher implements PasswordHasher {
     /**
      * @param strength the log rounds to use, e.g., 10-14
      */
-    public BCryptPasswordHasher(int strength) {
+    public BCryptPasswordHasher(@Value("${bcrypt.strength:12}") int strength){
         this.strength = strength;
     }
 

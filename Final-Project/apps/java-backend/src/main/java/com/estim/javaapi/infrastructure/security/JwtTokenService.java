@@ -5,9 +5,10 @@ import com.estim.javaapi.domain.user.UserId;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.hibernate.annotations.MapKeyCompositeType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -29,13 +30,15 @@ public class JwtTokenService implements TokenService {
     private final Duration accessTokenTtl;
     private final Duration refreshTokenTtl;
 
-    public JwtTokenService(byte[] secretKey,
-                           Duration accessTokenTtl,
-                           Duration refreshTokenTtl) {
-
-        this.secretKey = Objects.requireNonNull(secretKey);
-        this.accessTokenTtl = Objects.requireNonNull(accessTokenTtl);
-        this.refreshTokenTtl = Objects.requireNonNull(refreshTokenTtl);
+    public JwtTokenService(
+        @Value("${security.jwt.secret:dev-secret-change-me}") String secret,
+        @Value("${security.jwt.access-token-ttl:PT15M}") Duration accessTokenTtl,
+        @Value("${security.jwt.refresh-token-ttl:P7D}") Duration refreshTokenTtl
+    ) {
+        this.secretKey = Objects.requireNonNull(secret, "secret must not be null")
+            .getBytes(StandardCharsets.UTF_8);
+        this.accessTokenTtl = Objects.requireNonNull(accessTokenTtl, "accessTokenTtl must not be null");
+        this.refreshTokenTtl = Objects.requireNonNull(refreshTokenTtl, "refreshTokenTtl must not be null");
     }
 
     @Override
@@ -71,9 +74,6 @@ public class JwtTokenService implements TokenService {
         String subject = claims.getSubject();
         return new UserId(UUID.fromString(subject));
     }
-
-    // These revocation methods are still no-op (stateless JWT).
-    // You can later implement blacklisting using DB/Redis if needed.
 
     @Override
     public void revokeRefreshToken(String refreshToken) {
