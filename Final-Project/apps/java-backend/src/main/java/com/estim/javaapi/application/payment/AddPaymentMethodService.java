@@ -6,6 +6,7 @@ import com.estim.javaapi.domain.user.PaymentProvider;
 import com.estim.javaapi.domain.user.User;
 import com.estim.javaapi.domain.user.UserId;
 import com.estim.javaapi.domain.user.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import java.util.UUID;
 /**
  * Application service for adding a payment method to a user.
  */
+@Service
 public class AddPaymentMethodService {
 
     private final UserRepository userRepository;

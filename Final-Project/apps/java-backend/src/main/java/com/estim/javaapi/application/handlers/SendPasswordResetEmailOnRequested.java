@@ -3,6 +3,7 @@ package com.estim.javaapi.application.handlers;
 import com.estim.javaapi.domain.user.PasswordResetTokenRepository;
 import com.estim.javaapi.domain.user.UserRepository;
 import com.estim.javaapi.domain.user.events.PasswordResetRequested;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -19,11 +20,13 @@ public class SendPasswordResetEmailOnRequested {
     private final EmailSender emailSender;
     private final String resetBaseUrl; // e.g. https://estim.com/reset-password?token=
 
-    public SendPasswordResetEmailOnRequested(UserRepository userRepository,
-                                             PasswordResetTokenRepository tokenRepository,
-                                             EmailSender emailSender,
-                                             String resetBaseUrl) {
-
+    public SendPasswordResetEmailOnRequested(
+        UserRepository userRepository,
+        PasswordResetTokenRepository tokenRepository,
+        EmailSender emailSender,
+        @Value("${security.password-reset.reset-base-url:http://localhost:5173/reset-password?token=}")
+        String resetBaseUrl
+    ) {
         this.userRepository = Objects.requireNonNull(userRepository);
         this.tokenRepository = Objects.requireNonNull(tokenRepository);
         this.emailSender = Objects.requireNonNull(emailSender);
