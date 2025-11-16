@@ -5,7 +5,8 @@ public record UpdateUserProfileRequest(
     String avatarUrl,
     String bio,
     String location,
-    boolean showProfile,
-    boolean showActivity,
-    boolean showWishlist
+    Boolean showProfile,
+    Boolean showActivity,
+    Boolean showWishlist
 ) {}
+

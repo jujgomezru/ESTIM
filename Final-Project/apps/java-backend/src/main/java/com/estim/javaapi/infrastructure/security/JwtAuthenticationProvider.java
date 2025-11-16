@@ -2,6 +2,7 @@ package com.estim.javaapi.infrastructure.security;
 
 import com.estim.javaapi.application.auth.TokenService;
 import com.estim.javaapi.domain.user.UserId;
+import io.jsonwebtoken.JwtException;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -43,10 +44,17 @@ public class JwtAuthenticationProvider {
             throw new IllegalArgumentException("Empty Bearer token");
         }
 
-        UserId userId = tokenService.parseUserIdFromAccessToken(token);
+        try {
+            // This may throw JwtException or IllegalArgumentException if the token is invalid/malformed
+            UserId userId = tokenService.parseUserIdFromAccessToken(token);
 
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser(userId);
-        SecurityContext.setCurrentUser(authenticatedUser);
+            AuthenticatedUser authenticatedUser = new AuthenticatedUser(userId);
+            SecurityContext.setCurrentUser(authenticatedUser);
+
+        } catch (JwtException | IllegalArgumentException ex) {
+            // Normalize any JWT-related parsing/validation errors
+            throw new IllegalArgumentException("Invalid or malformed access token", ex);
+        }
     }
 
     /**
