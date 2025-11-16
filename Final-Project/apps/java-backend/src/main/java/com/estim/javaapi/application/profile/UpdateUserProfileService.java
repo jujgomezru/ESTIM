@@ -39,12 +39,19 @@ public class UpdateUserProfileService {
         UserProfile existingProfile = user.profile();
         PrivacySettings existingPrivacy = existingProfile != null
             ? existingProfile.privacySettings()
-            : new PrivacySettings(true, true, true); // some sane default if null
+            : new PrivacySettings(true, true, true); // sane default if null
 
-        // Merge: if command field is null, keep the existing one
-        String displayName = command.displayName() != null
-            ? command.displayName()
-            : existingProfile != null ? existingProfile.displayName() : null;
+        // --- Merge fields ---
+
+        // Display name: prefer command, then existing profile; if still null, it's an invariant violation
+        String displayName;
+        if (command.displayName() != null) {
+            displayName = command.displayName();
+        } else if (existingProfile != null && existingProfile.displayName() != null) {
+            displayName = existingProfile.displayName();
+        } else {
+            throw new IllegalStateException("User profile has no display name");
+        }
 
         String avatarUrl = command.avatarUrl() != null
             ? command.avatarUrl()
@@ -88,7 +95,6 @@ public class UpdateUserProfileService {
 
         userRepository.save(user);
 
-        // publish the events raised by the aggregate (e.g. UserProfileUpdated)
         eventPublisher.publishAll(user.domainEvents());
         user.clearDomainEvents();
     }
