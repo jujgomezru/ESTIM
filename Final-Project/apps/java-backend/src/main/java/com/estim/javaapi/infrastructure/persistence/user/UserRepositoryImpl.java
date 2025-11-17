@@ -1,9 +1,6 @@
 package com.estim.javaapi.infrastructure.persistence.user;
 
-import com.estim.javaapi.domain.user.Email;
-import com.estim.javaapi.domain.user.User;
-import com.estim.javaapi.domain.user.UserId;
-import com.estim.javaapi.domain.user.UserRepository;
+import com.estim.javaapi.domain.user.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -40,5 +37,16 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean existsByEmail(Email email) {
         return userJpaRepository.existsByEmail(email.value());
+    }
+
+    @Override
+    public Optional<User> findByOAuthProviderAndExternalId(
+        OAuthProvider provider,
+        String externalUserId
+    ) {
+        // ✅ pass the ENUM, not provider.name()
+        return userJpaRepository
+            .findByOAuthProviderAndExternalUserId(provider, externalUserId)
+            .map(userMapper::toDomain);
     }
 }
