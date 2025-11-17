@@ -22,4 +22,9 @@ public interface UserRepository {
      * Returns true if a user with the given email already exists.
      */
     boolean existsByEmail(Email email);
+
+    /**
+     * Finds a user by an already linked OAuth account.
+     */
+    Optional<User> findByOAuthProviderAndExternalId(OAuthProvider provider, String externalUserId);
 }
