@@ -96,7 +96,7 @@
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Problems" order="1" />
       <window_info anchor="bottom" id="Problems View" order="2" weight="0.3302696" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.7898284" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.30453432" />
       <window_info anchor="bottom" id="Services" order="4" weight="0.4332108" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.3302696" />
       <window_info anchor="bottom" id="Run" order="6" weight="0.3302696" />
@@ -141,7 +141,7 @@
       <workItem from="1763281520189" duration="3094000" />
       <workItem from="1763305084703" duration="37757000" />
       <workItem from="1763387494960" duration="6505000" />
-      <workItem from="1763405695264" duration="12205000" />
+      <workItem from="1763405695264" duration="12809000" />
     </task>
     <servers />
   </component>
