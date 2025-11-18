@@ -70,10 +70,10 @@ public class JwtTokenService implements TokenService {
         try {
             Claims claims = Jwts.parser()
                 .setSigningKey(signingKey)   // SecretKey from Keys.hmacShaKeyFor(...)
-                .parseSignedClaims(token)    // <- this matches the stack trace you showed before
-                .getPayload();               // Claims
+                .parseClaimsJws(token)       // <-- this exists on JwtParser
+                .getBody();                  // returns Claims
 
-            String subject = claims.getSubject();
+            String subject = claims.getSubject(); // user UUID as String
             return new UserId(UUID.fromString(subject));
 
         } catch (JwtException | IllegalArgumentException ex) {
