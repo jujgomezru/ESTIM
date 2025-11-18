@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="GET /me/payment-methods" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-11-17T18:01:01.762Z" hostname="DESKTOP-T5D8MHC" time="0.062">
+  <properties/>
+  <testcase name="should return 401 UNAUTHORIZED when SecurityContext has no current user" classname="com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests" time="0.006"/>
+  <testcase name="should list payment methods for authenticated user" classname="com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests" time="0.048"/>
+  <testcase name="should return 401 UNAUTHORIZED when auth fails (e.g. missing header)" classname="com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests" time="0.006"/>
+  <system-out><![CDATA[2025-11-17T13:01:01.759-05:00  INFO 32654 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests]: ListPaymentMethodsTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-17T13:01:01.760-05:00  INFO 32654 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /me/payment-methods
+       Parameters = {}
+          Headers = [Authorization:"Bearer valid-token"]
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.PaymentMethodController
+           Method = com.estim.javaapi.controllers.PaymentMethodController#list(String)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 401
+    Error message = null
+          Headers = [Content-Type:"application/json"]
+     Content type = application/json
+             Body = {"code":"UNAUTHORIZED","message":"Not authenticated","details":null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /me/payment-methods
+       Parameters = {}
+          Headers = [Authorization:"Bearer valid-token"]
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.PaymentMethodController
+           Method = com.estim.javaapi.controllers.PaymentMethodController#list(String)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Content-Type:"application/json"]
+     Content type = application/json
+             Body = [{"id":"pm-1","provider":"VISA","last4":"4242","isDefault":true},{"id":"pm-2","provider":"MASTERCARD","last4":"5555","isDefault":false}]
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /me/payment-methods
+       Parameters = {}
+          Headers = []
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.PaymentMethodController
+           Method = com.estim.javaapi.controllers.PaymentMethodController#list(String)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 401
+    Error message = null
+          Headers = [Content-Type:"application/json"]
+     Content type = application/json
+             Body = {"code":"UNAUTHORIZED","message":"Missing Authorization header","details":null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
