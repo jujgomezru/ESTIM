@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="POST /auth/oauth/link" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-11-18T05:38:09.284Z" hostname="DESKTOP-T5D8MHC" time="0.044">
+  <properties/>
+  <testcase name="should return 400 OAUTH_LINK_FAILED when auth fails" classname="com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests" time="0.012"/>
+  <testcase name="should link OAuth account for authenticated user and return 204" classname="com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests" time="0.01"/>
+  <testcase name="should return 400 OAUTH_LINK_FAILED when SecurityContext has no current user" classname="com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests" time="0.009"/>
+  <testcase name="should return 400 OAUTH_LINK_FAILED when link service throws IllegalArgumentException" classname="com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests" time="0.01"/>
+  <system-out><![CDATA[2025-11-18T00:38:09.279-05:00  INFO 182498 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests]: LinkOAuthAccountTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-18T00:38:09.282-05:00  INFO 182498 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/oauth/link
+       Parameters = {}
+          Headers = [Content-Type:"application/json", Content-Length:"99"]
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.OAuthController
+           Method = com.estim.javaapi.controllers.OAuthController#link(String, OAuthLinkRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 400
+    Error message = null
+          Headers = [Content-Type:"application/json"]
+     Content type = application/json
+             Body = {"code":"OAUTH_LINK_FAILED","message":"Missing Authorization header","details":null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/oauth/link
+       Parameters = {}
+          Headers = [Content-Type:"application/json", Authorization:"Bearer valid-token", Content-Length:"114"]
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.OAuthController
+           Method = com.estim.javaapi.controllers.OAuthController#link(String, OAuthLinkRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 204
+    Error message = null
+          Headers = []
+     Content type = null
+             Body = 
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/oauth/link
+       Parameters = {}
+          Headers = [Content-Type:"application/json", Authorization:"Bearer valid-token", Content-Length:"99"]
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.OAuthController
+           Method = com.estim.javaapi.controllers.OAuthController#link(String, OAuthLinkRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 400
+    Error message = null
+          Headers = [Content-Type:"application/json"]
+     Content type = application/json
+             Body = {"code":"OAUTH_LINK_FAILED","message":"No authenticated user","details":null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/oauth/link
+       Parameters = {}
+          Headers = [Content-Type:"application/json", Authorization:"Bearer valid-token", Content-Length:"110"]
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.OAuthController
+           Method = com.estim.javaapi.controllers.OAuthController#link(String, OAuthLinkRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 400
+    Error message = null
+          Headers = [Content-Type:"application/json"]
+     Content type = application/json
+             Body = {"code":"OAUTH_LINK_FAILED","message":"Unsupported provider","details":null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
