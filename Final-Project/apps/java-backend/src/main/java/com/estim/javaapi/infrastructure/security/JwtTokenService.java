@@ -68,15 +68,14 @@ public class JwtTokenService implements TokenService {
     @Override
     public UserId parseUserIdFromAccessToken(String token) {
         try {
-            // JJWT 0.12.x style: parser() + verifyWith(...) + parseSignedClaims(...)
             Claims claims = Jwts.parser()
-                .verifyWith(signingKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .setSigningKey(signingKey)   // SecretKey from Keys.hmacShaKeyFor(...)
+                .parseSignedClaims(token)    // <- this matches the stack trace you showed before
+                .getPayload();               // Claims
 
             String subject = claims.getSubject();
             return new UserId(UUID.fromString(subject));
+
         } catch (JwtException | IllegalArgumentException ex) {
             throw new IllegalArgumentException("Invalid or expired access token", ex);
         }

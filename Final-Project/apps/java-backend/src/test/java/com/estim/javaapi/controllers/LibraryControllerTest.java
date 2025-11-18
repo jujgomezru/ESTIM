@@ -10,8 +10,6 @@ import com.estim.javaapi.domain.library.LibraryEntry;
 import com.estim.javaapi.domain.library.LibraryEntryId;
 import com.estim.javaapi.domain.library.LibraryEntrySource;
 import com.estim.javaapi.domain.user.UserId;
-import com.estim.javaapi.infrastructure.security.JwtAuthenticationProvider;
-import com.estim.javaapi.infrastructure.security.SecurityContext;
 import com.estim.javaapi.presentation.library.AddGameToLibraryRequest;
 import com.estim.javaapi.presentation.library.LibraryEntryResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,16 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,6 +31,10 @@ import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for {@link LibraryController}.
+ *
+ * These tests exercise the controller logic assuming that:
+ * - Spring Security has already authenticated the request
+ * - @AuthenticationPrincipal injects a UserId
  */
 @ExtendWith(MockitoExtension.class)
 class LibraryControllerTest {
@@ -50,9 +48,6 @@ class LibraryControllerTest {
     @Mock
     private AddGameToLibraryService addGameToLibraryService;
 
-    @Mock
-    private JwtAuthenticationProvider authenticationProvider;
-
     private LibraryController controller;
 
     @BeforeEach
@@ -60,8 +55,7 @@ class LibraryControllerTest {
         controller = new LibraryController(
             listUserLibraryService,
             updateLibraryEntryService,
-            addGameToLibraryService,
-            authenticationProvider
+            addGameToLibraryService
         );
     }
 
@@ -80,36 +74,29 @@ class LibraryControllerTest {
             Instant.parse("2025-01-01T00:00:00Z")
         );
 
-        try (MockedStatic<SecurityContext> mockedSecurityContext = Mockito.mockStatic(SecurityContext.class)) {
-            mockedSecurityContext.when(SecurityContext::getCurrentUserId)
-                .thenReturn(Optional.of(userId));
+        ListUserLibraryQuery expectedQuery = new ListUserLibraryQuery(userId);
+        when(listUserLibraryService.listUserLibrary(expectedQuery))
+            .thenReturn(List.of(entry));
 
-            when(listUserLibraryService.listUserLibrary(new ListUserLibraryQuery(userId)))
-                .thenReturn(List.of(entry));
+        // Act
+        ResponseEntity<?> response = controller.getMyLibrary(userId);
 
-            String authHeader = "Bearer dummy-token";
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody() instanceof List);
 
-            // Act
-            ResponseEntity<?> response = controller.getMyLibrary(authHeader);
+        @SuppressWarnings("unchecked")
+        List<LibraryEntryResponse> body = (List<LibraryEntryResponse>) response.getBody();
+        assertNotNull(body);
+        assertEquals(1, body.size());
 
-            // Assert
-            assertEquals(HttpStatus.OK, response.getStatusCode());
+        LibraryEntryResponse first = body.get(0);
+        assertEquals(rawGameId, first.gameId());
+        assertEquals("PURCHASE", first.source());
+        assertEquals(entry.getAddedAt(), first.addedAt());
 
-            assertTrue(response.getBody() instanceof List);
-            @SuppressWarnings("unchecked")
-            List<LibraryEntryResponse> body = (List<LibraryEntryResponse>) response.getBody();
-
-            assertNotNull(body);
-            assertEquals(1, body.size());
-
-            LibraryEntryResponse first = body.get(0);
-            assertEquals(rawGameId, first.gameId());
-            assertEquals("PURCHASE", first.source().toUpperCase(Locale.ROOT));
-            assertEquals(entry.getAddedAt(), first.addedAt());
-
-            verify(authenticationProvider).authenticateFromAuthorizationHeader(authHeader);
-            verify(listUserLibraryService).listUserLibrary(new ListUserLibraryQuery(userId));
-        }
+        verify(listUserLibraryService).listUserLibrary(expectedQuery);
+        verifyNoInteractions(updateLibraryEntryService, addGameToLibraryService);
     }
 
     @Test
@@ -127,43 +114,63 @@ class LibraryControllerTest {
             Instant.parse("2025-02-01T00:00:00Z")
         );
 
-        try (MockedStatic<SecurityContext> mockedSecurityContext = Mockito.mockStatic(SecurityContext.class)) {
-            mockedSecurityContext.when(SecurityContext::getCurrentUserId)
-                .thenReturn(Optional.of(userId));
+        when(addGameToLibraryService.addGameToLibrary(any(AddGameToLibraryCommand.class)))
+            .thenReturn(createdEntry);
 
-            when(addGameToLibraryService.addGameToLibrary(any(AddGameToLibraryCommand.class)))
-                .thenReturn(createdEntry);
+        AddGameToLibraryRequest request = new AddGameToLibraryRequest(
+            rawGameId,
+            "PURCHASE"
+        );
 
-            String authHeader = "Bearer dummy-token";
-            AddGameToLibraryRequest request = new AddGameToLibraryRequest(
-                rawGameId,
-                "PURCHASE"
-            );
+        // Act
+        ResponseEntity<?> response = controller.addGameToLibrary(userId, request);
 
-            // Act
-            ResponseEntity<?> response = controller.addGameToLibrary(authHeader, request);
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertTrue(response.getBody() instanceof LibraryEntryResponse);
 
-            // Assert
-            assertEquals(HttpStatus.CREATED, response.getStatusCode());
-            assertTrue(response.getBody() instanceof LibraryEntryResponse);
+        LibraryEntryResponse body = (LibraryEntryResponse) response.getBody();
+        assertEquals(rawGameId, body.gameId());
+        assertEquals("PURCHASE", body.source());
+        assertEquals(createdEntry.getAddedAt(), body.addedAt());
 
-            LibraryEntryResponse body = (LibraryEntryResponse) response.getBody();
-            assertEquals(rawGameId, body.gameId());
-            assertEquals("PURCHASE", body.source());
-            assertEquals(createdEntry.getAddedAt(), body.addedAt());
+        // Verify command sent to service
+        ArgumentCaptor<AddGameToLibraryCommand> captor =
+            ArgumentCaptor.forClass(AddGameToLibraryCommand.class);
+        verify(addGameToLibraryService).addGameToLibrary(captor.capture());
 
-            // Verify authentication was performed
-            verify(authenticationProvider).authenticateFromAuthorizationHeader(authHeader);
+        AddGameToLibraryCommand sentCommand = captor.getValue();
+        assertEquals(userId, sentCommand.userId());
+        assertEquals(rawGameId, sentCommand.gameId().getValue());
+        assertEquals(LibraryEntrySource.PURCHASE, sentCommand.source());
 
-            // Verify command sent to service
-            ArgumentCaptor<AddGameToLibraryCommand> captor =
-                ArgumentCaptor.forClass(AddGameToLibraryCommand.class);
-            verify(addGameToLibraryService).addGameToLibrary(captor.capture());
+        verifyNoInteractions(listUserLibraryService, updateLibraryEntryService);
+    }
 
-            AddGameToLibraryCommand sentCommand = captor.getValue();
-            assertEquals(userId, sentCommand.userId());
-            assertEquals(rawGameId, sentCommand.gameId().getValue());
-            assertEquals(LibraryEntrySource.PURCHASE, sentCommand.source());
-        }
+    @Test
+    void getMyLibrary_returnsUnauthorizedWhenPrincipalIsNull() {
+        // Act
+        ResponseEntity<?> response = controller.getMyLibrary(null);
+
+        // Assert
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verifyNoInteractions(listUserLibraryService, updateLibraryEntryService, addGameToLibraryService);
+    }
+
+    @Test
+    void addGameToLibrary_returnsUnauthorizedWhenPrincipalIsNull() {
+        // Arrange
+        AddGameToLibraryRequest request = new AddGameToLibraryRequest(
+            UUID.randomUUID(),
+            "PURCHASE"
+        );
+
+        // Act
+        ResponseEntity<?> response = controller.addGameToLibrary(null, request);
+
+        // Assert
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        verifyNoInteractions(addGameToLibraryService, listUserLibraryService, updateLibraryEntryService);
     }
 }
