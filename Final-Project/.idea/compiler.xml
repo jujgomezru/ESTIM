@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="21">
       <module name="java-api.main" target="21" />
@@ -8,5 +9,13 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />
+=======
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="java-api" options="-parameters" />
+      <module name="java-api.main" options="-parameters" />
+      <module name="java-api.test" options="-parameters" />
+    </option>
+>>>>>>> 71edfdda10f29571e196d16414b5f23c3da6ecd6
   </component>
 </project>
