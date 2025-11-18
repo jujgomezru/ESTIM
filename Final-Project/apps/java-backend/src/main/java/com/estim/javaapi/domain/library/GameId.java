@@ -1,24 +1,26 @@
 package com.estim.javaapi.domain.library;
 
 import java.util.Objects;
+import java.util.UUID;
 
-/**
- * Value object representing a game identifier from the catalog service.
- */
 public final class GameId {
 
-    private final String value;
+    private final UUID value;
 
-    public GameId(String value) {
-        this.value = Objects.requireNonNull(value, "value must not be null");
+    public GameId(UUID value) {
+        this.value = Objects.requireNonNull(value);
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public static GameId of(String value) {
+    public static GameId of(UUID value) {
         return new GameId(value);
+    }
+
+    public static GameId fromString(String value) {
+        return new GameId(UUID.fromString(value));
+    }
+
+    public UUID getValue() {
+        return value;
     }
 
     @Override
@@ -36,7 +38,7 @@ public final class GameId {
     @Override
     public String toString() {
         return "GameId{" +
-            "value='" + value + '\'' +
+            "value=" + value +
             '}';
     }
 }
