@@ -16,13 +16,14 @@ export default function RegisterPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await registerUser(form);
-      // Muestra solo el mensaje del backend
-      alert(response.data?.message || "¡Registrado exitosamente!");
+      const data = await registerUser(form);
+      alert(`Usuario ${data.displayName ?? form.displayName} registrado correctamente`);
       navigate("/login");
     } catch (error) {
-      // Muestra solo el mensaje de error del backend
-      alert(error.response?.data?.message || "Error al registrar");
+      const backendMessage =
+        typeof error.data === "object" ? error.data?.message : null;
+
+      alert(backendMessage || "Error al registrar");
     }
   }
 
