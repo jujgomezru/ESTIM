@@ -9,14 +9,13 @@ import com.estim.javaapi.application.library.UpdateLibraryEntryService;
 import com.estim.javaapi.domain.library.GameId;
 import com.estim.javaapi.domain.library.LibraryEntrySource;
 import com.estim.javaapi.domain.user.UserId;
-import com.estim.javaapi.infrastructure.security.JwtAuthenticationProvider;
-import com.estim.javaapi.infrastructure.security.SecurityContext;
 import com.estim.javaapi.presentation.common.ErrorResponse;
 import com.estim.javaapi.presentation.library.AddGameToLibraryRequest;
 import com.estim.javaapi.presentation.library.LibraryEntryResponse;
 import com.estim.javaapi.presentation.library.LibraryMapper;
 import com.estim.javaapi.presentation.library.UpdateLibraryEntryRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,67 +28,54 @@ public class LibraryController {
     private final ListUserLibraryService listUserLibraryService;
     private final UpdateLibraryEntryService updateLibraryEntryService;
     private final AddGameToLibraryService addGameToLibraryService;
-    private final JwtAuthenticationProvider authenticationProvider;
 
     public LibraryController(ListUserLibraryService listUserLibraryService,
                              UpdateLibraryEntryService updateLibraryEntryService,
-                             AddGameToLibraryService addGameToLibraryService,
-                             JwtAuthenticationProvider authenticationProvider) {
+                             AddGameToLibraryService addGameToLibraryService) {
         this.listUserLibraryService = listUserLibraryService;
         this.updateLibraryEntryService = updateLibraryEntryService;
         this.addGameToLibraryService = addGameToLibraryService;
-        this.authenticationProvider = authenticationProvider;
     }
 
     /**
      * GET /me/library
-     *
      * Returns the list of games in the current user's library.
      */
     @GetMapping("/me/library")
     public ResponseEntity<?> getMyLibrary(
-        @RequestHeader(name = "Authorization", required = false) String authorizationHeader
+        @AuthenticationPrincipal UserId currentUserId
     ) {
-        try {
-            authenticationProvider.authenticateFromAuthorizationHeader(authorizationHeader);
-
-            UserId userId = SecurityContext.getCurrentUserId()
-                .orElseThrow(() -> new IllegalStateException("Not authenticated"));
-
-            var query = new ListUserLibraryQuery(userId);
-
-            List<LibraryEntryResponse> response =
-                listUserLibraryService.listUserLibrary(query)
-                    .stream()
-                    .map(LibraryMapper::toResponse)
-                    .toList();
-
-            return ResponseEntity.ok(response);
-
-        } catch (IllegalArgumentException | IllegalStateException ex) {
+        if (currentUserId == null) {
             return ResponseEntity.status(401)
-                .body(new ErrorResponse("UNAUTHORIZED", ex.getMessage(), null));
-        } finally {
-            authenticationProvider.clearAuthentication();
+                .body(new ErrorResponse("UNAUTHORIZED", "Not authenticated", null));
         }
+
+        var query = new ListUserLibraryQuery(currentUserId);
+
+        List<LibraryEntryResponse> response =
+            listUserLibraryService.listUserLibrary(query)
+                .stream()
+                .map(LibraryMapper::toResponse)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     /**
      * POST /me/library
-     *
      * Debug / admin-style endpoint to manually add a game to the current user's library.
      * In normal flows this should be triggered by a purchase event.
      */
     @PostMapping("/me/library")
     public ResponseEntity<?> addGameToLibrary(
-        @RequestHeader(name = "Authorization", required = false) String authorizationHeader,
+        @AuthenticationPrincipal UserId currentUserId,
         @RequestBody AddGameToLibraryRequest request
     ) {
         try {
-            authenticationProvider.authenticateFromAuthorizationHeader(authorizationHeader);
-
-            UserId userId = SecurityContext.getCurrentUserId()
-                .orElseThrow(() -> new IllegalStateException("Not authenticated"));
+            if (currentUserId == null) {
+                return ResponseEntity.status(401)
+                    .body(new ErrorResponse("UNAUTHORIZED", "Not authenticated", null));
+            }
 
             if (request.gameId() == null) {
                 throw new IllegalArgumentException("gameId must not be null");
@@ -103,50 +89,40 @@ public class LibraryController {
                     : LibraryEntrySource.valueOf(rawSource.toUpperCase(Locale.ROOT));
 
             var command = new AddGameToLibraryCommand(
-                userId,
+                currentUserId,
                 GameId.of(request.gameId()),
                 source
             );
 
             var entry = addGameToLibraryService.addGameToLibrary(command);
 
-            // You can return 201 with or without body; here we return the created entry
             return ResponseEntity.status(201).body(LibraryMapper.toResponse(entry));
 
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("LIBRARY_ADD_FAILED", ex.getMessage(), null));
-        } catch (IllegalStateException ex) {
-            return ResponseEntity.status(401)
-                .body(new ErrorResponse("UNAUTHORIZED", ex.getMessage(), null));
-        } finally {
-            authenticationProvider.clearAuthentication();
         }
     }
 
     /**
      * PATCH /me/library/{gameId}
-     *
      * Intended to update library metadata such as playtime, status, tags.
-     *
-     * NOTE:
-     * The current implementation of UpdateLibraryEntryService is a stub
-     * because the 'libraries' table does not yet support these fields.
+     * Currently still a stub, depending on schema.
      */
     @PatchMapping("/me/library/{gameId}")
     public ResponseEntity<?> updateMyLibraryEntry(
-        @RequestHeader(name = "Authorization", required = false) String authorizationHeader,
+        @AuthenticationPrincipal UserId currentUserId,
         @PathVariable("gameId") UUID gameId,
         @RequestBody UpdateLibraryEntryRequest request
     ) {
         try {
-            authenticationProvider.authenticateFromAuthorizationHeader(authorizationHeader);
-
-            UserId userId = SecurityContext.getCurrentUserId()
-                .orElseThrow(() -> new IllegalStateException("Not authenticated"));
+            if (currentUserId == null) {
+                return ResponseEntity.status(401)
+                    .body(new ErrorResponse("UNAUTHORIZED", "Not authenticated", null));
+            }
 
             var command = new UpdateLibraryEntryCommand(
-                userId,
+                currentUserId,
                 GameId.of(gameId),
                 request.additionalPlayTimeMinutes(),
                 request.tags(),
@@ -160,11 +136,9 @@ public class LibraryController {
         } catch (UnsupportedOperationException ex) {
             return ResponseEntity.status(501)
                 .body(new ErrorResponse("LIBRARY_UPDATE_NOT_IMPLEMENTED", ex.getMessage(), null));
-        } catch (IllegalArgumentException | IllegalStateException ex) {
+        } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("LIBRARY_UPDATE_FAILED", ex.getMessage(), null));
-        } finally {
-            authenticationProvider.clearAuthentication();
         }
     }
 }
