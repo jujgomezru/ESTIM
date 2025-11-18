@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="POST /auth/logout" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-11-17T18:00:56.616Z" hostname="DESKTOP-T5D8MHC" time="0.033">
+  <properties/>
+  <testcase name="should extract Bearer token, pass it to LogoutUserService and return 204" classname="com.estim.javaapi.controllers.AuthControllerTest$LogoutTests" time="0.008"/>
+  <testcase name="should treat non-Bearer Authorization header as null token and return 204" classname="com.estim.javaapi.controllers.AuthControllerTest$LogoutTests" time="0.008"/>
+  <testcase name="should accept missing Authorization header, send null token and return 204" classname="com.estim.javaapi.controllers.AuthControllerTest$LogoutTests" time="0.007"/>
+  <testcase name="should treat blank header as null token and return 204" classname="com.estim.javaapi.controllers.AuthControllerTest$LogoutTests" time="0.007"/>
+  <system-out><![CDATA[2025-11-17T13:00:56.611-05:00  INFO 32654 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.AuthControllerTest$LogoutTests]: LogoutTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-17T13:00:56.614-05:00  INFO 32654 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.AuthControllerTest$LogoutTests
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/logout
+       Parameters = {}
+          Headers = [Authorization:"Bearer jwt-token-123"]
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.AuthController
+           Method = com.estim.javaapi.controllers.AuthController#logout(String)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 204
+    Error message = null
+          Headers = []
+     Content type = null
+             Body = 
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/logout
+       Parameters = {}
+          Headers = [Authorization:"Basic abc123"]
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.AuthController
+           Method = com.estim.javaapi.controllers.AuthController#logout(String)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 204
+    Error message = null
+          Headers = []
+     Content type = null
+             Body = 
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/logout
+       Parameters = {}
+          Headers = []
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.AuthController
+           Method = com.estim.javaapi.controllers.AuthController#logout(String)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 204
+    Error message = null
+          Headers = []
+     Content type = null
+             Body = 
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/logout
+       Parameters = {}
+          Headers = [Authorization:""]
+             Body = <no character encoding set>
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.AuthController
+           Method = com.estim.javaapi.controllers.AuthController#logout(String)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 204
+    Error message = null
+          Headers = []
+     Content type = null
+             Body = 
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
