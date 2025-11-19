@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="POST /auth/login" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-11-18T05:38:08.315Z" hostname="DESKTOP-T5D8MHC" time="0.142">
+<testsuite name="POST /auth/login" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-11-19T15:43:09.909Z" hostname="DESKTOP-T5D8MHC" time="0.197">
   <properties/>
-  <testcase name="should return 401 AUTH_FAILED when authentication fails with IllegalArgumentException" classname="com.estim.javaapi.controllers.AuthControllerTest$LoginTests" time="0.034"/>
-  <testcase name="should return 401 AUTH_FAILED when authentication fails with IllegalStateException" classname="com.estim.javaapi.controllers.AuthControllerTest$LoginTests" time="0.008"/>
-  <testcase name="should authenticate user, call AuthenticateUserService with correct command and return 200 + LoginResponse" classname="com.estim.javaapi.controllers.AuthControllerTest$LoginTests" time="0.097"/>
-  <system-out><![CDATA[2025-11-18T00:38:08.311-05:00  INFO 182498 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.AuthControllerTest$LoginTests]: LoginTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-11-18T00:38:08.313-05:00  INFO 182498 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.AuthControllerTest$LoginTests
+  <testcase name="should return 401 AUTH_FAILED when authentication fails with IllegalArgumentException" classname="com.estim.javaapi.controllers.AuthControllerTest$LoginTests" time="0.052"/>
+  <testcase name="should return 401 AUTH_FAILED when authentication fails with IllegalStateException" classname="com.estim.javaapi.controllers.AuthControllerTest$LoginTests" time="0.016"/>
+  <testcase name="should authenticate user, call AuthenticateUserService with correct command and return 200 + LoginResponse" classname="com.estim.javaapi.controllers.AuthControllerTest$LoginTests" time="0.122"/>
+  <system-out><![CDATA[2025-11-19T10:43:09.902-05:00  INFO 56381 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.AuthControllerTest$LoginTests]: LoginTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-19T10:43:09.905-05:00  INFO 56381 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.AuthControllerTest$LoginTests
 
 MockHttpServletRequest:
       HTTP Method = POST

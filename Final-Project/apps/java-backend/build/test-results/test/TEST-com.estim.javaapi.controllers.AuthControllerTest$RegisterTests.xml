@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="POST /auth/register" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-11-18T05:38:08.464Z" hostname="DESKTOP-T5D8MHC" time="0.03">
+<testsuite name="POST /auth/register" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-11-19T15:43:10.121Z" hostname="DESKTOP-T5D8MHC" time="0.058">
   <properties/>
-  <testcase name="should create user, call RegisterUserService with correct command and return 201 + RegisterUserResponse" classname="com.estim.javaapi.controllers.AuthControllerTest$RegisterTests" time="0.018"/>
-  <testcase name="should return 400 with VALIDATION_ERROR when service throws IllegalArgumentException" classname="com.estim.javaapi.controllers.AuthControllerTest$RegisterTests" time="0.01"/>
-  <system-out><![CDATA[2025-11-18T00:38:08.460-05:00  INFO 182498 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.AuthControllerTest$RegisterTests]: RegisterTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-11-18T00:38:08.462-05:00  INFO 182498 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.AuthControllerTest$RegisterTests
+  <testcase name="should create user, call RegisterUserService with correct command and return 201 + RegisterUserResponse" classname="com.estim.javaapi.controllers.AuthControllerTest$RegisterTests" time="0.036"/>
+  <testcase name="should return 400 with VALIDATION_ERROR when service throws IllegalArgumentException" classname="com.estim.javaapi.controllers.AuthControllerTest$RegisterTests" time="0.018"/>
+  <system-out><![CDATA[2025-11-19T10:43:10.109-05:00  INFO 56381 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.AuthControllerTest$RegisterTests]: RegisterTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-19T10:43:10.111-05:00  INFO 56381 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.AuthControllerTest$RegisterTests
 
 MockHttpServletRequest:
       HTTP Method = POST
