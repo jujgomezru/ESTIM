@@ -24,6 +24,12 @@ public interface UserRepository {
     boolean existsByEmail(Email email);
 
     /**
+     * Returns true if a user with the given display name already exists.
+     * Used to enforce unique usernames.
+     */
+    boolean existsByDisplayName(String displayName);
+
+    /**
      * Finds a user by an already linked OAuth account.
      */
     Optional<User> findByOAuthProviderAndExternalId(OAuthProvider provider, String externalUserId);

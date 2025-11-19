@@ -35,16 +35,27 @@ public class RegisterUserService {
     }
 
     public User register(RegisterUserCommand command) {
-        Email email = new Email(command.email());
+        // ---- Basic null/blank validation ----
+        validateCommand(command);
+
+        // ---- Email validation (null/blank + @ + dot after @) via Email.of ----
+        Email email = Email.of(command.email());
 
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email already in use");
         }
 
-        // Assuming PasswordPolicy has isValid(String); if you changed it to validate(...),
-        // adjust this call accordingly.
+        // ---- Username/displayName rules & uniqueness ----
+        String displayName = command.displayName().trim();
+        validateDisplayName(displayName);
+
+        if (userRepository.existsByDisplayName(displayName)) {
+            throw new IllegalArgumentException("Display name already in use");
+        }
+
+        // ---- Password policy ----
         if (!passwordPolicy.isValid(command.password())) {
-            throw new IllegalArgumentException("Password does not meet policy requirements");
+            throw new IllegalArgumentException(passwordPolicy.description());
         }
 
         var hashedPassword = passwordHasher.hash(command.password());
@@ -52,7 +63,7 @@ public class RegisterUserService {
         // Create a new UserId
         UserId id = new UserId(UUID.randomUUID());
 
-        // Default privacy settings (you can tweak these defaults)
+        // Default privacy settings
         PrivacySettings privacySettings = new PrivacySettings(
             true,  // showProfile
             true,  // showActivity
@@ -61,7 +72,7 @@ public class RegisterUserService {
 
         // Initial profile with displayName + default privacy; avatar/bio/location null for now
         UserProfile initialProfile = new UserProfile(
-            command.displayName(),
+            displayName,
             null,   // avatarUrl
             null,   // bio
             null,   // location
@@ -83,5 +94,43 @@ public class RegisterUserService {
         saved.clearDomainEvents();
 
         return saved;
+    }
+
+    // ---------- Validation helpers ----------
+
+    private void validateCommand(RegisterUserCommand command) {
+        if (command == null) {
+            throw new IllegalArgumentException("Request body is required");
+        }
+
+        if (command.email() == null || command.email().isBlank()) {
+            throw new IllegalArgumentException("Email must not be blank");
+        }
+
+        if (command.password() == null || command.password().isBlank()) {
+            throw new IllegalArgumentException("Password must not be blank");
+        }
+
+        if (command.displayName() == null || command.displayName().isBlank()) {
+            throw new IllegalArgumentException("Display name must not be blank");
+        }
+    }
+
+    /**
+     * Python-like identifier rules for username:
+     * - No spaces
+     * - Must match: ^[A-Za-z_][A-Za-z0-9_]*$
+     */
+    private void validateDisplayName(String displayName) {
+        if (displayName.contains(" ")) {
+            throw new IllegalArgumentException("Display name must not contain spaces");
+        }
+
+        // First char: letter or underscore; rest: letters, digits, underscore
+        if (!displayName.matches("^[A-Za-z_][A-Za-z0-9_]*$")) {
+            throw new IllegalArgumentException(
+                "Display name must start with a letter or underscore and contain only letters, digits, or underscores"
+            );
+        }
     }
 }
