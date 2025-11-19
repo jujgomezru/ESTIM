@@ -6,9 +6,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
@@ -16,18 +18,11 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * JWT-based implementation of TokenService using HS256.
- *
- * Requires dependencies like:
- *   implementation "io.jsonwebtoken:jjwt-api:0.12.5"
- *   runtimeOnly "io.jsonwebtoken:jjwt-impl:0.12.5"
- *   runtimeOnly "io.jsonwebtoken:jjwt-jackson:0.12.5"
- */
 @Component
 public class JwtTokenService implements TokenService {
 
-    private final byte[] secretKey;
+    private final byte[] secretKeyBytes;
+    private final SecretKey signingKey;   // <-- use SecretKey
     private final Duration accessTokenTtl;
     private final Duration refreshTokenTtl;
 
@@ -36,8 +31,12 @@ public class JwtTokenService implements TokenService {
         @Value("${security.jwt.access-token-ttl:PT15M}") Duration accessTokenTtl,
         @Value("${security.jwt.refresh-token-ttl:P7D}") Duration refreshTokenTtl
     ) {
-        this.secretKey = Objects.requireNonNull(secret, "secret must not be null")
+        this.secretKeyBytes = Objects.requireNonNull(secret, "secret must not be null")
             .getBytes(StandardCharsets.UTF_8);
+
+        // HS256 key
+        this.signingKey = Keys.hmacShaKeyFor(this.secretKeyBytes);
+
         this.accessTokenTtl = Objects.requireNonNull(accessTokenTtl, "accessTokenTtl must not be null");
         this.refreshTokenTtl = Objects.requireNonNull(refreshTokenTtl, "refreshTokenTtl must not be null");
     }
@@ -61,7 +60,8 @@ public class JwtTokenService implements TokenService {
             .setIssuedAt(Date.from(now))
             .setExpiration(Date.from(expiry))
             .claim("typ", type)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
+            // This variant still works on 0.12.x (might be deprecated, but compiles):
+            .signWith(signingKey, SignatureAlgorithm.HS256)
             .compact();
     }
 
@@ -69,25 +69,25 @@ public class JwtTokenService implements TokenService {
     public UserId parseUserIdFromAccessToken(String token) {
         try {
             Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody();
+                .setSigningKey(signingKey)   // SecretKey from Keys.hmacShaKeyFor(...)
+                .parseClaimsJws(token)       // <-- this exists on JwtParser
+                .getBody();                  // returns Claims
 
-            String subject = claims.getSubject();
+            String subject = claims.getSubject(); // user UUID as String
             return new UserId(UUID.fromString(subject));
+
         } catch (JwtException | IllegalArgumentException ex) {
-            // Includes ExpiredJwtException, malformed token, bad signature, etc.
             throw new IllegalArgumentException("Invalid or expired access token", ex);
         }
     }
 
     @Override
     public void revokeRefreshToken(String refreshToken) {
-        // no-op for pure stateless JWT; override in a stateful implementation
+        // no-op for pure stateless JWT
     }
 
     @Override
     public void revokeAllForUser(UserId userId) {
-        // no-op for pure stateless JWT; override in a stateful implementation
+        // no-op for pure stateless JWT
     }
 }

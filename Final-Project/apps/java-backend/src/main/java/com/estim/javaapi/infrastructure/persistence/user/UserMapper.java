@@ -1,6 +1,7 @@
 package com.estim.javaapi.infrastructure.persistence.user;
 
 import com.estim.javaapi.domain.user.*;
+import org.springframework.stereotype.Component;  // <--- add this import
 
 import java.lang.reflect.Constructor;
 import java.time.Instant;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Component
 public class UserMapper {
 
     // ---------- Domain -> JPA ----------
@@ -134,10 +136,6 @@ public class UserMapper {
         );
     }
 
-    /**
-     * Uses reflection to call the private User constructor so we can rehydrate
-     * the aggregate from persistence without triggering domain events.
-     */
     private User instantiateUser(
         UserId id,
         Email email,
