@@ -512,8 +512,6 @@ CREATE INDEX idx_refunds_user    ON refund_requests(user_id);
 CREATE INDEX idx_refunds_order   ON refund_requests(order_id);
 CREATE INDEX idx_refunds_status  ON refund_requests(status);
 CREATE INDEX idx_refunds_created ON refund_requests(created_at);
-CREATE INDEX idx_password_reset_tokens_user_id ON password_reset_tokens(user_id);
-CREATE INDEX idx_password_reset_tokens_expires_at ON password_reset_tokens(expires_at);
 CREATE INDEX idx_user_oauth_accounts_user_id ON user_oauth_accounts(user_id);
 
 

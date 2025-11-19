@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - POST /auth/oauth/link</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>POST /auth/oauth/link</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.estim.javaapi.controllers.html">com.estim.javaapi.controllers</a> &gt; OAuthControllerTest$LinkOAuthAccountTests</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">4</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.041s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+<li>
+<a href="#">Standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Method name</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">should return 400 OAUTH_LINK_FAILED when auth fails</td>
+<td class="success">linkAuthFails()</td>
+<td class="success">0.012s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">should return 400 OAUTH_LINK_FAILED when SecurityContext has no current user</td>
+<td class="success">linkNoCurrentUser()</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">should return 400 OAUTH_LINK_FAILED when link service throws IllegalArgumentException</td>
+<td class="success">linkServiceValidationError()</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">should link OAuth account for authenticated user and return 204</td>
+<td class="success">linkSuccess()</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2025-11-18T00:38:09.279-05:00  INFO 182498 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests]: LinkOAuthAccountTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-18T00:38:09.282-05:00  INFO 182498 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/oauth/link
+       Parameters = {}
+          Headers = [Content-Type:&quot;application/json&quot;, Content-Length:&quot;99&quot;]
+             Body = &lt;no character encoding set&gt;
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.OAuthController
+           Method = com.estim.javaapi.controllers.OAuthController#link(String, OAuthLinkRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 400
+    Error message = null
+          Headers = [Content-Type:&quot;application/json&quot;]
+     Content type = application/json
+             Body = {&quot;code&quot;:&quot;OAUTH_LINK_FAILED&quot;,&quot;message&quot;:&quot;Missing Authorization header&quot;,&quot;details&quot;:null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/oauth/link
+       Parameters = {}
+          Headers = [Content-Type:&quot;application/json&quot;, Authorization:&quot;Bearer valid-token&quot;, Content-Length:&quot;114&quot;]
+             Body = &lt;no character encoding set&gt;
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.OAuthController
+           Method = com.estim.javaapi.controllers.OAuthController#link(String, OAuthLinkRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 204
+    Error message = null
+          Headers = []
+     Content type = null
+             Body = 
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/oauth/link
+       Parameters = {}
+          Headers = [Content-Type:&quot;application/json&quot;, Authorization:&quot;Bearer valid-token&quot;, Content-Length:&quot;99&quot;]
+             Body = &lt;no character encoding set&gt;
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.OAuthController
+           Method = com.estim.javaapi.controllers.OAuthController#link(String, OAuthLinkRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 400
+    Error message = null
+          Headers = [Content-Type:&quot;application/json&quot;]
+     Content type = application/json
+             Body = {&quot;code&quot;:&quot;OAUTH_LINK_FAILED&quot;,&quot;message&quot;:&quot;No authenticated user&quot;,&quot;details&quot;:null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /auth/oauth/link
+       Parameters = {}
+          Headers = [Content-Type:&quot;application/json&quot;, Authorization:&quot;Bearer valid-token&quot;, Content-Length:&quot;110&quot;]
+             Body = &lt;no character encoding set&gt;
+    Session Attrs = {}
+
+Handler:
+             Type = com.estim.javaapi.controllers.OAuthController
+           Method = com.estim.javaapi.controllers.OAuthController#link(String, OAuthLinkRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 400
+    Error message = null
+          Headers = [Content-Type:&quot;application/json&quot;]
+     Content type = application/json
+             Body = {&quot;code&quot;:&quot;OAUTH_LINK_FAILED&quot;,&quot;message&quot;:&quot;Unsupported provider&quot;,&quot;details&quot;:null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 8.14.3</a> at Nov 18, 2025, 12:38:11 AM</p>
+</div>
+</div>
+</body>
+</html>
