@@ -37,12 +37,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 try {
-                    // Now returns UserId, not String
                     UserId userId = jwtTokenService.parseUserIdFromAccessToken(token);
+
+                    // Use your AuthenticatedUser as the principal
+                    AuthenticatedUser principal = new AuthenticatedUser(userId);
 
                     UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                            userId,  // principal can be your domain UserId
+                            principal,
                             null,
                             List.of(new SimpleGrantedAuthority("ROLE_USER"))
                         );
@@ -55,7 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 } catch (IllegalArgumentException ex) {
                     // Invalid / expired / malformed token: leave request unauthenticated
-                    // Spring Security will handle 401/403 based on your config
+                    // If you want to see what's going on, you can log it:
+                    // log.warn("JWT validation failed", ex);
                 }
             }
         }
