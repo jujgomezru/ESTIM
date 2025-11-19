@@ -3,8 +3,10 @@ package com.estim.javaapi.application.auth;
 import org.springframework.stereotype.Component;
 
 /**
- * Simple implementation of PasswordPolicy.
- * Adjust the rules to match your requirements.
+ * Password rules:
+ * - At least 8 characters
+ * - At least one digit
+ * - At least one special character (non letter/digit)
  */
 @Component
 public class DefaultPasswordPolicy implements PasswordPolicy {
@@ -19,16 +21,22 @@ public class DefaultPasswordPolicy implements PasswordPolicy {
             return false;
         }
 
-        // Optional: add more rules if you want:
-        // boolean hasDigit = rawPassword.chars().anyMatch(Character::isDigit);
-        // boolean hasUpper = rawPassword.chars().anyMatch(Character::isUpperCase);
-        // return hasDigit && hasUpper;
+        boolean hasDigit = false;
+        boolean hasSpecial = false;
 
-        return true;
+        for (char c : rawPassword.toCharArray()) {
+            if (Character.isDigit(c)) {
+                hasDigit = true;
+            } else if (!Character.isLetter(c) && !Character.isDigit(c)) {
+                hasSpecial = true;
+            }
+        }
+
+        return hasDigit && hasSpecial;
     }
 
     @Override
     public String description() {
-        return "Password must be at least 8 characters long.";
+        return "Password must be at least 8 characters long and include at least one digit and one special character.";
     }
 }
