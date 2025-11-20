@@ -43,10 +43,13 @@ public class SecurityConfig {
                 // Health if you have it
                 .requestMatchers("/health", "/actuator/health").permitAll()
 
+                // Public community read endpoints
+                .requestMatchers(HttpMethod.GET, "/community/posts", "/community/posts/**").permitAll()
+
                 // Anything under /me/** requires authentication
                 .requestMatchers("/me/**").authenticated()
 
-                // Everything else can be tuned as needed
+                // Everything else still requires auth (including creating posts/comments)
                 .anyRequest().authenticated()
             )
 
