@@ -7,8 +7,7 @@ class Cart:
         self.articulos = []
     
     def agregar_articulo(self, articulo, precio):
-        self.articulos.append({"articulo" : articulo, 
-                               "precio" : precio})
+        self.articulos.append({"articulo" : articulo, "precio" : precio})
     
     def remover_articulo(self, articulo):
         for item in self.articulos:
