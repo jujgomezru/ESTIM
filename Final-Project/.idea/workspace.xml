@@ -5,10 +5,49 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/PostDetailsResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommentStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/PostStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/PostType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/persistence/community/CommentJpaEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/persistence/community/CommentJpaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/persistence/community/CommentMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/persistence/community/CommentRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/persistence/community/CommunityPostJpaEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/persistence/community/CommunityPostJpaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/persistence/community/CommunityPostMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/persistence/community/CommunityPostRepositoryImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/file-system.probe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/problems/problems-report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/AddCommentCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/AddCommentCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/CommentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/CommentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/CommunityPostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/CommunityPostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/CreatePostCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/CreatePostCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/DeleteCommentCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/DeleteCommentCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/DeletePostCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/DeletePostCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/GetPostDetailsQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/GetPostDetailsQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/ListPostsQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/ListPostsQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/ListUserPostsQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/ListUserPostsQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/UpdateCommentCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/UpdateCommentCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/UpdatePostCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/community/UpdatePostCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/controllers/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/controllers/CommunityController.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/controllers/CommunityController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommentId.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommentId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommunityPost.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommunityPost.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommunityPostId.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommunityPostId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommunityPostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/CommunityPostRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/events/CommentAdded.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/events/CommentAdded.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/events/CommunityPostCreated.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/domain/community/events/CommunityPostCreated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/security/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/security/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/CommentRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/CommentRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/CommentResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/CommentResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/CreatePostRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/CreatePostRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/PostDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/PostDetailResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/PostSummaryResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/PostSummaryResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/UpdatePostRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/community/UpdatePostRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/migrations/0003_tables_and_fk.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrations/0003_tables_and_fk.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,8 +143,8 @@
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Problems" order="1" />
       <window_info anchor="bottom" id="Problems View" order="2" weight="0.28615195" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.28615195" />
-      <window_info anchor="bottom" id="Services" order="4" weight="0.4332108" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.278799" />
+      <window_info anchor="bottom" id="Services" order="4" weight="0.2777778" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.3302696" />
       <window_info anchor="bottom" id="Run" order="6" weight="0.3302696" />
       <window_info anchor="bottom" id="Debug" order="7" weight="0.3302696" />
@@ -113,7 +152,7 @@
       <window_info anchor="bottom" id="JPA Console" order="9" weight="0.28615195" />
       <window_info anchor="right" id="Notifications" order="0" weight="0.2503255" />
       <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
-      <window_info anchor="right" id="Database" order="2" weight="0.2503255" />
+      <window_info anchor="right" id="Database" order="2" weight="0.25097656" />
       <window_info anchor="right" id="Gradle" order="3" weight="0.25097913" />
       <window_info anchor="right" id="Maven" order="4" weight="0.25" />
       <window_info anchor="right" id="Endpoints" order="5" weight="0.2503255" />
@@ -157,6 +196,10 @@
       <workItem from="1763569063222" duration="1700000" />
       <workItem from="1763570824453" duration="590000" />
       <workItem from="1763579505317" duration="579000" />
+      <workItem from="1763595134637" duration="9541000" />
+      <workItem from="1763639853596" duration="1818000" />
+      <workItem from="1763656692353" duration="4199000" />
+      <workItem from="1763661901066" duration="2737000" />
     </task>
     <servers />
   </component>
