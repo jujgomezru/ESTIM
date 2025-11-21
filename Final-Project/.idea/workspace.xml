@@ -5,10 +5,67 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/checksums/checksums.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/apps/java-backend/src/test/java/com/estim/javaapi/controllers/WishlistControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/problems/problems-report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest$LoginTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest$LoginTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest$LogoutTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest$LogoutTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest$MeTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest$MeTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest$RegisterTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest$RegisterTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.AuthControllerTest.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.OAuthControllerTest$OAuthLoginTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.OAuthControllerTest$OAuthLoginTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.OAuthControllerTest.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.OAuthControllerTest.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PasswordControllerTest$RequestResetTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PasswordControllerTest$RequestResetTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PasswordControllerTest$ResetPasswordTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PasswordControllerTest$ResetPasswordTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PasswordControllerTest.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PasswordControllerTest.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PaymentMethodControllerTest$AddPaymentMethodTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PaymentMethodControllerTest$AddPaymentMethodTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PaymentMethodControllerTest$RemovePaymentMethodTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PaymentMethodControllerTest$RemovePaymentMethodTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PaymentMethodControllerTest.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.PaymentMethodControllerTest.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.ProfileControllerTest$UpdateProfileTests.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.ProfileControllerTest$UpdateProfileTests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.ProfileControllerTest.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/classes/com.estim.javaapi.controllers.ProfileControllerTest.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/packages/com.estim.javaapi.controllers.html" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/reports/tests/test/packages/com.estim.javaapi.controllers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest$LoginTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest$LoginTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest$LogoutTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest$LogoutTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest$MeTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest$MeTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest$RegisterTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest$RegisterTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.AuthControllerTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.OAuthControllerTest$LinkOAuthAccountTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.OAuthControllerTest$OAuthLoginTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.OAuthControllerTest$OAuthLoginTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.OAuthControllerTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.OAuthControllerTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PasswordControllerTest$RequestResetTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PasswordControllerTest$RequestResetTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PasswordControllerTest$ResetPasswordTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PasswordControllerTest$ResetPasswordTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PasswordControllerTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PasswordControllerTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PaymentMethodControllerTest$AddPaymentMethodTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PaymentMethodControllerTest$AddPaymentMethodTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PaymentMethodControllerTest$RemovePaymentMethodTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PaymentMethodControllerTest$RemovePaymentMethodTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PaymentMethodControllerTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.PaymentMethodControllerTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.ProfileControllerTest$UpdateProfileTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.ProfileControllerTest$UpdateProfileTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.ProfileControllerTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/TEST-com.estim.javaapi.controllers.ProfileControllerTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/binary/output.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/binary/output.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/binary/output.bin.idx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/binary/output.bin.idx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/binary/results.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/test-results/test/binary/results.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/tmp/compileTestJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/tmp/compileTestJava/previous-compilation-data.bin" afterDir="false" />
+>>>>>>> 85b07d80f126419f508b1ce2085a8fb3294cf189
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +136,9 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -100,27 +160,34 @@
       <window_info anchor="bottom" id="File Transfer" />
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Problems" order="1" />
-      <window_info anchor="bottom" id="Problems View" order="2" weight="0.3302696" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.30453432" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.28615195" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.28615195" />
       <window_info anchor="bottom" id="Services" order="4" weight="0.4332108" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.3302696" />
       <window_info anchor="bottom" id="Run" order="6" weight="0.3302696" />
       <window_info anchor="bottom" id="Debug" order="7" weight="0.3302696" />
       <window_info anchor="bottom" id="Build" order="8" weight="0.29963237" />
       <window_info anchor="bottom" id="JPA Console" order="9" weight="0.28615195" />
+<<<<<<< HEAD
       <window_info anchor="right" id="Endpoints" />
       <window_info anchor="right" id="Coverage" side_tool="true" />
       <window_info anchor="right" id="Beans" />
       <window_info anchor="right" content_ui="combo" id="Notifications" order="0" weight="0.25" />
+=======
+      <window_info anchor="right" id="Notifications" order="0" weight="0.2503255" />
+>>>>>>> 85b07d80f126419f508b1ce2085a8fb3294cf189
       <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
-      <window_info anchor="right" id="Database" order="2" weight="0.25" />
-      <window_info anchor="right" id="Gradle" order="3" weight="0.2503255" />
+      <window_info anchor="right" id="Database" order="2" weight="0.2503255" />
+      <window_info anchor="right" id="Gradle" order="3" weight="0.25097913" />
       <window_info anchor="right" id="Maven" order="4" weight="0.25" />
+      <window_info anchor="right" id="Endpoints" order="5" weight="0.2503255" />
+      <window_info anchor="right" id="Beans" order="6" weight="0.2503255" />
+      <window_info anchor="right" id="Coverage" order="7" side_tool="true" weight="0.2503255" />
     </layout>
   </component>
   <component name="RunManager">
     <configuration name="JavaApiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="java-api_main" />
+      <module name="java-api.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.estim.javaapi.JavaApiApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -148,6 +215,11 @@
       <workItem from="1763305084703" duration="37757000" />
       <workItem from="1763387494960" duration="6505000" />
       <workItem from="1763405695264" duration="12809000" />
+      <workItem from="1763440628069" duration="6189000" />
+      <workItem from="1763494866489" duration="1285000" />
+      <workItem from="1763561024969" duration="3579000" />
+      <workItem from="1763569063222" duration="1700000" />
+      <workItem from="1763570824453" duration="590000" />
     </task>
     <servers />
   </component>
