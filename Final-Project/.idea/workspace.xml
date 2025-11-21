@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="" />
+    <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -102,6 +107,7 @@
       <window_info anchor="bottom" id="Run" order="6" weight="0.3302696" />
       <window_info anchor="bottom" id="Debug" order="7" weight="0.3302696" />
       <window_info anchor="bottom" id="Build" order="8" weight="0.29963237" />
+      <window_info anchor="bottom" id="JPA Console" order="9" weight="0.28615195" />
       <window_info anchor="right" id="Endpoints" />
       <window_info anchor="right" id="Coverage" side_tool="true" />
       <window_info anchor="right" id="Beans" />
