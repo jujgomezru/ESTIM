@@ -1,6 +1,12 @@
 const BASE_URL =
   import.meta.env.VITE_JAVA_API_BASE || "http://localhost:8080";
 
+function authHeader() {
+  const token = localStorage.getItem("accessToken");
+  if (!token) return {};
+  return { Authorization: `Bearer ${token}` };
+}
+
 async function handleResponse(res) {
   const text = await res.text();
   let data = null;
@@ -26,7 +32,10 @@ async function handleResponse(res) {
 export async function apiGet(endpoint) {
   const res = await fetch(BASE_URL + endpoint, {
     method: "GET",
-    headers: { Accept: "application/json" },
+    headers: {
+      Accept: "application/json",
+      ...authHeader(),
+    },
   });
   return handleResponse(res);
 }
@@ -37,6 +46,7 @@ export async function apiPost(endpoint, data) {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      ...authHeader(),
     },
     body: JSON.stringify(data),
   });
@@ -49,6 +59,21 @@ export async function apiPut(endpoint, data) {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      ...authHeader(),
+    },
+    body: JSON.stringify(data),
+  });
+  return handleResponse(res);
+}
+
+// we had added this earlier
+export async function apiPatch(endpoint, data) {
+  const res = await fetch(BASE_URL + endpoint, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      ...authHeader(),
     },
     body: JSON.stringify(data),
   });
@@ -61,6 +86,7 @@ export async function apiDelete(endpoint, data = null) {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      ...authHeader(),
     },
   };
   if (data) {
