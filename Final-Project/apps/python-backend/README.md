@@ -2,25 +2,40 @@ DOCUMENTACIÓN PYTHON-BACKEND
 
 
 Endpoints implementados:
+
 GET/                                    - Health check básico
+
 GET /health                             - Estado del servicio y BD
+
 GET /games/                             - Lista de juegos disponibles
+
 POST /shopping_cart/items/{game_id}     - Agregar al carrito
+
 GET /shopping_cart                      - Consultar carrito
+
 DELETE /shopping_cart/items/{game_id}   - Eliminar del carrito
+
 GET /shopping_cart/total                - Calcular total
+
 POST /admin/seed-data                   - Insertar datos de prueba
 
 
-🔄 Flujo de Datos
+🔄 FLUJO DE DATOS
+
 Cliente → FastAPI Endpoint
+
 Endpoint → Dependency Injection (BD Session)
+
 Business Logic → Cart Operations
+
 Data Access → SQLAlchemy Query
+
 Response → Pydantic Model → JSON
 
 
-📐 Principios SOLID Aplicados
+
+
+📐 PRINCIPIOS SOLID APLICADOS
 1. Principio de Responsabilidad Única (SRP) - Single Responsibility Principle
 Cada módulo tiene una única razón para cambiar:
 -main.py: Responsable exclusivamente de definir los endpoints de la API y manejar las rutas HTTP
@@ -60,19 +75,17 @@ La lógica de negocio depende de interfaces de carrito, no de implementaciones c
 FastAPI inyecta dependencias a través de abstracciones, no de implementaciones directas
 El sistema podría cambiar de PostgreSQL a MySQL modificando solo la capa de datos, sin afectar el negocio
 
-┌─────────────────────────────────────────────────────────────┐
-│                    CAPA DE PRESENTACIÓN                     │
-│                   (FastAPI Endpoints)                       │
-├─────────────────────────────────────────────────────────────┤
-│                    CAPA DE SERVICIOS                        │
-│                (Lógica de Negocio - Carrito)                │
-├─────────────────────────────────────────────────────────────┤
-│                  CAPA DE ACCESO A DATOS                     │
-│                (SQLAlchemy ORM + Models)                    │
-├─────────────────────────────────────────────────────────────┤
-│                    CAPA DE DATOS                            │
-│                  (PostgreSQL Database)                      │
-└─────────────────────────────────────────────────────────────┘
+                    CAPA DE PRESENTACIÓN                             
+                    (FastAPI Endpoints)                       
+                            ⬇️
+                     CAPA DE SERVICIOS
+                (Lógica de Negocio - Carrito)                
+                            ⬇️
+                    CAPA DE ACCESO A DATOS                     
+                  (SQLAlchemy ORM + Models)                    
+                            ⬇️
+                      CAPA DE DATOS                            
+                   (PostgreSQL Database)                      
 
 PRUEBAS UNITARIAS
 
