@@ -10,6 +10,7 @@ import com.estim.javaapi.domain.library.LibraryEntry;
 import com.estim.javaapi.domain.library.LibraryEntryId;
 import com.estim.javaapi.domain.library.LibraryEntrySource;
 import com.estim.javaapi.domain.user.UserId;
+import com.estim.javaapi.infrastructure.security.AuthenticatedUser;
 import com.estim.javaapi.presentation.library.AddGameToLibraryRequest;
 import com.estim.javaapi.presentation.library.LibraryEntryResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.*;
  *
  * These tests exercise the controller logic assuming that:
  * - Spring Security has already authenticated the request
- * - @AuthenticationPrincipal injects a UserId
+ * - @AuthenticationPrincipal injects an AuthenticatedUser
  */
 @ExtendWith(MockitoExtension.class)
 class LibraryControllerTest {
@@ -64,6 +65,7 @@ class LibraryControllerTest {
         // Arrange
         UUID rawUserId = UUID.randomUUID();
         UserId userId = new UserId(rawUserId);
+        AuthenticatedUser principal = new AuthenticatedUser(userId);
 
         UUID rawGameId = UUID.randomUUID();
         LibraryEntry entry = new LibraryEntry(
@@ -79,7 +81,7 @@ class LibraryControllerTest {
             .thenReturn(List.of(entry));
 
         // Act
-        ResponseEntity<?> response = controller.getMyLibrary(userId);
+        ResponseEntity<?> response = controller.getMyLibrary(principal);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -104,6 +106,7 @@ class LibraryControllerTest {
         // Arrange
         UUID rawUserId = UUID.randomUUID();
         UserId userId = new UserId(rawUserId);
+        AuthenticatedUser principal = new AuthenticatedUser(userId);
 
         UUID rawGameId = UUID.randomUUID();
         LibraryEntry createdEntry = new LibraryEntry(
@@ -123,7 +126,7 @@ class LibraryControllerTest {
         );
 
         // Act
-        ResponseEntity<?> response = controller.addGameToLibrary(userId, request);
+        ResponseEntity<?> response = controller.addGameToLibrary(principal, request);
 
         // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
