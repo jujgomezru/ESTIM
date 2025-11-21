@@ -9,21 +9,28 @@ END; $$ LANGUAGE plpgsql;
 
 -- ==================== CORE USER & AUTH ====================
 CREATE TABLE users (
-  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email            VARCHAR(255) NOT NULL UNIQUE,
-  password_hash    VARCHAR(255) NOT NULL,
-  display_name     VARCHAR(100) NOT NULL,
-  avatar_url       TEXT,
-  role             user_role NOT NULL DEFAULT 'user',
-  is_active        BOOLEAN NOT NULL DEFAULT TRUE,
-  email_verified   BOOLEAN NOT NULL DEFAULT FALSE,
-  last_login       TIMESTAMPTZ,
-  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email                  VARCHAR(255) NOT NULL UNIQUE,
+  password_hash          VARCHAR(255) NOT NULL,
+  display_name           VARCHAR(100) NOT NULL,
+  avatar_url             TEXT,
+  bio                    TEXT,
+  role                   user_role NOT NULL DEFAULT 'user',
+  is_active              BOOLEAN NOT NULL DEFAULT TRUE,
+  email_verified         BOOLEAN NOT NULL DEFAULT FALSE,
+  last_login_at          TIMESTAMPTZ,
+  location               VARCHAR(100),
+  privacy_show_activity  BOOLEAN NOT NULL DEFAULT TRUE,
+  privacy_show_profile   BOOLEAN NOT NULL DEFAULT TRUE,
+  privacy_show_wishlist  BOOLEAN NOT NULL DEFAULT TRUE,
+  status                 VARCHAR(50),
+  created_at             TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at             TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_users_display_name ON users(display_name);
 CREATE INDEX idx_users_created_at   ON users(created_at);
+
 
 CREATE TABLE user_profiles (
   id                        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -468,7 +475,102 @@ CREATE TABLE refund_requests (
   processed_by     UUID REFERENCES users(id)
 );
 
+CREATE TABLE password_reset_tokens (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token       VARCHAR(255) NOT NULL UNIQUE,
+  expires_at  TIMESTAMPTZ NOT NULL,
+  used        BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE user_oauth_accounts (
+  id               uuid PRIMARY KEY,
+  user_id          uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  provider         varchar(50) NOT NULL,
+  email            varchar(255),
+  external_user_id varchar(255),
+  linked_at        timestamptz DEFAULT now()
+);
+
+CREATE TABLE user_payment_methods (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id        UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  provider       VARCHAR(50) NOT NULL,
+  external_token VARCHAR(255) NOT NULL,
+  last4          VARCHAR(4),
+  is_default     BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE INDEX idx_user_payment_methods_user_id
+  ON user_payment_methods(user_id);
+
+
+CREATE INDEX idx_password_reset_tokens_user_id     ON password_reset_tokens(user_id);
+CREATE INDEX idx_password_reset_tokens_expires_at  ON password_reset_tokens(expires_at);
 CREATE INDEX idx_refunds_user    ON refund_requests(user_id);
 CREATE INDEX idx_refunds_order   ON refund_requests(order_id);
 CREATE INDEX idx_refunds_status  ON refund_requests(status);
 CREATE INDEX idx_refunds_created ON refund_requests(created_at);
+CREATE INDEX idx_user_oauth_accounts_user_id ON user_oauth_accounts(user_id);
+
+CREATE TABLE community_posts (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  author_id   UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title       VARCHAR(255) NOT NULL,
+  body        TEXT NOT NULL,
+  type        VARCHAR(32) NOT NULL,    -- Java: PostType (BLOG, FORUM, WORKSHOP)
+  status      VARCHAR(32) NOT NULL,    -- Java: PostStatus (DRAFT, PUBLISHED, DELETED)
+  pinned      BOOLEAN NOT NULL DEFAULT FALSE,
+  game_id     UUID REFERENCES games(id) ON DELETE CASCADE,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_community_posts_author_id ON community_posts(author_id);
+CREATE INDEX idx_community_posts_game_id   ON community_posts(game_id);
+CREATE INDEX idx_community_posts_type      ON community_posts(type);
+CREATE INDEX idx_community_posts_status    ON community_posts(status);
+CREATE INDEX idx_community_posts_created   ON community_posts(created_at);
+
+-- Optional: keep updated_at in sync via your trigger helper
+CREATE TRIGGER trg_community_posts_set_updated_at
+BEFORE UPDATE ON community_posts
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+
+-- ==================== COMMUNITY POST TAGS ====================
+
+CREATE TABLE community_post_tags (
+  post_id UUID NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+  tag     TEXT NOT NULL,
+  PRIMARY KEY (post_id, tag)
+);
+
+CREATE INDEX idx_community_post_tags_tag ON community_post_tags(tag);
+
+
+-- ==================== COMMUNITY COMMENTS ====================
+
+CREATE TABLE community_comments (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id     UUID NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+  author_id   UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  body        TEXT NOT NULL,
+  status      VARCHAR(32) NOT NULL,  -- Java: CommentStatus (ACTIVE, DELETED)
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_community_comments_post_id   ON community_comments(post_id);
+CREATE INDEX idx_community_comments_author_id ON community_comments(author_id);
+CREATE INDEX idx_community_comments_status    ON community_comments(status);
+CREATE INDEX idx_community_comments_created   ON community_comments(created_at);
+
+CREATE TRIGGER trg_community_comments_set_updated_at
+BEFORE UPDATE ON community_comments
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+

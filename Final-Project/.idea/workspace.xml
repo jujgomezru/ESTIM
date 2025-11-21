@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="" />
+    <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/library/ListUserLibraryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/application/library/ListUserLibraryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/controllers/LibraryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/controllers/LibraryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/infrastructure/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/library/LibraryEntryResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/library/LibraryEntryResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/library/LibraryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/library/LibraryMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/test/java/com/estim/javaapi/controllers/LibraryControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/test/java/com/estim/javaapi/controllers/LibraryControllerTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -74,6 +90,9 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -95,27 +114,36 @@
       <window_info anchor="bottom" id="File Transfer" />
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Problems" order="1" />
-      <window_info anchor="bottom" id="Problems View" order="2" weight="0.3302696" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.30453432" />
-      <window_info anchor="bottom" id="Services" order="4" weight="0.4332108" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.28615195" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.278799" />
+      <window_info anchor="bottom" id="Services" order="4" weight="0.2777778" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.3302696" />
       <window_info anchor="bottom" id="Run" order="6" weight="0.3302696" />
       <window_info anchor="bottom" id="Debug" order="7" weight="0.3302696" />
       <window_info anchor="bottom" id="Build" order="8" weight="0.29963237" />
       <window_info anchor="bottom" id="JPA Console" order="9" weight="0.28615195" />
+<<<<<<< HEAD
       <window_info anchor="right" id="Endpoints" />
       <window_info anchor="right" id="Coverage" side_tool="true" />
       <window_info anchor="right" id="Beans" />
       <window_info anchor="right" content_ui="combo" id="Notifications" order="0" weight="0.25" />
       <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
       <window_info anchor="right" id="Database" order="2" weight="0.25" />
+=======
+      <window_info anchor="right" id="Notifications" order="0" weight="0.2503255" />
+      <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
+      <window_info anchor="right" id="Database" order="2" weight="0.25097656" />
+>>>>>>> backend2
       <window_info anchor="right" id="Gradle" order="3" weight="0.25097913" />
       <window_info anchor="right" id="Maven" order="4" weight="0.25" />
+      <window_info anchor="right" id="Endpoints" order="5" weight="0.2503255" />
+      <window_info anchor="right" id="Beans" order="6" weight="0.2503255" />
+      <window_info anchor="right" id="Coverage" order="7" side_tool="true" weight="0.2503255" />
     </layout>
   </component>
   <component name="RunManager">
     <configuration name="JavaApiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="java-api_main" />
+      <module name="java-api.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.estim.javaapi.JavaApiApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -143,6 +171,16 @@
       <workItem from="1763305084703" duration="37757000" />
       <workItem from="1763387494960" duration="6505000" />
       <workItem from="1763405695264" duration="12809000" />
+      <workItem from="1763440628069" duration="6189000" />
+      <workItem from="1763494866489" duration="1285000" />
+      <workItem from="1763561024969" duration="3579000" />
+      <workItem from="1763569063222" duration="1700000" />
+      <workItem from="1763570824453" duration="590000" />
+      <workItem from="1763579505317" duration="579000" />
+      <workItem from="1763595134637" duration="9541000" />
+      <workItem from="1763639853596" duration="1818000" />
+      <workItem from="1763656692353" duration="4199000" />
+      <workItem from="1763661901066" duration="2737000" />
     </task>
     <servers />
   </component>
