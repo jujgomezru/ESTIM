@@ -347,30 +347,9 @@ If calling Java API fails from the browser but works with curl, it is always a C
 | Stop Docker stack  | `docker compose down`  |                            |
 
 
-### 🤝 Contributing
+## 📹 Video
 
-Keep code inside correct layers (controllers, services, repos)
-
-Use consistent package naming (com.estim.javaapi.*, estim_py_api.*)
-
-Place shared schemas in ```/shared```
-
-Keep Docker and Makefile commands in sync when moving folders
-
-## 🎉 Final Notes
-
-If you follow this README exactly, you will reproduce the same environment as the primary developer — same folder structure, same commands, same output, same behavior.
-
-For any issues, check:
-
-Browser devtools
-
-Terminal logs
-
-Health endpoints
-
-…and if something still doesn’t match, ask for help!
-
+[![YouTube Thumbnail](https://img.youtube.com/vi/QlC2CWs5sQE/maxresdefault.jpg)](https://www.youtube.com/watch?v=QlC2CWs5sQE)
 
 ## 👥 Collaborators
 
