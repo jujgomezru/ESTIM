@@ -86,24 +86,19 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> me(
-        @RequestHeader(name = "Authorization", required = false) String authorizationHeader) {
-
-        try {
-            authenticationProvider.authenticateFromAuthorizationHeader(authorizationHeader);
-
-            var userId = SecurityContext.getCurrentUserId()
-                .orElseThrow(() -> new IllegalStateException("No authenticated user"));
-
-            User user = getCurrentUserService.getCurrentUser(userId);
-            CurrentUserResponse response = UserDtoMapper.toCurrentUserResponse(user);
-            return ResponseEntity.ok(response);
-
-        } catch (IllegalArgumentException | IllegalStateException ex) {
+        @org.springframework.security.core.annotation.AuthenticationPrincipal
+        com.estim.javaapi.infrastructure.security.AuthenticatedUser currentUser
+    ) {
+        if (currentUser == null) {
+            // No or invalid JWT → treat as AUTH_FAILED
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse("AUTH_FAILED", ex.getMessage(), null));
-        } finally {
-            authenticationProvider.clearAuthentication();
+                .body(new ErrorResponse("AUTH_FAILED", "No authenticated user", null));
         }
+
+        var userId = currentUser.userId();
+        User user = getCurrentUserService.getCurrentUser(userId);
+        CurrentUserResponse response = UserDtoMapper.toCurrentUserResponse(user);
+        return ResponseEntity.ok(response);
     }
 
     // ---------- Helpers ----------
