@@ -79,3 +79,4 @@ PRUEBAS UNITARIAS
 Se creó el archivo run_tests.py donde se corren las pruebas de agregar articulo, remover articulo y calculo del total
 Con resultados positivos 
 
+![alt text](image.png)
