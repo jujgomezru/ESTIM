@@ -1,16 +1,67 @@
-# React + Vite
+# Steam Frontend – React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project represents the official frontend of a digital distribution platform inspired by Steam, built with React and Vite under a modular, scalable, component-oriented architecture. The application consumes REST services provided by a backend implemented in Java Spring Boot running on localhost:8080.
 
-Currently, two official plugins are available:
+## Requirements
+- Node.js (recommended LTS version)
+- Code editor compatible with JS/React (VSCode suggested)
+- Modern browser with ES6+ support
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Project Structure
+src/
+- app/
+  - App.jsx: Central routing point and base layout
+  - main.jsx: App initialization and DOM mounting
+  - routes.jsx: Platform route table
+- api/
+  - apiClient.js: Centralized HTTP client, error handling, response mapping
+  - endpoints.js: Unified backend endpoint definitions
+- components/
+  - Badge.jsx
+  - Button.jsx
+  - Footer.jsx
+  - GameCard.jsx
+  - Header.jsx
+  - Input.jsx
+  - Layout.jsx
+  - LoadingSpinner.jsx
+- features/
+  - auth/
+  - cart/
+  - games/
+  - wishlist/
+  - library/
+  - simpsons/
+  - support/
+- styles/
+  - globals.css: Global styles and base definitions
 
-## React Compiler
+## Backend Communication
+Flow:
+Page.jsx → service.js → apiClient.js + endpoints.js → Java Backend (localhost:8080)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### apiClient.js
+- Standardizes all HTTP requests
+- Handles responses and errors
+- Avoids duplicated logic across modules
 
-## Expanding the ESLint configuration
+### endpoints.js
+Centralized contract for backend routes.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Example:
+ENDPOINTS = {
+  AUTH: "/auth",
+  GAMES: "/games",
+  CART: "/cart",
+  WISHLIST: "/wishlist",
+  LIBRARY: "/library",
+  SUPPORT: "/support"
+};
+
+### Services per feature
+- Prepare and structure requests
+- Interact with apiClient.js
+- Keep communication logic separate from the presentation layer
+
+## License
+Project developed for professional and educational purposes. Its use, distribution, or modification is subject to the organization’s internal policies.
