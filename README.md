@@ -20,7 +20,10 @@ This project was developed for educational purposes to demonstrate:
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture Overview
+
+ESTIM follows a layered hexagonal-influenced architecture, split across the web, java-backend, and python-backend services.
+Each service mirrors the same clean structure.
 
 The official architecture of the project will be expanded as the project gets bigger and more polished.  
 Below is the current simplified **project structure diagram**:
@@ -29,27 +32,123 @@ Below is the current simplified **project structure diagram**:
 Final-Project/
 │
 ├── apps/
-│   └── java-backend/
-│   └── python-backend/
-├── db /
-│   └── migrations/
-│   └── seeds/
-│   └── smoke/
-├── web/
-├── workers/    
-├── workshops/
-│   └── Workshop-1/
-│       ├── Workshop-1.pdf
-│       └── README.md
-│   └── Workshop-2/
-│       └── Workshop-2.pdf
-│       └── README.md
+│   ├── java-backend/       → Spring Boot service (auth, users, library)
+│   └── python-backend/     → FastAPI service (misc endpoints)
 │
+├── web/                    → React+Vite frontend
+│
+├── db/
+│   ├── migrations/         → Database version control
+│   ├── seeds/              → Initial data
+│   └── smoke/              → Smoke tests
+│
+├── workers/                → Event workers (future)
 └── README.md
 </pre>
 
 
 > 📁 *The structure will grow as new modules (e.g., backend, frontend, database) are added.*
+
+### 1️⃣ Presentation Layer — (User → Routes → API Clients → Controllers)
+
+Purpose: Convert HTTP requests into application commands.
+
+Includes:
+
+- React frontend (`web/`)
+
+- Pages
+
+- API routes
+
+- API client wrappers for Java & Python services
+
+- Java controllers (`apps/java-backend/controllers`)
+
+- Python controllers (`apps/python-backend`)
+
+The Presentation Layer never contains business logic.
+Its job is to:
+
+- Validate input
+
+- Build DTOs / Requests
+
+- Call the appropriate Service
+
+- Return an HTTP response
+
+### 2️⃣ Business Layer — (Services, Workflows, Domain Models)
+
+Purpose: Implement the core application logic.
+
+Includes (per backend):
+
+- Application services:
+
+- Authentication
+
+- Library handling
+
+- Payment methods
+
+- Game workflows
+
+- Domain models: User, Game, Review, LibraryEntry, etc.
+
+- Domain events (event bus planned but not fully implemented)
+
+This layer:
+
+- Has no idea about controllers or HTTP
+
+- Speaks only in domain entities
+
+- Sends domain events when important things occur
+(e.g., GamePurchased, UserRegistered)
+
+### 3️⃣ Event Handlers Layer — (Async, Side Effects)
+
+Purpose: React to domain events and perform indirect/secondary actions.
+
+Each backend has its own event handlers (i.e. `apps/java/backend/application/handlers`).
+
+Example responsibilities (future):
+
+- Send emails
+
+- Update search indexes
+
+- Run background workers
+
+- Sync stats
+
+### 4️⃣ Data Access Layer — (Repositories, DAOs, Mappers)
+
+Purpose: Convert domain entities ⇄ database rows.
+
+Contains:
+
+- Repositories (Java + Python)
+
+- ORM/JPA entities or SQL DAOs
+
+- Row-to-domain mappers
+
+- Database adapters
+
+This layer isolates the Business Layer from the database.
+The Business Layer never sees SQL or ORM code.
+
+### 5️⃣ Data Layer — (Postgres, Seeds, Migrations)
+
+Purpose: Persist everything.
+
+- Primary database → PostgreSQL dockerized DB via docker-compose
+
+- Migrations and seeds in `/db`
+
+Redis/Cache layer not implemented yet
 
 ---
 
@@ -153,7 +252,7 @@ If you prefer containers:
 
 ```bash
 docker compose build
-docker compose up -
+docker compose up -d
 ```
 
 
@@ -247,70 +346,6 @@ If calling Java API fails from the browser but works with curl, it is always a C
 | Rebuild containers | `docker compose build` | After code changes         |
 | Stop Docker stack  | `docker compose down`  |                            |
 
-### 🧨 Troubleshooting
-### 1) Java backend starts but React shows “down”
-
-Cause: CORS or wrong env variables
-Fix:
-
-- Confirm ```/health``` works in browser
-
-- Confirm ```.env.development.local``` exists
-
-- Check browser devtools > Network > CORS errors
-
-#### 2) Python backend fails with ModuleNotFoundError: estim_py_api
-
-Cause: wrong working directory
-Fix:
-
-- Always use ```cd apps/python-backend```
-
-- Or rely on: ```
-.venv/bin/python -m uvicorn --app-dir src estim_py_api.main:app```
-
-#### 3) Uvicorn “not found”
-
-Cause: venv not created
-Fix:
-```bash
-cd apps/python-backend
-python3 -m venv .venv
-. .venv/bin/activate
-pip install uvicorn fastapi
-```
-
-#### 4) Java backend crashes with “Failed to configure a DataSource”
-
-Cause: JPA tries to auto-load a DB
-
-Fix: DB auto-config is disabled in ```application.yml```:
-
-```bash
-spring:
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-```
-
-#### 5) Docker build fails on Python API
-
-Cause: ```invalid COPY pyproject.toml*```
-
-Fix: use the simplified Dockerfile included in the project.
-
-### 🧭 Developer Workflow
-
-- Start Java backend (make java)
-
-- Start Python backend (make py)
-
-- Start frontend (make web)
-
-- Confirm all health endpoints
-
-- Start building features
 
 ### 🤝 Contributing
 
