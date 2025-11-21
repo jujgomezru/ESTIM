@@ -2,13 +2,21 @@ DOCUMENTACIÓN PYTHON-BACKEND
 
 
 Endpoints implementados:
+
 GET/                                    - Health check básico
+
 GET /health                             - Estado del servicio y BD
+
 GET /games/                             - Lista de juegos disponibles
+
 POST /shopping_cart/items/{game_id}     - Agregar al carrito
+
 GET /shopping_cart                      - Consultar carrito
+
 DELETE /shopping_cart/items/{game_id}   - Eliminar del carrito
+
 GET /shopping_cart/total                - Calcular total
+
 POST /admin/seed-data                   - Insertar datos de prueba
 
 
