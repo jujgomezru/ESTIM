@@ -46,12 +46,23 @@ db-migrate:
 	    psql -U $(DB_USER) -d $(DB_NAME) -v ON_ERROR_STOP=1 < "$$f"; \
 	done
 
+db-reset:
+	docker compose down -v
+	docker compose up -d $(DB_SERVICE)
+	@echo ">> Running migrations"
+	$(MAKE) db-migrate
+	@echo ">> Running seeds"
+	$(MAKE) db-seed
+
+
 # Seed sample data
 db-seed:
-	docker compose exec -T $(DB_SERVICE) \
-	  env PGPASSWORD=$(DB_PASSWORD) \
-	  psql -U $(DB_USER) -d $(DB_NAME) -v ON_ERROR_STOP=1 \
-	  < db/seeds/0001_minimal_seed.sql
+	@for f in $$(ls db/seeds/*.sql | sort); do \
+	  echo ">> Seeding $$f"; \
+	  docker compose exec -T $(DB_SERVICE) \
+	    env PGPASSWORD=$(DB_PASSWORD) \
+	    psql -U $(DB_USER) -d $(DB_NAME) -v ON_ERROR_STOP=1 < "$$f"; \
+	done
 
 # Quick smoke test to verify enums, tables, seed, and a constraint
 db-smoke:
