@@ -7,6 +7,7 @@ import com.estim.javaapi.domain.user.Email;
 import com.estim.javaapi.domain.user.UserProfile;
 import com.estim.javaapi.infrastructure.security.JwtAuthenticationProvider;
 import com.estim.javaapi.infrastructure.security.SecurityContext;
+import com.estim.javaapi.infrastructure.security.AuthenticatedUser;
 import com.estim.javaapi.presentation.auth.LoginRequest;
 import com.estim.javaapi.presentation.auth.RegisterUserRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;

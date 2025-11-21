@@ -22,6 +22,9 @@ import LibraryPage from "../features/library/LibraryPage";
 // WISHLIST
 import WishlistPage from "../features/wishlist/WishlistPage";
 
+//SUPPORT
+import HelpCenterPage from '../features/support/HelpCenterPage';
+import ContactPage from '../features/support/ContactPage';
 
 // EXTRAS
 import SimpsonsPage from "../features/simpsons/SimpsonsPage";
@@ -52,6 +55,10 @@ export default function AppRoutes() {
 
         {/* WISHLIST */}
         <Route path="/wishlist" element={<WishlistPage />} />
+
+        {/* SUPPORT */}
+        <Route path="/help" element={<HelpCenterPage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
         {/* EXTRAS */}
         <Route path="/simpsons" element={<SimpsonsPage />} />

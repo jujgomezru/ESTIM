@@ -10,6 +10,7 @@ import com.estim.javaapi.domain.library.LibraryEntry;
 import com.estim.javaapi.domain.library.LibraryEntryId;
 import com.estim.javaapi.domain.library.LibraryEntrySource;
 import com.estim.javaapi.domain.user.UserId;
+import com.estim.javaapi.infrastructure.security.AuthenticatedUser;
 import com.estim.javaapi.presentation.library.AddGameToLibraryRequest;
 import com.estim.javaapi.presentation.library.LibraryEntryResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.*;
  *
  * These tests exercise the controller logic assuming that:
  * - Spring Security has already authenticated the request
- * - @AuthenticationPrincipal injects a UserId
+ * - @AuthenticationPrincipal injects an AuthenticatedUser
  */
 @ExtendWith(MockitoExtension.class)
 class LibraryControllerTest {
@@ -64,22 +65,27 @@ class LibraryControllerTest {
         // Arrange
         UUID rawUserId = UUID.randomUUID();
         UserId userId = new UserId(rawUserId);
+        AuthenticatedUser principal = new AuthenticatedUser(userId);
 
-        UUID rawGameId = UUID.randomUUID();
-        LibraryEntry entry = new LibraryEntry(
-            LibraryEntryId.randomId(),
-            userId,
-            GameId.of(rawGameId),
-            LibraryEntrySource.PURCHASE,
-            Instant.parse("2025-01-01T00:00:00Z")
+        UUID libraryId = UUID.randomUUID();
+        UUID gameId = UUID.randomUUID();
+        Instant addedAt = Instant.parse("2025-01-01T00:00:00Z");
+
+        LibraryEntryResponse entryResponse = new LibraryEntryResponse(
+            libraryId,
+            gameId,
+            "Cyberpunk Legends",
+            "https://example.com/cover.jpg",
+            "PURCHASE",
+            addedAt
         );
 
         ListUserLibraryQuery expectedQuery = new ListUserLibraryQuery(userId);
         when(listUserLibraryService.listUserLibrary(expectedQuery))
-            .thenReturn(List.of(entry));
+            .thenReturn(List.of(entryResponse));
 
         // Act
-        ResponseEntity<?> response = controller.getMyLibrary(userId);
+        ResponseEntity<?> response = controller.getMyLibrary(principal);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -91,9 +97,11 @@ class LibraryControllerTest {
         assertEquals(1, body.size());
 
         LibraryEntryResponse first = body.get(0);
-        assertEquals(rawGameId, first.gameId());
+        assertEquals(gameId, first.gameId());
+        assertEquals("Cyberpunk Legends", first.gameTitle());
+        assertEquals("https://example.com/cover.jpg", first.coverImageUrl());
         assertEquals("PURCHASE", first.source());
-        assertEquals(entry.getAddedAt(), first.addedAt());
+        assertEquals(addedAt, first.addedAt());
 
         verify(listUserLibraryService).listUserLibrary(expectedQuery);
         verifyNoInteractions(updateLibraryEntryService, addGameToLibraryService);
@@ -104,14 +112,18 @@ class LibraryControllerTest {
         // Arrange
         UUID rawUserId = UUID.randomUUID();
         UserId userId = new UserId(rawUserId);
+        AuthenticatedUser principal = new AuthenticatedUser(userId);
 
         UUID rawGameId = UUID.randomUUID();
+        Instant addedAt = Instant.parse("2025-02-01T00:00:00Z");
+
+        // Domain entry returned by the service
         LibraryEntry createdEntry = new LibraryEntry(
             LibraryEntryId.randomId(),
             userId,
             GameId.of(rawGameId),
             LibraryEntrySource.PURCHASE,
-            Instant.parse("2025-02-01T00:00:00Z")
+            addedAt
         );
 
         when(addGameToLibraryService.addGameToLibrary(any(AddGameToLibraryCommand.class)))
@@ -123,7 +135,7 @@ class LibraryControllerTest {
         );
 
         // Act
-        ResponseEntity<?> response = controller.addGameToLibrary(userId, request);
+        ResponseEntity<?> response = controller.addGameToLibrary(principal, request);
 
         // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -132,7 +144,7 @@ class LibraryControllerTest {
         LibraryEntryResponse body = (LibraryEntryResponse) response.getBody();
         assertEquals(rawGameId, body.gameId());
         assertEquals("PURCHASE", body.source());
-        assertEquals(createdEntry.getAddedAt(), body.addedAt());
+        assertEquals(addedAt, body.addedAt());
 
         // Verify command sent to service
         ArgumentCaptor<AddGameToLibraryCommand> captor =

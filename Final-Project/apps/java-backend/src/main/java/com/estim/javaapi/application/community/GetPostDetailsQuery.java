@@ -1,4 +1,7 @@
 package com.estim.javaapi.application.community;
 
-public class GetPostDetailsQuery {
-}
+import com.estim.javaapi.domain.community.CommunityPostId;
+
+public record GetPostDetailsQuery(
+    CommunityPostId postId
+) {}
