@@ -67,18 +67,22 @@ class LibraryControllerTest {
         UserId userId = new UserId(rawUserId);
         AuthenticatedUser principal = new AuthenticatedUser(userId);
 
-        UUID rawGameId = UUID.randomUUID();
-        LibraryEntry entry = new LibraryEntry(
-            LibraryEntryId.randomId(),
-            userId,
-            GameId.of(rawGameId),
-            LibraryEntrySource.PURCHASE,
-            Instant.parse("2025-01-01T00:00:00Z")
+        UUID libraryId = UUID.randomUUID();
+        UUID gameId = UUID.randomUUID();
+        Instant addedAt = Instant.parse("2025-01-01T00:00:00Z");
+
+        LibraryEntryResponse entryResponse = new LibraryEntryResponse(
+            libraryId,
+            gameId,
+            "Cyberpunk Legends",
+            "https://example.com/cover.jpg",
+            "PURCHASE",
+            addedAt
         );
 
         ListUserLibraryQuery expectedQuery = new ListUserLibraryQuery(userId);
         when(listUserLibraryService.listUserLibrary(expectedQuery))
-            .thenReturn(List.of(entry));
+            .thenReturn(List.of(entryResponse));
 
         // Act
         ResponseEntity<?> response = controller.getMyLibrary(principal);
@@ -93,9 +97,11 @@ class LibraryControllerTest {
         assertEquals(1, body.size());
 
         LibraryEntryResponse first = body.get(0);
-        assertEquals(rawGameId, first.gameId());
+        assertEquals(gameId, first.gameId());
+        assertEquals("Cyberpunk Legends", first.gameTitle());
+        assertEquals("https://example.com/cover.jpg", first.coverImageUrl());
         assertEquals("PURCHASE", first.source());
-        assertEquals(entry.getAddedAt(), first.addedAt());
+        assertEquals(addedAt, first.addedAt());
 
         verify(listUserLibraryService).listUserLibrary(expectedQuery);
         verifyNoInteractions(updateLibraryEntryService, addGameToLibraryService);
@@ -109,12 +115,15 @@ class LibraryControllerTest {
         AuthenticatedUser principal = new AuthenticatedUser(userId);
 
         UUID rawGameId = UUID.randomUUID();
+        Instant addedAt = Instant.parse("2025-02-01T00:00:00Z");
+
+        // Domain entry returned by the service
         LibraryEntry createdEntry = new LibraryEntry(
             LibraryEntryId.randomId(),
             userId,
             GameId.of(rawGameId),
             LibraryEntrySource.PURCHASE,
-            Instant.parse("2025-02-01T00:00:00Z")
+            addedAt
         );
 
         when(addGameToLibraryService.addGameToLibrary(any(AddGameToLibraryCommand.class)))
@@ -135,7 +144,7 @@ class LibraryControllerTest {
         LibraryEntryResponse body = (LibraryEntryResponse) response.getBody();
         assertEquals(rawGameId, body.gameId());
         assertEquals("PURCHASE", body.source());
-        assertEquals(createdEntry.getAddedAt(), body.addedAt());
+        assertEquals(addedAt, body.addedAt());
 
         // Verify command sent to service
         ArgumentCaptor<AddGameToLibraryCommand> captor =
