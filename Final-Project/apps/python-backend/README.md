@@ -20,15 +20,22 @@ GET /shopping_cart/total                - Calcular total
 POST /admin/seed-data                   - Insertar datos de prueba
 
 
-🔄 Flujo de Datos
+🔄 FLUJO DE DATOS
+
 Cliente → FastAPI Endpoint
+
 Endpoint → Dependency Injection (BD Session)
+
 Business Logic → Cart Operations
+
 Data Access → SQLAlchemy Query
+
 Response → Pydantic Model → JSON
 
 
-📐 Principios SOLID Aplicados
+
+
+📐 PRINCIPIOS SOLID APLICADOS
 1. Principio de Responsabilidad Única (SRP) - Single Responsibility Principle
 Cada módulo tiene una única razón para cambiar:
 -main.py: Responsable exclusivamente de definir los endpoints de la API y manejar las rutas HTTP
