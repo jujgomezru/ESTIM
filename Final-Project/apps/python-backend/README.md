@@ -60,7 +60,7 @@ La lógica de negocio depende de interfaces de carrito, no de implementaciones c
 FastAPI inyecta dependencias a través de abstracciones, no de implementaciones directas
 El sistema podría cambiar de PostgreSQL a MySQL modificando solo la capa de datos, sin afectar el negocio
 
---                  CAPA DE PRESENTACIÓN                             
+                    CAPA DE PRESENTACIÓN                             
                     (FastAPI Endpoints)                       
                             ⬇️
                      CAPA DE SERVICIOS
