@@ -43,6 +43,9 @@ public class SecurityConfig {
                 // Health if you have it
                 .requestMatchers("/health", "/actuator/health").permitAll()
 
+                // ✅ Public games catalog (frontend store needs this)
+                .requestMatchers(HttpMethod.GET, "/games", "/games/**").permitAll()
+
                 // Public community read endpoints
                 .requestMatchers(HttpMethod.GET, "/community/posts", "/community/posts/**").permitAll()
 

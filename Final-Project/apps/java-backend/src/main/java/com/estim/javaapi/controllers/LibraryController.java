@@ -8,7 +8,7 @@ import com.estim.javaapi.application.library.UpdateLibraryEntryCommand;
 import com.estim.javaapi.application.library.UpdateLibraryEntryService;
 import com.estim.javaapi.domain.library.GameId;
 import com.estim.javaapi.domain.library.LibraryEntrySource;
-import com.estim.javaapi.domain.user.UserId;
+import com.estim.javaapi.infrastructure.security.AuthenticatedUser;
 import com.estim.javaapi.presentation.common.ErrorResponse;
 import com.estim.javaapi.presentation.library.AddGameToLibraryRequest;
 import com.estim.javaapi.presentation.library.LibraryEntryResponse;
@@ -43,20 +43,17 @@ public class LibraryController {
      */
     @GetMapping("/me/library")
     public ResponseEntity<?> getMyLibrary(
-        @AuthenticationPrincipal UserId currentUserId
+        @AuthenticationPrincipal com.estim.javaapi.infrastructure.security.AuthenticatedUser currentUser
     ) {
-        if (currentUserId == null) {
+        if (currentUser == null) {
             return ResponseEntity.status(401)
                 .body(new ErrorResponse("UNAUTHORIZED", "Not authenticated", null));
         }
 
-        var query = new ListUserLibraryQuery(currentUserId);
+        var query = new ListUserLibraryQuery(currentUser.userId());
 
-        List<LibraryEntryResponse> response =
-            listUserLibraryService.listUserLibrary(query)
-                .stream()
-                .map(LibraryMapper::toResponse)
-                .toList();
+        // Service already returns enriched responses with title + image
+        List<LibraryEntryResponse> response = listUserLibraryService.listUserLibrary(query);
 
         return ResponseEntity.ok(response);
     }
@@ -68,11 +65,11 @@ public class LibraryController {
      */
     @PostMapping("/me/library")
     public ResponseEntity<?> addGameToLibrary(
-        @AuthenticationPrincipal UserId currentUserId,
+        @AuthenticationPrincipal AuthenticatedUser currentUser,
         @RequestBody AddGameToLibraryRequest request
     ) {
         try {
-            if (currentUserId == null) {
+            if (currentUser == null) {
                 return ResponseEntity.status(401)
                     .body(new ErrorResponse("UNAUTHORIZED", "Not authenticated", null));
             }
@@ -81,7 +78,6 @@ public class LibraryController {
                 throw new IllegalArgumentException("gameId must not be null");
             }
 
-            // Default to PURCHASE if source is null
             String rawSource = request.source();
             LibraryEntrySource source =
                 (rawSource == null || rawSource.isBlank())
@@ -89,7 +85,7 @@ public class LibraryController {
                     : LibraryEntrySource.valueOf(rawSource.toUpperCase(Locale.ROOT));
 
             var command = new AddGameToLibraryCommand(
-                currentUserId,
+                currentUser.userId(),
                 GameId.of(request.gameId()),
                 source
             );
@@ -98,7 +94,13 @@ public class LibraryController {
 
             return ResponseEntity.status(201).body(LibraryMapper.toResponse(entry));
 
+        } catch (IllegalStateException ex) {
+            // duplicate game in library → 409
+            return ResponseEntity.status(409)
+                .body(new ErrorResponse("LIBRARY_ADD_FAILED", ex.getMessage(), null));
+
         } catch (IllegalArgumentException ex) {
+            // validation error
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("LIBRARY_ADD_FAILED", ex.getMessage(), null));
         }
@@ -111,18 +113,18 @@ public class LibraryController {
      */
     @PatchMapping("/me/library/{gameId}")
     public ResponseEntity<?> updateMyLibraryEntry(
-        @AuthenticationPrincipal UserId currentUserId,
+        @AuthenticationPrincipal AuthenticatedUser currentUser,
         @PathVariable("gameId") UUID gameId,
         @RequestBody UpdateLibraryEntryRequest request
     ) {
         try {
-            if (currentUserId == null) {
+            if (currentUser == null) {
                 return ResponseEntity.status(401)
                     .body(new ErrorResponse("UNAUTHORIZED", "Not authenticated", null));
             }
 
             var command = new UpdateLibraryEntryCommand(
-                currentUserId,
+                currentUser.userId(),
                 GameId.of(gameId),
                 request.additionalPlayTimeMinutes(),
                 request.tags(),
