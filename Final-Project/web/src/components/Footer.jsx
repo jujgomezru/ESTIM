@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Footer() {
   return (
     <footer style={styles.footer}>
@@ -10,28 +12,18 @@ export default function Footer() {
         </div>
 
         <div style={styles.footerSection}>
-          <h4 style={styles.footerTitle}>Categories</h4>
-          <div style={styles.footerLink}>Action</div>
-          <div style={styles.footerLink}>Adventure</div>
-          <div style={styles.footerLink}>RPG</div>
-          <div style={styles.footerLink}>Sports</div>
-        </div>
-
-        <div style={styles.footerSection}>
           <h4 style={styles.footerTitle}>Support</h4>
-          <div style={styles.footerLink}>Help Center</div>
-          <div style={styles.footerLink}>Contact</div>
-          <div style={styles.footerLink}>Terms</div>
-          <div style={styles.footerLink}>Privacy</div>
+          <Link to="/help" style={styles.footerLink}>Help Center</Link>
+          <Link to="/contact" style={styles.footerLink}>Contact</Link>
         </div>
-
         <div style={styles.footerSection}>
           <h4 style={styles.footerTitle}>Follow Us</h4>
-          <div style={styles.footerLink}>Twitter</div>
-          <div style={styles.footerLink}>Facebook</div>
-          <div style={styles.footerLink}>Instagram</div>
-          <div style={styles.footerLink}>Discord</div>
+          <a href="https://twitter.com" style={styles.footerLink} target="_blank" rel="noopener noreferrer">Twitter</a>
+          <a href="https://facebook.com" style={styles.footerLink} target="_blank" rel="noopener noreferrer">Facebook</a>
+          <a href="https://instagram.com" style={styles.footerLink} target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="https://discord.com" style={styles.footerLink} target="_blank" rel="noopener noreferrer">Discord</a>
         </div>
+
       </div>
     </footer>
   );
