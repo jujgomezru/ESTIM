@@ -30,39 +30,56 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
         throws ServletException, IOException {
 
-        String authorizationHeader = request.getHeader("Authorization");
+        try {
+            String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring("Bearer ".length()).trim();
+            // Debug 1: see the header
+            // (You can remove these logs once everything works.)
+            System.out.println("[JWT] Incoming request " + request.getMethod() + " " + request.getRequestURI());
+            System.out.println("[JWT] Authorization header = " + authorizationHeader);
 
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                try {
-                    UserId userId = jwtTokenService.parseUserIdFromAccessToken(token);
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                String token = authorizationHeader.substring("Bearer ".length()).trim();
 
-                    // Use your AuthenticatedUser as the principal
-                    AuthenticatedUser principal = new AuthenticatedUser(userId);
+                if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                    try {
+                        UserId userId = jwtTokenService.parseUserIdFromAccessToken(token);
 
-                    UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                            principal,
-                            null,
-                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                        AuthenticatedUser principal = new AuthenticatedUser(userId);
+
+                        UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                principal,
+                                null,
+                                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                            );
+
+                        authentication.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
                         );
 
-                    authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
+                        // Spring Security context
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                        // Your custom thread-local context for controllers that use it
+                        SecurityContext.setCurrentUser(principal);
 
-                } catch (IllegalArgumentException ex) {
-                    // Invalid / expired / malformed token: leave request unauthenticated
-                    // If you want to see what's going on, you can log it:
-                    // log.warn("JWT validation failed", ex);
+                        System.out.println("[JWT] Authenticated user " + userId.value());
+                    } catch (IllegalArgumentException ex) {
+                        // Invalid / expired / malformed token: leave request unauthenticated
+                        System.out.println("[JWT] Token validation failed: " + ex.getMessage());
+                        SecurityContext.clear();
+                    }
                 }
+            } else {
+                // No Bearer header -> ensure thread-local is clear
+                SecurityContext.clear();
             }
-        }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+        } finally {
+            // Make sure we don’t leak the user between requests on the same thread
+            SecurityContext.clear();
+        }
     }
 }

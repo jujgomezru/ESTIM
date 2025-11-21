@@ -1,418 +1,452 @@
-# ESTIM Java Backend — API Guide for Frontend Developers
+# Java Backend Architecture Overview
 
-This document describes the public HTTP API exposed by the ESTIM Java Backend.
-It explains:
+This document describes the architecture of the **ESTIM Java backend**, the flow of requests through its layers, and the rationale behind the chosen design.
 
-- What each endpoint does
+The backend is implemented following a **layered, hexagonal, domain-centric** architecture, with clear separation between:
 
-- Required request payloads
+- **Presentation layer** (controllers + DTOs)
+- **Application layer** (use cases / services / commands / queries)
+- **Domain layer** (entities, value objects, domain events, repositories as ports)
+- **Infrastructure layer** (adapters: persistence, security, OAuth, payment, messaging)
+- **Event handlers layer** (application reactions to domain events)
 
-- Example JSON formats
+---
 
-- Responses and error shapes
+## 1. Architectural Style
 
-- Authentication requirements
+The backend combines:
 
-This guide is based directly on the behavior validated by the full unit test suite:
+- **Layered architecture**  
+  to separate concerns (presentation, application logic, domain model, infrastructure).
 
-- `AuthControllerTest`
+- **Hexagonal / Ports-and-Adapters principles**  
+  where the domain and application layers define *interfaces (ports)* and infrastructure provides *implementations (adapters)*.
 
-- `ProfileControllerTest`
+- **Domain-Driven Design (DDD) influences**  
+  with explicit domain models (User, LibraryEntry, WishlistItem, etc.) and domain events (UserRegistered, GameAddedToLibrary, etc.).
 
-- `PasswordControllerTest`
-
-- `PaymentMethodControllerTest`
+This structure improves testability, maintainability, and makes it straightforward to add new delivery mechanisms (e.g., CLI, other APIs) or replace infrastructure (e.g., change database, payment provider, or message broker).
 
-- `OAuthControllerTest`
+---
 
-## Authentication & Common Info
-### Authorization Header
+## 2. Packages and Layers
 
-Endpoints that require login expect:
+### 2.1 Presentation Layer
 
-`Authorization: Bearer <JWT_ACCESS_TOKEN>`
+**Packages:**
 
+- `com.estim.javaapi.controllers`
+- `com.estim.javaapi.presentation.*`
 
-If missing or invalid, controllers return:
+**Responsibility:**
 
-```json
-{
-"code": "UNAUTHORIZED" | "AUTH_FAILED",
-"message": "..."
-}
-```
+- Expose HTTP endpoints.
+- Map HTTP requests to application commands/queries.
+- Map domain results to HTTP responses / DTOs.
+- Handle HTTP-specific concerns (status codes, headers, validation).
 
-### Error Response Format
+**Key elements:**
 
-All error responses follow the structure:
+- **Controllers** (`controllers`):
+  - `AuthController`
+  - `HealthController`
+  - `LibraryController`
+  - `OAuthController`
+  - `PasswordController`
+  - `PaymentMethodController`
+  - `ProfileController`
+  - `WishlistController`
 
-```json
-{
-"code": "SOME_ERROR_CODE",
-"message": "Human readable explanation",
-"details": null
-}
-```
+  Each controller:
+  - Receives HTTP requests.
+  - Uses *presentation DTOs* for input/output.
+  - Delegates to application services in `application.*`.
 
-## 1. AuthController (`/auth/*`)
-###   `POST /auth/register`
+- **DTOs & mappers** (`presentation`):
+  - `presentation.auth`  
+    `LoginRequest`, `RegisterUserRequest`, `OAuthLoginRequest`, `OAuthLinkRequest`, `LoginResponse`, `RegisterUserResponse`, `CurrentUserResponse`, `AuthenticatedUserSummary`.
+  - `presentation.library`  
+    `LibraryEntryResponse`, `UpdateLibraryEntryRequest`, `LibraryMapper`.
+  - `presentation.payment`  
+    `PaymentMethodRequest`, `PaymentMethodResponse`.
+  - `presentation.profile`  
+    `UpdateUserProfileRequest`, `UserProfileResponse`, `PrivacySettingsResponse`.
+  - `presentation.wishlist`  
+    `WishlistItemRequest`, `WishlistItemResponse`, `WishlistMapper`.
+  - `presentation.common`  
+    `ErrorResponse`, `UserDtoMapper`, `PaymentMethodMapper`.
 
-Create a new user.
+**Flow:**
 
-**Request Body**
-```json
-{
-"email": "john@example.com",
-"password": "StrongPassword123!",
-"displayName": "John Doe"
-}
-```
+1. Controller receives an HTTP request + JSON body.
+2. Request JSON is deserialized into a *Request DTO* (e.g., `LoginRequest`).
+3. Controller builds a **Command** or **Query** object (application layer).
+4. Controller calls the appropriate application service.
+5. Service returns domain objects or simple structures.
+6. Controller converts them into *Response DTOs* using mappers.
+7. Controller returns an HTTP response.
 
-**Success Response (201)**
-```json
-{
-"userId": "user-uuid",
-"email": "john@example.com",
-"displayName": "John Doe",
-"emailVerified": false
-}
-```
+---
 
-**Validation Error (400)**
-```json
-{
-"code": "VALIDATION_ERROR",
-"message": "Invalid email",
-"details": null
-}
-```
-
-### `POST /auth/login`
-
-Authenticates email + password and returns tokens.
-
-**Request Body**
-```json
-{
-"email": "john@example.com",
-"password": "StrongPassword123!"
-}
-```
-
-**Success Response (200)**
-```json
-{
-"accessToken": "jwt-access-token",
-"refreshToken": "jwt-refresh-token",
-"user": {
-"userId": "user-uuid",
-"email": "john@example.com",
-"displayName": "John Doe",
-"emailVerified": true
-  }
-}
-```
-**Failure (401)**
-```json
-{
-"code": "AUTH_FAILED",
-"message": "Invalid credentials"
-}
-```
-### `POST /auth/logout`
-
-Revokes authentication (token may be null).
-
-**Headers**
-
-`Authorization: Bearer <token>    # optional`
-
-**Success Response (204)**
-
-No content.
-
-### `GET /auth/me`
-
-Retrieve the currently authenticated user.
-
-**Headers**
-
-`Authorization: Bearer <token>`
-
-**Success Response (200)**
-```json
-{
-"userId": "user-uuid",
-"email": "john@example.com",
-"displayName": "John Doe",
-"avatarUrl": "https://example.com/avatar.png",
-"emailVerified": true
-}
-```
-**Unauthorized (401)**
-```json
-{
-"code": "AUTH_FAILED",
-"message": "No authenticated user"
-}
-```
-
-## 2. ProfileController `GET /users/{id}/profile`
-
-Fetch another user's profile.
-Authentication is optional but affects privacy behavior.
-
-**Headers (optional)**
-
-`Authorization: Bearer <token>`
-
-**Success Response (200)**
-```json
-{
-"userId": "uuid",
-"displayName": "John Doe",
-"avatarUrl": "...",
-"bio": "Hello world",
-"location": "Earth",
-"privacy": {
-"showProfile": true,
-"showActivity": false,
-"showWishlist": true
-  }
-}
-```
-
-**Profile Private (403)**
-```json
-{
-"code": "PROFILE_PRIVATE",
-"message": "This profile is private"
-}
-```
-**Not Found (404)**
-```json
-{
-"code": "PROFILE_NOT_FOUND",
-"message": "User does not exist"
-}
-```
-### `PUT /me/profile`
-
-Update the logged-in user's profile.
-
-**Headers**
-`Authorization: Bearer <token>`
-
-**Request Body**
-
-(All fields optional — null means no change.)
-```json
-{
-"displayName": "John Updated",
-"avatarUrl": "https://cdn/avatar.png",
-"bio": "New bio here",
-"location": "Mars",
-"showProfile": true,
-"showActivity": false,
-"showWishlist": true
-}
-```
-**Success Response (204)**
-
-No content.
-**Failure (400)**
-```json
-{
-"code": "PROFILE_UPDATE_FAILED",
-"message": "Not authenticated"
-}
-```
-## 3. PasswordController (`/auth/password/*`)
-
-### `POST /auth/password/reset-request`
-
-Request a password reset email.
-
-**Request Body**
-```json
-{
-"email": "user@example.com"
-}
-```
-**Success Response (200)**
-
-Regardless of whether the email exists.
-```json
-{
-"ok": true,
-"message": "If an account exists for that email, a reset link has been sent."
-}
-```
-**Validation Error (400)**
-```json
-{
-"code": "RESET_REQUEST_FAILED",
-"message": "Invalid email format"
-}
-```
-### `POST /auth/password/reset`
-
-Use token to set a new password.
-
-**Request Body**
-```json
-{
-"token": "reset-token",
-"newPassword": "NewStrongPass123!"
-}
-```
-**Success Response (200)**
-```json
-{
-"ok": true,
-"message": "Password has been reset successfully."
-}
-```
-**Failure (400)**
-```json
-{
-"code": "RESET_FAILED",
-"message": "Token expired"
-}
-```
-## 4. PaymentMethodController `GET /me/payment-methods`
-
-List user’s saved payment methods.
-
-**Headers**
-
-`Authorization: Bearer <token>`
-
-**Success Response (200)**
-```json
-[
-  {
-  "id": "pm-uuid",
-  "provider": "PAGSEGURO",
-  "last4": "4242",
-  "isDefault": true
-  }
-]
-```
-**Unauthorized (401)**
-```json
-{
-"code": "UNAUTHORIZED",
-"message": "Not authenticated"
-}
-```
-### `POST /me/payment-methods`
-
-Add a new payment method.
-
-**Request Body**
-```json
-{
-"provider": "PAGSEGURO",
-"token": "vaulted-token",
-"last4": "1234",
-"isDefault": true
-}
-```
-**Success Response (201)**
-
-**Failure (400)**
-```json
-{
-"code": "PAYMENT_METHOD_ADD_FAILED",
-"message": "Invalid token"
-}
-```
-
-### `DELETE /me/payment-methods/{id}`
-
-Remove a payment method.
-
-**Headers**
-
-`Authorization: Bearer <token>`
-
-**Success Response (204)**
-
-**Failure (400)**
-```json
-{
-"code": "PAYMENT_METHOD_REMOVE_FAILED",
-"message": "Method not found"
-}
-```
-## 5. OAuthController (`/auth/oauth/*`)
-   
-### `POST /auth/oauth/link`
-
-Link an OAuth provider account to the authenticated user.
-
-**Headers**
-
-`Authorization: Bearer <token>`
-
-**Request Body**
-```json
-{
-"provider": "STEAM",
-"externalToken": "steam-access-token",
-"redirectUri": "https://app.example.com/oauth/callback"
-}
-```
-**Success Response (204)**
-
-**Failure (400)**
-```json
-{
-"code": "OAUTH_LINK_FAILED",
-"message": "Unsupported provider"
-}
-```
-### `POST /auth/oauth/login`
-
-Authenticate using OAuth provider.
-
-**Request Body**
-```json
-{
-"provider": "STEAM",
-"externalToken": "oauth-token",
-"redirectUri": "https://app.example.com/oauth/callback"
-}
-```
-**Success Response (200)**
-```json
-{
-"accessToken": "jwt-access-token",
-"refreshToken": "jwt-refresh-token",
-"user": {
-"userId": "uuid",
-"email": "john@example.com",
-"displayName": "John Doe",
-"emailVerified": true
-  }
-}
-```
-
-**Failure (401)**
-```json
-{
-"code": "OAUTH_LOGIN_FAILED",
-"message": "Invalid OAuth token"
-}
-```
-
-## Final Notes
-
-All endpoints return JSON.
-
-All errors follow the same { code, message, details } structure.
-
-The frontend must always send Authorization: Bearer <token> where required.
-
-All controller paths and JSON structures in this document match the actual tests, so they are guaranteed correct.
+### 2.2 Application Layer
+
+**Package:**
+
+- `com.estim.javaapi.application.*`
+
+This layer contains all **use cases / business workflows**, expressed in terms of **Commands**, **Queries**, and **Services**.
+
+Subpackages:
+
+- `application.auth`
+- `application.library`
+- `application.oauth`
+- `application.password`
+- `application.payment`
+- `application.profile`
+- `application.wishlist`
+- `application.handlers`
+
+#### 2.2.1 Commands, Queries, Services
+
+Each subpackage is organized in a similar pattern:
+
+- **Commands / Queries**  
+  Simple immutable objects that carry the input for a use case.
+
+  Examples:
+  - `AuthenticateUserCommand`
+  - `RegisterUserCommand`
+  - `AddGameToLibraryCommand`
+  - `RequestPasswordResetCommand`
+  - `ResetPasswordCommand`
+  - `AddToWishlistCommand`
+  - `ListUserLibraryQuery`
+  - `GetUserProfileQuery`
+  - `ListWishlistForUserQuery`
+  - `RemovePaymentMethodCommand`
+  - `UpdateUserProfileCommand`
+
+- **Services**  
+  Orchestrate the use case logic, coordinate with repositories and domain logic.
+
+  Examples:
+  - `AuthenticateUserService`, `RegisterUserService`, `LogoutUserService`, `GetCurrentUserService`
+  - `AddGameToLibraryService`, `ListUserLibraryService`
+  - `LoginWithOAuthService`, `LinkOAuthAccountService`
+  - `RequestPasswordResetService`, `ResetPasswordService`
+  - `AddPaymentMethodService`, `RemovePaymentMethodService`, `ListPaymentMethodsService`
+  - `GetUserProfileService`, `UpdateUserProfileService`
+  - `AddToWishlistService`, `ListWishlistService`, `RemoveFromWishlistService`, `UpdateWishlistItemService`
+
+- **Policies and helpers**
+  - `DefaultPasswordPolicy`, `PasswordPolicy`, `PasswordHasher`
+  - `TokenService`
+  - `PasswordResetTokenGenerator`, `DefaultPasswordResetTokenGenerator`
+  - `PaymentProviderClient` (port for external payment providers)
+
+**Responsibilities:**
+
+- Implement **application logic**, not HTTP or persistence details.
+- Use domain objects (entities, value objects) and domain repositories (ports).
+- Publish domain events via `DomainEventPublisher` when something relevant happens (e.g., user registered, game added to library).
+
+#### 2.2.2 Application Event Handlers
+
+**Package:**
+
+- `application.handlers`
+
+**Representative classes:**
+
+- `AddGameToLibraryOnGamePurchased`
+- `AuditLogger`
+- `AuditLogOnUserLoggedIn`
+- `CreateActivityOnDomainEvent`
+- `SendPasswordResetEmailOnRequested`
+- `SendWelcomeEmailOnUserRegistered`
+- `UnlockAchievementOnGameEvent`
+- `WishilistPricingNotificationHandler`
+- `EmailSender` (port-like abstraction)
+
+These classes subscribe to **domain events** and orchestrate **side-effect use cases**, for example:
+
+- When `UserRegistered` is raised → `SendWelcomeEmailOnUserRegistered` may send an email.
+- When `UserLoggedIn` is raised → `AuditLogOnUserLoggedIn` writes an audit log.
+- When a pricing event occurs → `WishilistPricingNotificationHandler` notifies user.
+
+They form a bridge between **pure domain events** and **external effects** via infrastructure (mail, audit logs, messaging).
+
+---
+
+### 2.3 Domain Layer
+
+**Package:**
+
+- `com.estim.javaapi.domain.*`
+
+This is the **core of the system**, independent of HTTP, databases, frameworks, or messaging infrastructure.
+
+Subpackages:
+
+- `domain.common`
+- `domain.user`
+- `domain.library`
+- `domain.wishlist`
+
+#### 2.3.1 Common domain infrastructure
+
+- `AbstractDomainEvent`
+- `DomainEvent`
+- `IntegrationEvent`
+- `DomainEventPublisher` (port/interface)
+
+Domain events model significant state changes at the domain level (e.g., `UserRegistered`, `GameAddedToWishlist`).
+
+#### 2.3.2 User domain
+
+**Entities, value objects, and enums:**
+
+- `User`, `UserId`
+- `UserProfile`, `PrivacySettings`, `UserStatus`
+- `Email`
+- `PasswordHash`
+- `OAuthAccount`, `OauthAccountId`, `OAuthProvider`
+- `PaymentMethod`, `PaymentMethodId`, `PaymentProvider`
+- `PasswordResetToken`, `PasswordResetTokenId`
+
+**Repositories (ports):**
+
+- `UserRepository`
+- `PaymentMethodRepository`
+- `PasswordResetTokenRepository`
+
+**Domain events:**
+
+- `UserRegistered`
+- `UserEmailVerified`
+- `UserLoggedIn`
+- `UserProfileUpdated`
+- `UserBanned` / `UserUnbanned`
+- `PaymentMethodAdded`
+- `PaymentMethodRemoved`
+- `PasswordResetRequested`
+- `PasswordChanged`
+- `OAuthAccountLinked`
+
+These events are published through `DomainEventPublisher` and consumed by handlers in `application.handlers` and infrastructure components.
+
+#### 2.3.3 Library domain
+
+- `LibraryEntry`, `LibraryEntryId`
+- `GameId` (value object representing a game)
+- `LibraryRepository` (port)
+- Events:
+  - `GameAddedToLibrary`
+
+#### 2.3.4 Wishlist domain
+
+- `WishlistItem`
+- `WishlistRepository` (port)
+
+Events:
+
+- `GameAddedToWishlist`
+- `GameRemovedFromWishlist`
+- `WishlistNotificationTriggered`
+
+The domain layer guarantees invariants and encapsulates rules. Application services rely on these domain objects to enforce business constraints.
+
+---
+
+### 2.4 Infrastructure Layer
+
+**Package:**
+
+- `com.estim.javaapi.infrastructure.*`
+
+Provides **technical adapters** that implement the ports defined in the domain and application layers:
+
+Subpackages:
+
+- `audit`
+- `events`
+- `mail`
+- `oauth`
+- `payment`
+- `persistence`
+- `security`
+
+#### 2.4.1 Audit
+
+- `ConsoleAuditLogger`  
+  An audit logging implementation (e.g., logs to console). It can be wired to `AuditLogger` / event handlers.
+
+#### 2.4.2 Events and Outbox
+
+- `EventSerializer`
+- `ExternalEventEnvelope`
+- `OutboxEvent`
+- `OutboxRepository`
+- `OutboxEventPublisher`
+- `KafkaDomainEventPublisher`
+- `SimpleEventBus`
+
+These classes implement:
+
+- An **in-process event bus** (`SimpleEventBus`).
+- An **Outbox pattern** for reliable publishing of events (`OutboxEvent`, `OutboxRepository`, `OutboxEventPublisher`).
+- An adapter for **external message brokers** such as Kafka (`KafkaDomainEventPublisher`).
+
+They adapt `DomainEventPublisher` (domain port) to actual transport technologies.
+
+#### 2.4.3 Mail
+
+- `ConsoleEmailSender`  
+  An implementation of `EmailSender` that sends email-like notifications to the console (or logs). It encapsulates email delivery concerns outside the domain and application core.
+
+#### 2.4.4 OAuth
+
+- `GoogleOAuthClient`
+- `SteamOAuthClient`
+- `OAuthUserInfo`
+
+These classes provide concrete integrations with external OAuth providers.  
+Application services in `application.oauth` call them via interfaces, preserving hexagonal boundaries.
+
+#### 2.4.5 Payment
+
+- `NoopPaymentProviderClient`
+- `PagSeguroClient`
+
+These are implementations of the `PaymentProviderClient` port defined in the application layer. Different adapters can be plugged depending on environment (e.g., sandbox, test, production).
+
+#### 2.4.6 Persistence
+
+**Packages:**
+- `infrastructure.persistence.library`
+- `infrastructure.persistence.user`
+- `infrastructure.persistence.wishlist`
+
+Each subpackage typically contains:
+
+- JPA entities (`*JpaEntity`)
+- Spring Data repositories (`*JpaRepository`)
+- Mappers to translate between Domain entities and JPA entities (`UserMapper`, etc.)
+- Implementations of domain repositories (ports):
+
+  - `LibraryRepositoryImpl` implements `LibraryRepository`
+  - `UserRepositoryImpl` implements `UserRepository`
+  - `WishlistRepositoryImpl` implements `WishlistRepository`
+  - `PasswordResetTokenRepositoryImpl` implements `PasswordResetTokenRepository`
+
+This is where **PostgreSQL persistence** is realized, without leaking JPA or SQL into the domain or application layers.
+
+#### 2.4.7 Security
+
+- `AuthenticatedUser`
+- `BCryptPasswordHasher`
+- `CorsConfig`
+- `JwtAuthenticationFilter`
+- `JwtAuthenticationProvider`
+- `JwtTokenService`
+- `SecurityConfig`
+- `SecurityContext`
+
+These classes form the integration with **Spring Security**, JWT parsing/validation, and password hashing, while exposing higher-level abstractions used by application and presentation layers.
+
+- `BCryptPasswordHasher` is an implementation of the `PasswordHasher` abstraction from the application layer.
+- `JwtTokenService` implements token operations used by `TokenService` / controllers.
+
+---
+
+## 3. End-to-End Request Flow (Example)
+
+### 3.1 User Registration
+
+1. **HTTP Request (Presentation Layer)**
+   - `AuthController` receives `POST /auth/register` with a JSON body.
+   - JSON is mapped to `RegisterUserRequest`.
+
+2. **Mapping to Application Command**
+   - `AuthController` converts `RegisterUserRequest` to `RegisterUserCommand`
+     (email, password, display name, etc.).
+
+3. **Application Layer**
+   - `RegisterUserService`:
+     - Validates password using `PasswordPolicy` / `DefaultPasswordPolicy`.
+     - Hasher: uses `PasswordHasher` (implemented by `BCryptPasswordHasher` in infrastructure).
+     - Interacts with `UserRepository` (domain port) to persist the new `User` entity.
+     - Publishes domain event `UserRegistered` via `DomainEventPublisher`.
+
+4. **Domain Layer**
+   - `User` entity enforces invariants (e.g., unique email, valid status).
+   - `UserRegistered` event models the significant change.
+
+5. **Event Handlers**
+   - `SendWelcomeEmailOnUserRegistered` listens to `UserRegistered`:
+     - Uses `EmailSender` (infrastructure adapter `ConsoleEmailSender`) to send a welcome message.
+   - `AuditLogOnUserLoggedIn` or other relevant handlers can record activities.
+
+6. **Persistence (Infrastructure)**
+   - `UserRepositoryImpl` uses `UserJpaEntity` and `UserJpaRepository` to store user data in PostgreSQL.
+
+7. **HTTP Response**
+   - `RegisterUserService` returns domain data (e.g., `User` or a summary).
+   - `AuthController` maps this to `RegisterUserResponse` using `UserDtoMapper`.
+   - Returns a 201/200 response with the DTO to the client.
+
+### 3.2 Add Game to Library
+
+1. `LibraryController` receives `POST /me/library` with a JSON body.
+2. Maps body to `AddGameToLibraryCommand`.
+3. Calls `AddGameToLibraryService`.
+4. Service fetches user, validates constraints, and calls `LibraryRepository` to persist a new `LibraryEntry`.
+5. Domain event `GameAddedToLibrary` is raised.
+6. `AddGameToLibraryOnGamePurchased` handles the event (e.g., additional side effects, achievements, stats).
+7. Controller maps `LibraryEntry` to `LibraryEntryResponse` using `LibraryMapper`.
+8. HTTP response sent to client.
+
+---
+
+## 4. Justification of the Architecture
+
+The architecture used in **com.estim.javaapi** is justified by the following design goals:
+
+1. **Separation of Concerns**
+   - Controllers know about HTTP but not about persistence.
+   - Application services know about business workflows but not about frameworks.
+   - Domain layer models the business rules in a technology-agnostic way.
+   - Infrastructure handles frameworks and integrations (Spring, JPA, Kafka, OAuth, etc.).
+
+2. **Testability**
+   - Application and domain logic can be tested using in-memory implementations of `UserRepository`, `LibraryRepository`, `PaymentProviderClient`, etc.
+   - Controllers can be tested with mocked services.
+   - Infrastructure can be tested separately (integration tests with the database or external APIs).
+
+3. **Replaceability (Ports & Adapters)**
+   - Easier to swap:
+     - Database (change JPA provider or DB engine).
+     - OAuth providers (add/remove Google, Steam, etc.).
+     - Payment providers (switch between `NoopPaymentProviderClient` and `PagSeguroClient` or others).
+     - Messaging implementation (Kafka, RabbitMQ, in-memory).
+
+4. **Scalability & Evolution**
+   - Clear domain model and events allow future **microservice extraction** (e.g., a dedicated library service, wishlist service) without redesigning everything.
+   - Outbox pattern in `infrastructure.events` prepares the system for **reliable event-driven integration**.
+
+5. **Clarity for Educational Purposes**
+   - The project is intended as an academic / teaching platform.
+   - Explicit packages (application, domain, infrastructure, presentation) make it easier for students and collaborators to understand:
+     - Where to place new use cases.
+     - How to define domain events.
+     - How to implement new adapters (e.g., new payment providers).
+
+---
+
+
+
+
+
+
+
