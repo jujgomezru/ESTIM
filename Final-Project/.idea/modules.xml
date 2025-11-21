@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java-api.iml" filepath="$PROJECT_DIR$/.idea/modules/java-api.iml" group="java-api" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java-api_main.iml" filepath="$PROJECT_DIR$/.idea/modules/java-api_main.iml" group="java-api" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java-api_test.iml" filepath="$PROJECT_DIR$/.idea/modules/java-api_test.iml" group="java-api" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java-api.iml" filepath="$PROJECT_DIR$/.idea/modules/java-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java-api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java-api.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java-api.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java-api.test.iml" />
     </modules>
   </component>
 </project>
