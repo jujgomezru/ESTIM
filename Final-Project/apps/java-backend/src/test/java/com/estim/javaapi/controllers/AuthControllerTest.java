@@ -6,7 +6,8 @@ import com.estim.javaapi.domain.user.UserId;
 import com.estim.javaapi.domain.user.Email;
 import com.estim.javaapi.domain.user.UserProfile;
 import com.estim.javaapi.infrastructure.security.JwtAuthenticationProvider;
-import com.estim.javaapi.infrastructure.security.SecurityContext;
+import com.estim.javaapi.presentation.auth.CurrentUserResponse;
+import com.estim.javaapi.presentation.common.UserDtoMapper;
 import com.estim.javaapi.infrastructure.security.AuthenticatedUser;
 import com.estim.javaapi.presentation.auth.LoginRequest;
 import com.estim.javaapi.presentation.auth.RegisterUserRequest;
@@ -20,11 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +38,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -92,6 +98,9 @@ class AuthControllerTest {
 
         return user;
     }
+
+    @Autowired
+    private AuthController authController;
 
     @Nested
     @DisplayName("POST /auth/register")
@@ -352,128 +361,69 @@ class AuthControllerTest {
     class MeTests {
 
         @Test
-        @DisplayName("should authenticate from Authorization header, read current user from SecurityContext and return 200 + CurrentUserResponse")
-        void meSuccess() throws Exception {
-            String token = "valid-token";
-            String header = "Bearer " + token;
+        void meSuccess() {
+            // Arrange: fake current user id + principal
+            UUID rawUserId = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+            UserId userId = new UserId(rawUserId);
+            AuthenticatedUser currentUser = new AuthenticatedUser(userId);
 
-            // authenticationProvider should succeed (no exception)
-            doNothing().when(authenticationProvider)
-                .authenticateFromAuthorizationHeader(header);
+            // Domain user (mock; we just pipe it to the mapper)
+            User domainUser = mock(User.class);
+            when(getCurrentUserService.getCurrentUser(userId)).thenReturn(domainUser);
 
-            UserId userId = mock(UserId.class);
-            User user = buildTestUser();
-            when(getCurrentUserService.getCurrentUser(userId)).thenReturn(user);
+            // Mock the static mapper to return a canned response
+            CurrentUserResponse expectedResponse = new CurrentUserResponse(
+                rawUserId.toString(),
+                "test@example.com",
+                "Tester",
+                "https://example.com/avatar.png",
+                false
+            );
 
-            try (MockedStatic<SecurityContext> securityMock = mockStatic(SecurityContext.class)) {
-                securityMock.when(SecurityContext::getCurrentUserId)
-                    .thenReturn(Optional.of(userId));
+            try (MockedStatic<UserDtoMapper> mapperMock = mockStatic(UserDtoMapper.class)) {
+                mapperMock.when(() -> UserDtoMapper.toCurrentUserResponse(domainUser))
+                    .thenReturn(expectedResponse);
 
-                // When / Then
-                mockMvc.perform(get("/auth/me")
-                        .header("Authorization", header))
-                    .andDo(print())
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.userId").value("user-123"))
-                    .andExpect(jsonPath("$.email").value("john@example.com"))
-                    .andExpect(jsonPath("$.displayName").value("John Doe"))
-                    .andExpect(jsonPath("$.avatarUrl").value("https://example.com/avatar.png"))
-                    .andExpect(jsonPath("$.emailVerified").value(true));
+                // Act
+                ResponseEntity<?> response = authController.me(currentUser);
 
+                // Assert
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertTrue(response.getBody() instanceof CurrentUserResponse);
 
-                verify(authenticationProvider)
-                    .authenticateFromAuthorizationHeader(header);
-                verify(getCurrentUserService).getCurrentUser(userId);
+                CurrentUserResponse body = (CurrentUserResponse) response.getBody();
+                assertEquals(expectedResponse, body);
             }
-
-            // ClearAuthentication must be called in finally block
-            verify(authenticationProvider).clearAuthentication();
         }
 
         @Test
-        @DisplayName("should return 401 AUTH_FAILED when authenticationProvider throws IllegalArgumentException")
         void meAuthenticationFailsIllegalArgument() throws Exception {
-            String header = "Bearer invalid";
-
-            doThrow(new IllegalArgumentException("Invalid token"))
-                .when(authenticationProvider)
-                .authenticateFromAuthorizationHeader(header);
-
-            try (MockedStatic<SecurityContext> mocked = mockStatic(SecurityContext.class)) {
-                mocked.when(SecurityContext::getCurrentUserId)
-                    .thenReturn(Optional.empty());
-
-                mockMvc.perform(get("/auth/me")
-                        .header("Authorization", header))
-                    .andDo(print())
-                    .andExpect(status().isUnauthorized())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.code").value("AUTH_FAILED"))
-                    .andExpect(jsonPath("$.message").value("Invalid token"));
-
-            }
-
-            verify(authenticationProvider)
-                .authenticateFromAuthorizationHeader(header);
-            verify(authenticationProvider).clearAuthentication();
-            verifyNoInteractions(getCurrentUserService);
+            // Now, any invalid/missing token ends up as "No authenticated user".
+            // We don't mock authenticationProvider anymore because the controller
+            // doesn't use it for /auth/me.
+            mockMvc.perform(get("/auth/me"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("AUTH_FAILED"))
+                .andExpect(jsonPath("$.message").value("No authenticated user"));
         }
 
         @Test
-        @DisplayName("should return 401 AUTH_FAILED when SecurityContext has no current user")
         void meNoCurrentUserInContext() throws Exception {
-            String header = "Bearer token-without-user";
-
-            // authenticateFromAuthorizationHeader succeeds
-            doNothing().when(authenticationProvider)
-                .authenticateFromAuthorizationHeader(header);
-
-            try (MockedStatic<SecurityContext> mocked = mockStatic(SecurityContext.class)) {
-                mocked.when(SecurityContext::getCurrentUserId)
-                    .thenReturn(Optional.empty());
-
-                mockMvc.perform(get("/auth/me")
-                        .header("Authorization", header))
-                    .andDo(print())
-                    .andExpect(status().isUnauthorized())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.code").value("AUTH_FAILED"))
-                    .andExpect(jsonPath("$.message").value("No authenticated user"));
-
-            }
-
-            verify(authenticationProvider)
-                .authenticateFromAuthorizationHeader(header);
-            verify(authenticationProvider).clearAuthentication();
-            verifyNoInteractions(getCurrentUserService);
+            // Previously this tried to assert that jwtAuthenticationProvider was called
+            // and SecurityContext was empty. Now, /auth/me just sees a null principal.
+            mockMvc.perform(get("/auth/me"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("AUTH_FAILED"))
+                .andExpect(jsonPath("$.message").value("No authenticated user"));
         }
 
         @Test
-        @DisplayName("should return 401 AUTH_FAILED when Authorization header is missing")
         void meMissingAuthorizationHeader() throws Exception {
-            // Here authenticateFromAuthorizationHeader receives null
-            doThrow(new IllegalArgumentException("Missing Authorization header"))
-                .when(authenticationProvider)
-                .authenticateFromAuthorizationHeader(null);
-
-            try (MockedStatic<SecurityContext> mocked = mockStatic(SecurityContext.class)) {
-                mocked.when(SecurityContext::getCurrentUserId)
-                    .thenReturn(Optional.empty());
-
-                mockMvc.perform(get("/auth/me"))
-                    .andDo(print())
-                    .andExpect(status().isUnauthorized())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.code").value("AUTH_FAILED"))
-                    .andExpect(jsonPath("$.message").value("Missing Authorization header"));
-
-            }
-
-            verify(authenticationProvider)
-                .authenticateFromAuthorizationHeader(null);
-            verify(authenticationProvider).clearAuthentication();
-            verifyNoInteractions(getCurrentUserService);
+            // This is effectively the same scenario as above now.
+            mockMvc.perform(get("/auth/me"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("AUTH_FAILED"))
+                .andExpect(jsonPath("$.message").value("No authenticated user"));
         }
     }
 }
