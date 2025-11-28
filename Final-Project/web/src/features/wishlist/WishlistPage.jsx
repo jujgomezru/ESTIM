@@ -18,20 +18,43 @@ export default function WishlistPage() {
 
   async function loadWishlist() {
     try {
-      const data = await getWishlist();
-      
+      const data = await getWishlist(); // array de WishlistItemResponse
+
       if (!data || data.length === 0) {
-        setWishlist(EXAMPLE_WISHLIST);
-      } else {
-        setWishlist(data);
+        // Sin items reales → mostramos estado vacío
+        setWishlist([]);
+        return;
       }
+
+      // Mapear respuesta del backend a la forma que usa la UI
+      const mapped = data.map((item) => {
+        const id = item.gameId; // UUID del juego
+        const price = item.currentPrice ?? 0;
+
+        return {
+          id,                     // usado para keys, rutas, etc.
+          title: `Juego ${id.slice(0, 8)}...`, // placeholder hasta integrar catálogo
+          image:
+            "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop",
+          price,
+          discount: 0,            // no tenemos info de descuento aún
+          category: "Desconocido",
+          multiplayer: false,
+          // extra: podrías guardar addedAt si quisieras mostrarlo
+          addedAt: item.addedAt,
+        };
+      });
+
+      setWishlist(mapped);
     } catch (error) {
       console.error("Error loading wishlist:", error);
-      setWishlist(EXAMPLE_WISHLIST);
+      // En producción es mejor NO rellenar con ejemplos; mostramos vacía:
+      setWishlist([]);
     } finally {
       setLoading(false);
     }
   }
+
 
   async function handleAddToCart(gameId) {
     try {

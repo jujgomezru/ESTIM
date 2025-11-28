@@ -260,4 +260,32 @@ class WishlistControllerTest {
 
         verifyNoInteractions(addToWishlistService, listWishlistService, updateWishlistItemService);
     }
+
+    @Test
+    void addToWishlist_whenServiceRejectsGameAlreadyInLibrary_propagatesExceptionAndSkipsOtherCalls() {
+        // Arrange
+        WishlistItemRequest request = new WishlistItemRequest(
+            RAW_GAME_ID.toString(),
+            null
+        );
+
+        // Service rejects because game is already in the library
+        doThrow(new IllegalStateException("Game is already in library"))
+            .when(addToWishlistService)
+            .addToWishlist(any(AddToWishlistCommand.class));
+
+        // Act + Assert
+        IllegalStateException ex = assertThrows(
+            IllegalStateException.class,
+            () -> controller.addToWishlist(authenticatedUser, request)
+        );
+        assertEquals("Game is already in library", ex.getMessage());
+
+        // When the service throws, controller should not attempt to update prefs
+        // nor reload the wishlist / map response.
+        verify(addToWishlistService).addToWishlist(any(AddToWishlistCommand.class));
+        verifyNoInteractions(updateWishlistItemService);
+        verifyNoInteractions(listWishlistService);
+        verifyNoInteractions(wishlistMapper);
+    }
 }
