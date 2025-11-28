@@ -5,7 +5,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ Hook para saber la ruta actual
+  const location = useLocation();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -33,7 +33,6 @@ export default function Header() {
     setIsDropdownOpen(false);
   }
 
-  // ✅ Función para verificar si la ruta está activa
   function isActive(path) {
     if (path === "/") {
       return location.pathname === "/" || location.pathname === "/store";
@@ -70,6 +69,17 @@ export default function Header() {
           Library
         </div>
 
+        {/* Wishlist - MOVIDO AQUÍ */}
+        <div 
+          style={{
+            ...styles.navItem,
+            ...(isActive("/wishlist") && styles.navItemActive)
+          }}
+          onClick={() => navigate("/wishlist")}
+        >
+          💝 Wishlist
+        </div>
+
         {/* Community */}
         <div style={styles.navItem}>
           Community
@@ -102,15 +112,6 @@ export default function Header() {
           
           {isDropdownOpen && (
             <div style={styles.dropdownMenu}>
-              <div 
-                style={styles.dropdownItem}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 107, 53, 0.1)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                onClick={() => handleNavigate("/wishlist")}
-              >
-                💝 Wishlist
-              </div>
-              
               <div 
                 style={styles.dropdownItem}
                 onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 107, 53, 0.1)'}
@@ -181,9 +182,8 @@ const styles = {
     padding: '8px 0'
   },
   navItemActive: {
-    color: '#ff6b35', // ✅ Color naranja cuando está activo
+    color: '#ff6b35',
     fontWeight: '600',
-    // ✅ Línea inferior para indicar activo
     borderBottom: '2px solid #ff6b35'
   },
   navRight: {

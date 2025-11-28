@@ -1,19 +1,81 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GameCard from "../../components/GameCard";
 import Button from "../../components/Button";
+import { fetchMyLibrary } from "./libraryService";
 
 export default function LibraryPage() {
   const [selectedCollection, setSelectedCollection] = useState("all");
 
+  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
+  const [recommended, setRecommended] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+
+    // If no token → treat as logged out, don't show any games
+    if (!token) {
+      setIsLoggedIn(false);
+      setRecentlyPlayed([]);
+      setRecommended([]);
+      setLoading(false);
+      return;
+    }
+
+    setIsLoggedIn(true);
+    setLoading(true);
+    setError(null);
+
+    async function loadLibrary() {
+      try {
+        const entries = await fetchMyLibrary();
+
+        console.log("Library entries from backend:", entries);
+
+        const games = entries.map((entry) => ({
+          id: entry.gameId, // UUID of the game
+          title: entry.gameTitle ?? `Game ${String(entry.gameId).slice(0, 8)}`,
+          image: entry.coverImageUrl ?? "https://via.placeholder.com/400x300?text=Game",
+          category: entry.source ?? "Library",
+
+          price: 0, // we don't have price here yet
+          discount: 0,
+          multiplayer: false,
+        }));
+
+        const mid = Math.ceil(games.length / 2);
+        setRecentlyPlayed(games.slice(0, mid));
+        setRecommended(games.slice(mid));
+      } catch (err) {
+        console.error("Failed to load library", err);
+        setError("Could not load your library.");
+        setRecentlyPlayed([]);
+        setRecommended([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadLibrary();
+  }, []);
+
   return (
     <div style={styles.container}>
       <div style={styles.mainContainer}>
-        <Sidebar 
+        <Sidebar
           selectedCollection={selectedCollection}
           setSelectedCollection={setSelectedCollection}
         />
 
-        <MainContent />
+        <MainContent
+          isLoggedIn={isLoggedIn}
+          loading={loading}
+          error={error}
+          recentlyPlayed={recentlyPlayed}
+          recommended={recommended}
+        />
       </div>
     </div>
   );
@@ -21,11 +83,7 @@ export default function LibraryPage() {
 
 // Componente: Sidebar
 function Sidebar({ selectedCollection, setSelectedCollection }) {
-  const collections = [
-    "All Games",
-    "Favorites",
-    "Recently Added"
-  ];
+  const collections = ["All Games", "Favorites", "Recently Added"];
 
   const categories = [
     "Battle Royale Arena",
@@ -35,7 +93,7 @@ function Sidebar({ selectedCollection, setSelectedCollection }) {
     "Counter Strike Legacy",
     "Civilization Dawn",
     "Indie Platformer",
-    "Sports Championship"
+    "Sports Championship",
   ];
 
   return (
@@ -56,10 +114,7 @@ function Sidebar({ selectedCollection, setSelectedCollection }) {
       <div style={styles.sidebarSection}>
         <div style={styles.sidebarTitle}>⭐ CATEGORIES</div>
         {categories.map((category, index) => (
-          <div
-            key={index}
-            style={styles.sidebarItem}
-          >
+          <div key={index} style={styles.sidebarItem}>
             {category}
           </div>
         ))}
@@ -69,20 +124,52 @@ function Sidebar({ selectedCollection, setSelectedCollection }) {
 }
 
 // Componente: MainContent
-function MainContent() {
+function MainContent({ isLoggedIn, loading, error, recentlyPlayed, recommended }) {
+  if (!isLoggedIn) {
+    return (
+      <div style={styles.mainContent}>
+        <div style={{ color: "#ccc", padding: "20px" }}>
+          Please log in to see your library.
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div style={styles.mainContent}>
+        <div style={{ color: "#ccc", padding: "20px" }}>Loading your library…</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={styles.mainContent}>
+        <div style={{ color: "#f88", padding: "20px" }}>{error}</div>
+      </div>
+    );
+  }
+
+  if (recentlyPlayed.length === 0 && recommended.length === 0) {
+    return (
+      <div style={styles.mainContent}>
+        <div style={{ color: "#ccc", padding: "20px" }}>
+          Your library is empty. Try adding a game!
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.mainContent}>
-      <Section 
-        icon="⏱️"
-        title="Recently Played"
-        games={recentlyPlayedGames}
-      />
+      {recentlyPlayed.length > 0 && (
+        <Section icon="⏱️" title="Recently Played" games={recentlyPlayed} />
+      )}
 
-      <Section 
-        icon="⭐"
-        title="Recommended For You"
-        games={recommendedGames}
-      />
+      {recommended.length > 0 && (
+        <Section icon="⭐" title="Recommended For You" games={recommended} />
+      )}
     </div>
   );
 }
@@ -107,8 +194,8 @@ function Section({ icon, title, games }) {
       </div>
       <div style={styles.gameGrid}>
         {games.map((game) => (
-          <GameCard 
-            key={game.id} 
+          <GameCard
+            key={game.id}
             game={game}
             variant="simple"
             onClick={() => console.log("Playing:", game.title)}
@@ -119,173 +206,76 @@ function Section({ icon, title, games }) {
   );
 }
 
-// 🎮 DATOS DE EJEMPLO
-const recentlyPlayedGames = [
-  { 
-    id: 1, 
-    title: "Cyberpunk Legends", 
-    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop",
-    category: "Action",
-    price: 59.99,
-    discount: 0,
-    multiplayer: true
-  },
-  { 
-    id: 2, 
-    title: "Fantasy Quest Online", 
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop",
-    category: "RPG",
-    price: 49.99,
-    discount: 0,
-    multiplayer: true
-  },
-  { 
-    id: 3, 
-    title: "Speed Racing Ultimate", 
-    image: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=400&h=300&fit=crop",
-    category: "Racing",
-    price: 39.99,
-    discount: 0,
-    multiplayer: true
-  },
-  { 
-    id: 4, 
-    title: "Dark Chronicles", 
-    image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&h=300&fit=crop",
-    category: "Adventure",
-    price: 44.99,
-    discount: 0,
-    multiplayer: false
-  },
-  { 
-    id: 5, 
-    title: "Tactical Warfare", 
-    image: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&h=300&fit=crop",
-    category: "Strategy",
-    price: 54.99,
-    discount: 0,
-    multiplayer: true
-  }
-];
-
-const recommendedGames = [
-  { 
-    id: 6, 
-    title: "Medieval Kingdoms", 
-    image: "https://images.unsplash.com/photo-1518709414768-a88981a4515d?w=400&h=300&fit=crop",
-    category: "Strategy",
-    price: 34.99,
-    discount: 0,
-    multiplayer: false
-  },
-  { 
-    id: 7, 
-    title: "Pixel Adventure", 
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=300&fit=crop",
-    category: "Indie",
-    price: 19.99,
-    discount: 0,
-    multiplayer: false
-  },
-  { 
-    id: 8, 
-    title: "Space Odyssey", 
-    image: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=400&h=300&fit=crop",
-    category: "Simulation",
-    price: 64.99,
-    discount: 0,
-    multiplayer: true
-  },
-  { 
-    id: 9, 
-    title: "Dungeon Master", 
-    image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400&h=300&fit=crop",
-    category: "RPG",
-    price: 29.99,
-    discount: 0,
-    multiplayer: false
-  },
-  { 
-    id: 10, 
-    title: "Zombie Survival", 
-    image: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=400&h=300&fit=crop",
-    category: "Action",
-    price: 42.99,
-    discount: 0,
-    multiplayer: true
-  }
-];
-
 // Estilos optimizados (sin estilos de botones)
 const styles = {
   container: {
-    background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)',
-    color: '#e0e0e0',
-    minHeight: '100vh'
+    background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)",
+    color: "#e0e0e0",
+    minHeight: "100vh",
   },
   mainContainer: {
-    display: 'flex',
-    padding: '30px',
-    gap: '30px'
+    display: "flex",
+    padding: "30px",
+    gap: "30px",
   },
   sidebar: {
-    width: '220px',
-    background: 'rgba(20, 20, 20, 0.5)',
-    borderRadius: '12px',
-    padding: '20px',
-    height: 'fit-content'
+    width: "220px",
+    background: "rgba(20, 20, 20, 0.5)",
+    borderRadius: "12px",
+    padding: "20px",
+    height: "fit-content",
   },
   sidebarSection: {
-    marginBottom: '25px'
+    marginBottom: "25px",
   },
   sidebarTitle: {
-    color: '#888',
-    fontSize: '11px',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    marginBottom: '15px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px'
+    color: "#888",
+    fontSize: "11px",
+    textTransform: "uppercase",
+    letterSpacing: "1px",
+    marginBottom: "15px",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
   },
   sidebarItem: {
-    padding: '10px 15px',
-    marginBottom: '5px',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    transition: 'all 0.3s',
-    fontSize: '14px',
-    color: '#ccc'
+    padding: "10px 15px",
+    marginBottom: "5px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    transition: "all 0.3s",
+    fontSize: "14px",
+    color: "#ccc",
   },
   mainContent: {
-    flex: 1
+    flex: 1,
   },
   section: {
-    marginBottom: '50px'
+    marginBottom: "50px",
   },
   sectionHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: '20px'
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: "20px",
   },
   sectionTitle: {
-    fontSize: '20px',
-    fontWeight: '600',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
+    fontSize: "20px",
+    fontWeight: "600",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
   },
   icon: {
-    color: '#ff6b35'
+    color: "#ff6b35",
   },
   navArrows: {
-    display: 'flex',
-    gap: '10px'
+    display: "flex",
+    gap: "10px",
   },
   gameGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-    gap: '20px'
-  }
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+    gap: "20px",
+  },
 };
