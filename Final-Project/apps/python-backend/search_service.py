@@ -1,14 +1,12 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List, Dict, Optional, Any
-from database import GameDB  # ← CAMBIÉ ESTO: sin punto
+from database import GameDB
 import logging
 
 logger = logging.getLogger(__name__)
 
-class SearchService:
-    """Servicio para manejar todas las operaciones de búsqueda de juegos"""
-    
+class SearchService:    
     @staticmethod
     def search_by_genre(
         db: Session,
@@ -16,10 +14,7 @@ class SearchService:
         skip: int = 0,
         limit: int = 20
     ) -> List[Dict]:
-        """
-        Buscar juegos por género - VERSIÓN 100% CONFIABLE
-        """
-        print("🎯 MÉTODO search_by_genre NUEVO EJECUTÁNDOSE")
+
         
         try:
             # Validar parámetros
@@ -103,7 +98,6 @@ class SearchService:
             traceback.print_exc()
             return []
 
-    # Mantener los otros métodos existentes pero simplificados...
     @staticmethod
     def search_games(
         db: Session,
@@ -113,10 +107,13 @@ class SearchService:
         skip: int = 0,
         limit: int = 20
     ) -> List[Dict]:
-        """Búsqueda básica de juegos"""
+        """Búsqueda básica de juegos con filtros de precio"""
         try:
+            print(f"🔍 Búsqueda: '{search_term}' | Precio: ${min_price}-${max_price}")
+            
             query = db.query(GameDB).filter(GameDB.is_published == True)
             
+            # Filtro por término de búsqueda
             if search_term and search_term.strip():
                 term = f"%{search_term.strip()}%"
                 query = query.filter(
@@ -127,9 +124,33 @@ class SearchService:
                     )
                 )
             
+            # 🔥 CORRECCIÓN: Filtros de precio mejorados
+            if min_price is not None:
+                try:
+                    min_price_float = float(min_price)
+                    query = query.filter(GameDB.price >= min_price_float)
+                    print(f"   ✅ Filtro precio mínimo: ${min_price_float}")
+                except (ValueError, TypeError):
+                    print(f"   ⚠️ Precio mínimo inválido: {min_price}")
+            
+            if max_price is not None:
+                try:
+                    max_price_float = float(max_price)
+                    query = query.filter(GameDB.price <= max_price_float)
+                    print(f"   ✅ Filtro precio máximo: ${max_price_float}")
+                except (ValueError, TypeError):
+                    print(f"   ⚠️ Precio máximo inválido: {max_price}")
+            
+            # Aplicar paginación
+            safe_skip = max(0, skip)
+            safe_limit = max(1, min(limit, 100))
+            
             query = query.order_by(GameDB.average_rating.desc(), GameDB.title.asc())
-            games = query.offset(skip).limit(limit).all()
+            games = query.offset(safe_skip).limit(safe_limit).all()
             
+            print(f"🎯 Juegos encontrados: {len(games)}")
+            
+            # Formatear respuesta con más detalles
             results = []
             for game in games:
                 game_data = {
@@ -138,59 +159,18 @@ class SearchService:
                     "price": float(game.price) if game.price else 0.0,
                     "average_rating": float(game.average_rating) if game.average_rating else 0.0,
                     "description": game.short_description or "",
+                    "genres": game.game_metadata.get("genre", []) if game.game_metadata else [],
+                    "game_metadata": game.game_metadata
                 }
                 results.append(game_data)
+                print(f"   💰 {game.title} - ${float(game.price) if game.price else 0.0}")
             
             return results
             
         except Exception as e:
-            logger.error(f"Error en búsqueda básica: {str(e)}")
-            return []
-
-    @staticmethod
-    def advanced_search(
-        db: Session,
-        title: Optional[str] = None,
-        description: Optional[str] = None,
-        min_rating: Optional[float] = None,
-        max_rating: Optional[float] = None,
-        age_rating: Optional[str] = None,
-        skip: int = 0,
-        limit: int = 20
-    ) -> List[Dict]:
-        """Búsqueda avanzada"""
-        try:
-            query = db.query(GameDB).filter(GameDB.is_published == True)
-            
-            if title and title.strip():
-                query = query.filter(GameDB.title.ilike(f"%{title.strip()}%"))
-            
-            if description and description.strip():
-                query = query.filter(
-                    or_(
-                        GameDB.description.ilike(f"%{description.strip()}%"),
-                        GameDB.short_description.ilike(f"%{description.strip()}%")
-                    )
-                )
-            
-            query = query.order_by(GameDB.average_rating.desc(), GameDB.release_date.desc())
-            games = query.offset(skip).limit(limit).all()
-            
-            results = []
-            for game in games:
-                game_data = {
-                    "id": str(game.id),
-                    "title": game.title,
-                    "price": float(game.price) if game.price else 0.0,
-                    "average_rating": float(game.average_rating) if game.average_rating else 0.0,
-                    "description": game.short_description or "",
-                }
-                results.append(game_data)
-            
-            return results
-            
-        except Exception as e:
-            logger.error(f"Error en búsqueda avanzada: {str(e)}")
+            print(f"💥 Error en búsqueda básica: {str(e)}")
+            import traceback
+            traceback.print_exc()
             return []
 
     @staticmethod
