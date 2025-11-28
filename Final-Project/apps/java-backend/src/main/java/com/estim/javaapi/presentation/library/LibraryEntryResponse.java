@@ -6,12 +6,14 @@ import java.util.UUID;
 /**
  * API response representing a game in the user's library.
  *
- * NOTE: This matches the current DB schema (libraries table).
- * Fields like playtime/status/tags can be added later when the schema grows.
+ * NOTE: Right now this still reflects the libraries table,
+ * but we’ve added gameTitle + coverImageUrl for UI convenience.
  */
 public record LibraryEntryResponse(
     UUID id,
     UUID gameId,
+    String gameTitle,
+    String coverImageUrl,
     String source,
     Instant addedAt
 ) {
