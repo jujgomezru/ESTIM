@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/java-api.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/java-api.main.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/java-api.test.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/8.14.3/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +121,7 @@
   </component>
   <component name="RunManager">
     <configuration name="JavaApiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="java-api_main" />
+      <module name="java-api.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.estim.javaapi.JavaApiApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -149,7 +149,7 @@
       <workItem from="1763305084703" duration="37757000" />
       <workItem from="1763387494960" duration="6505000" />
       <workItem from="1763405695264" duration="12809000" />
-      <workItem from="1764300204974" duration="33000" />
+      <workItem from="1764300204974" duration="658000" />
     </task>
     <servers />
   </component>
