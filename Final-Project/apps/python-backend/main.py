@@ -19,6 +19,18 @@ def startup_event():
 async def root():
     return {"message": "ESTIM API funcionando"}
 
+@app.get("/health")
+async def test_health():
+    """Endpoint simple para verificar que la API funciona"""
+    return {
+        "status": "healthy", 
+        "services": {
+            "api": "running",
+            "search": "available",
+            "cart": "available"
+        }
+    }
+
 # Endpoint para probar base de datos
 @app.get("/test-db")
 async def test_db(db: Session = Depends(get_db)):
@@ -114,7 +126,7 @@ async def search_games(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/games/search/by-genre/")
+@app.get("/games/search/genre/")
 async def search_by_genre(
     genre: str,
     skip: int = 0,
@@ -177,16 +189,3 @@ async def seed_sample_data(db: Session = Depends(get_db)):
         return {"message": "Datos de prueba insertados correctamente"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
-
-# ENDPOINT SIMPLE PARA TESTS
-@app.get("/health")
-async def test_health():
-    """Endpoint simple para verificar que la API funciona"""
-    return {
-        "status": "healthy", 
-        "services": {
-            "api": "running",
-            "search": "available",
-            "cart": "available"
-        }
-    }
