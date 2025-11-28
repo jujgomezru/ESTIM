@@ -1,283 +1,415 @@
 #!/usr/bin/env python3
 """
-🎯 PRUEBAS UNITARIAS - SISTEMA DE CARRITO ESTIM
-Script mejorado con mejor manejo de errores y imports
+🎯 EJECUTOR DE PRUEBAS COMPLETO - ESTIM Backend
+Incluye: Carrito de Compras + Servicio de Búsqueda + Endpoints API
 """
 
 import sys
 import os
 import time
 
-# Configurar path de forma robusta
+# Configurar path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 src_path = os.path.join(current_dir, 'src')
 sys.path.insert(0, src_path)
 
-print(f"📁 Directorio de trabajo: {current_dir}")
-print(f"🔍 Buscando módulos en: {src_path}")
-
-try:
-    # Intentar importar el carrito
-    from estim_py_api.Shopping_cart import Cart
-    print("✅ Módulo Shopping_cart importado correctamente")
-except ImportError as e:
-    print(f"❌ Error importando Shopping_cart: {e}")
-    print("\n🔎 Diagnosticando el problema...")
-    
-    # Mostrar estructura de archivos
-    if os.path.exists(src_path):
-        print("📂 Contenido de src/:")
-        for item in os.listdir(src_path):
-            item_path = os.path.join(src_path, item)
-            if os.path.isdir(item_path):
-                print(f"   📁 {item}/")
-                for subitem in os.listdir(item_path):
-                    print(f"      📄 {subitem}")
-            else:
-                print(f"   📄 {item}")
-    else:
-        print("❌ No existe el directorio src/")
-    
-    sys.exit(1)
-
 class TestRunner:
     def __init__(self):
-        self.tests_passed = 0
-        self.tests_failed = 0
-        self.errors = []
+        self.results = {
+            'carrito': {'passed': 0, 'failed': 0, 'tests': []},
+            'busqueda': {'passed': 0, 'failed': 0, 'tests': []},
+            'api': {'passed': 0, 'failed': 0, 'tests': []}
+        }
         self.start_time = None
-        
-    def print_banner(self):
-        """Imprime un banner atractivo"""
-        print("\n" + "⭐" * 60)
-        print("⭐" + " " * 58 + "⭐")
-        print("⭐              🎮 PRUEBAS UNITARIAS ESTIM 🎮               ⭐")
-        print("⭐                 Sistema de Carrito de Compras            ⭐")
-        print("⭐" + " " * 58 + "⭐")
-        print("⭐" * 60)
+    
+    def print_header(self):
+        """Imprime el encabezado de las pruebas"""
+        print("🎮" * 60)
+        print("🎯 PRUEBAS COMPLETAS - SISTEMA ESTIM")
+        print("🎮 Carrito + Búsqueda + API")
+        print("🎮" * 60)
         print()
     
-    def run_test(self, test_name, test_function):
-        """Ejecuta una prueba individual y maneja los resultados"""
-        print(f"🔍 Ejecutando: {test_name}")
+    def test_carrito_basico(self):
+        """PRUEBAS DEL CARRITO DE COMPRAS - Todas las operaciones"""
+        print("🛒 EJECUTANDO PRUEBAS DEL CARRITO...")
         
         try:
-            result = test_function()
-            if result:
-                print(f"   ✅ {test_name} - EXITOSO")
-                self.tests_passed += 1
-                return True
-            else:
-                print(f"   ❌ {test_name} - FALLÓ (retornó False)")
-                self.tests_failed += 1
-                return False
-                
-        except AssertionError as e:
-            print(f"   ❌ {test_name} - FALLÓ (AssertionError)")
-            print(f"      Mensaje: {e}")
-            self.tests_failed += 1
-            self.errors.append(f"{test_name}: {e}")
-            return False
+            from estim_py_api.Shopping_cart import Cart
+            
+            # Crear instancia de carrito
+            cart = Cart()
+            
+            # 🔹 PRUEBA 1: Carrito vacío
+            print("   🔸 Probando carrito vacío...")
+            assert len(cart.articulos) == 0, "Carrito debería empezar vacío"
+            assert cart.calcular_total() == 0.0, "Total debería ser 0"
+            self.results['carrito']['tests'].append("✅ Carrito vacío - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            # 🔹 PRUEBA 2: Agregar artículo
+            print("   🔸 Probando agregar artículo...")
+            result = cart.agregar_articulo("test-1", "Juego Test", 29.99)
+            assert result == True, "Debería poder agregar artículo"
+            assert len(cart.articulos) == 1, "Debería tener 1 artículo"
+            assert cart.articulos[0]["game_id"] == "test-1", "ID debería coincidir"
+            self.results['carrito']['tests'].append("✅ Agregar artículo - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            # 🔹 PRUEBA 3: Calcular total
+            print("   🔸 Probando cálculo de total...")
+            total = cart.calcular_total()
+            assert total == 29.99, f"Total debería ser 29.99, es {total}"
+            self.results['carrito']['tests'].append("✅ Calcular total - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            # 🔹 PRUEBA 4: Prevenir duplicados
+            print("   🔸 Probando prevención de duplicados...")
+            result = cart.agregar_articulo("test-1", "Juego Test", 29.99)
+            assert result == False, "No debería permitir duplicados"
+            assert len(cart.articulos) == 1, "No debería agregar duplicado"
+            self.results['carrito']['tests'].append("✅ Prevenir duplicados - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            # 🔹 PRUEBA 5: Agregar segundo artículo
+            print("   🔸 Probando agregar segundo artículo...")
+            result = cart.agregar_articulo("test-2", "Juego Test 2", 39.99)
+            assert result == True, "Debería poder agregar segundo artículo"
+            assert len(cart.articulos) == 2, "Debería tener 2 artículos"
+            total = cart.calcular_total()
+            assert total == 69.98, f"Total debería ser 69.98, es {total}"
+            self.results['carrito']['tests'].append("✅ Agregar segundo artículo - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            # 🔹 PRUEBA 6: Eliminar artículo
+            print("   🔸 Probando eliminar artículo...")
+            result = cart.remover_articulo("test-1")
+            assert result == True, "Debería poder eliminar artículo"
+            assert len(cart.articulos) == 1, "Debería quedar 1 artículo"
+            total = cart.calcular_total()
+            assert total == 39.99, f"Total debería ser 39.99, es {total}"
+            self.results['carrito']['tests'].append("✅ Eliminar artículo - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            # 🔹 PRUEBA 7: Eliminar artículo inexistente
+            print("   🔸 Probando eliminar artículo inexistente...")
+            result = cart.remover_articulo("no-existe")
+            assert result == False, "No debería poder eliminar artículo inexistente"
+            assert len(cart.articulos) == 1, "No debería cambiar la cantidad"
+            self.results['carrito']['tests'].append("✅ Eliminar artículo inexistente - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            # 🔹 PRUEBA 8: Limpiar carrito
+            print("   🔸 Probando limpiar carrito...")
+            cart.limpiar_carrito()
+            assert len(cart.articulos) == 0, "Debería estar vacío después de limpiar"
+            assert cart.calcular_total() == 0.0, "Total debería ser 0 después de limpiar"
+            self.results['carrito']['tests'].append("✅ Limpiar carrito - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            # 🔹 PRUEBA 9: Múltiples operaciones
+            print("   🔸 Probando operaciones múltiples...")
+            cart.agregar_articulo("game-1", "Juego 1", 10.0)
+            cart.agregar_articulo("game-2", "Juego 2", 20.0)
+            cart.agregar_articulo("game-3", "Juego 3", 30.0)
+            assert len(cart.articulos) == 3, "Debería tener 3 artículos"
+            assert cart.calcular_total() == 60.0, "Total debería ser 60.0"
+            
+            cart.remover_articulo("game-2")
+            assert len(cart.articulos) == 2, "Debería tener 2 artículos después de eliminar"
+            assert cart.calcular_total() == 40.0, "Total debería ser 40.0"
+            
+            cart.limpiar_carrito()
+            assert len(cart.articulos) == 0, "Debería estar vacío al final"
+            self.results['carrito']['tests'].append("✅ Operaciones múltiples - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            print("   ✅ CARRITO - TODAS LAS PRUEBAS PASARON")
+            return True
             
         except Exception as e:
-            print(f"   💥 {test_name} - ERROR inesperado")
-            print(f"      Tipo: {type(e).__name__}")
-            print(f"      Mensaje: {e}")
-            self.tests_failed += 1
-            self.errors.append(f"{test_name}: {type(e).__name__} - {e}")
+            error_msg = f"❌ Error en carrito: {e}"
+            self.results['carrito']['tests'].append(error_msg)
+            self.results['carrito']['failed'] += 1
+            print(f"   {error_msg}")
+            import traceback
+            print(f"   Traceback: {traceback.format_exc()}")
             return False
     
-    def test_agregar_articulo(self):
-        """Prueba la inserción de artículos al carrito"""
-        cart = Cart()
+    def test_servicio_busqueda(self):
+        """PRUEBAS DEL SERVICIO DE BÚSQUEDA"""
+        print("🔍 EJECUTANDO PRUEBAS DE BÚSQUEDA...")
         
-        # Test 1: Agregar artículo normal
-        result1 = cart.agregar_articulo("game-001", "The Legend of Zelda", 59.99)
-        assert result1 == True, "Debería poder agregar un artículo nuevo"
-        assert len(cart.articulos) == 1, "Debería tener 1 artículo"
-        assert cart.articulos[0]["game_id"] == "game-001", "El ID del juego debería coincidir"
-        
-        # Test 2: Agregar segundo artículo
-        result2 = cart.agregar_articulo("game-002", "Mario Kart", 49.99)
-        assert result2 == True, "Debería poder agregar un segundo artículo"
-        assert len(cart.articulos) == 2, "Debería tener 2 artículos"
-        
-        # Test 3: No permitir duplicados
-        result3 = cart.agregar_articulo("game-001", "The Legend of Zelda", 59.99)
-        assert result3 == False, "No debería permitir agregar duplicados"
-        assert len(cart.articulos) == 2, "No debería agregar el duplicado"
-        
-        return True
+        try:
+            from estim_py_api.search_service import SearchService
+            
+            print("   🔸 Verificando importación...")
+            # Verificar que la clase existe
+            assert SearchService is not None, "SearchService no debería ser None"
+            
+            self.results['busqueda']['tests'].append("✅ Servicio de búsqueda - IMPORTADO")
+            self.results['busqueda']['passed'] += 1
+            
+            print("   🔸 Verificando métodos...")
+            # Verificar que los métodos existen
+            methods = [method for method in dir(SearchService) if not method.startswith('_')]
+            expected_methods = ['search_games', 'advanced_search', 'search_by_genre', 'get_popular_games', 'get_recent_games']
+            
+            for method in expected_methods:
+                if method not in methods:
+                    raise Exception(f"Método {method} no encontrado. Métodos disponibles: {methods}")
+            
+            self.results['busqueda']['tests'].append("✅ Métodos del servicio - ENCONTRADOS")
+            self.results['busqueda']['passed'] += 1
+            
+            print("   🔸 Probando funciones de ayuda...")
+            # Probar _safe_float con casos edge
+            test_cases = [
+                (None, None),
+                ("29.99", 29.99),
+                (30, 30.0),
+                ("", None),
+                ("invalid", None)
+            ]
+            
+            for input_val, expected in test_cases:
+                result = SearchService._safe_float(input_val)
+                if result != expected:
+                    raise Exception(f"_safe_float({input_val}) retornó {result}, esperado {expected}")
+            
+            self.results['busqueda']['tests'].append("✅ Funciones de ayuda - FUNCIONANDO")
+            self.results['busqueda']['passed'] += 1
+            
+            print("   🔸 Verificando callability...")
+            # Verificar que los métodos son callables
+            assert callable(SearchService.search_games), "search_games debería ser callable"
+            assert callable(SearchService.advanced_search), "advanced_search debería ser callable"
+            assert callable(SearchService.search_by_genre), "search_by_genre debería ser callable"
+            
+            self.results['busqueda']['tests'].append("✅ Métodos - CALLABLES")
+            self.results['busqueda']['passed'] += 1
+            
+            print("   ✅ BÚSQUEDA - CONFIGURACIÓN CORRECTA")
+            return True
+            
+        except Exception as e:
+            error_msg = f"❌ Error en servicio de búsqueda: {e}"
+            self.results['busqueda']['tests'].append(error_msg)
+            self.results['busqueda']['failed'] += 1
+            print(f"   {error_msg}")
+            import traceback
+            print(f"   Traceback: {traceback.format_exc()}")
+            return False
     
-    def test_remover_articulo(self):
-        """Prueba la eliminación de artículos del carrito"""
-        cart = Cart()
+    def test_endpoints_api(self):
+        """PRUEBAS DE LOS ENDPOINTS DE LA API"""
+        print("🌐 EJECUTANDO PRUEBAS DE API...")
         
-        # Configurar datos de prueba
-        cart.agregar_articulo("game-001", "The Legend of Zelda", 59.99)
-        cart.agregar_articulo("game-002", "Mario Kart", 49.99)
-        cart.agregar_articulo("game-003", "Animal Crossing", 54.99)
-        
-        # Test 1: Remover artículo existente
-        initial_count = len(cart.articulos)
-        result1 = cart.remover_articulo("game-002")
-        assert result1 == True, "Debería poder remover artículo existente"
-        assert len(cart.articulos) == initial_count - 1, "Debería reducir la cantidad de artículos"
-        
-        # Test 2: Remover artículo que no existe
-        result2 = cart.remover_articulo("game-999")
-        assert result2 == False, "No debería poder remover artículo inexistente"
-        assert len(cart.articulos) == initial_count - 1, "No debería cambiar la cantidad"
-        
-        # Test 3: Remover otro artículo existente
-        result3 = cart.remover_articulo("game-001")
-        assert result3 == True, "Debería poder remover otro artículo"
-        assert len(cart.articulos) == initial_count - 2, "Debería reducir más artículos"
-        
-        return True
-    
-    def test_calcular_total(self):
-        """Prueba el cálculo del total del carrito"""
-        cart = Cart()
-        
-        # Test 1: Carrito vacío
-        total_vacio = cart.calcular_total()
-        assert total_vacio == 0.0, "Carrito vacío debería totalizar 0.0"
-        
-        # Test 2: Carrito con un artículo
-        cart.agregar_articulo("game-001", "Juego 1", 29.99)
-        total_uno = cart.calcular_total()
-        assert total_uno == 29.99, f"Debería totalizar 29.99, pero es {total_uno}"
-        
-        # Test 3: Carrito con múltiples artículos
-        cart.agregar_articulo("game-002", "Juego 2", 39.99)
-        cart.agregar_articulo("game-003", "Juego 3", 19.99)
-        total_multiple = cart.calcular_total()
-        expected_total = 29.99 + 39.99 + 19.99
-        assert abs(total_multiple - expected_total) < 0.01, f"Debería totalizar {expected_total}, pero es {total_multiple}"
-        
-        return True
-    
-    def test_limpiar_carrito(self):
-        """Prueba la funcionalidad de limpiar carrito"""
-        cart = Cart()
-        
-        # Llenar el carrito
-        cart.agregar_articulo("game-001", "Juego 1", 29.99)
-        cart.agregar_articulo("game-002", "Juego 2", 39.99)
-        cart.agregar_articulo("game-003", "Juego 3", 19.99)
-        
-        # Verificar que tiene artículos
-        assert len(cart.articulos) == 3, "Debería tener 3 artículos antes de limpiar"
-        assert cart.calcular_total() > 0, "Debería tener total mayor a 0 antes de limpiar"
-        
-        # Limpiar carrito
-        cart.limpiar_carrito()
-        
-        # Verificar que está vacío
-        assert len(cart.articulos) == 0, "Debería estar vacío después de limpiar"
-        assert cart.calcular_total() == 0.0, "Total debería ser 0.0 después de limpiar"
-        
-        return True
+        try:
+            import requests
+            
+            base_url = "http://localhost:8000"
+            
+            # Lista de endpoints a probar
+            endpoints = [
+                ("/", "Endpoint raíz"),
+                ("/health", "Health check"), 
+                ("/shopping_cart", "Carrito de compras"),
+                ("/shopping_cart/total", "Total del carrito"),
+                ("/games/", "Lista de juegos"),
+                ("/games/search/", "Búsqueda de juegos"),
+                ("/games/popular/", "Juegos populares"),
+                ("/games/recent/", "Juegos recientes")
+            ]
+            
+            successful_tests = 0
+            
+            for endpoint, description in endpoints:
+                try:
+                    print(f"   🔸 Probando {endpoint}...")
+                    response = requests.get(f"{base_url}{endpoint}", timeout=10)
+                    
+                    if response.status_code == 200:
+                        self.results['api']['tests'].append(f"✅ {endpoint} - RESPONDE (200)")
+                        self.results['api']['passed'] += 1
+                        successful_tests += 1
+                        print(f"      ✅ {description} - OK")
+                    else:
+                        self.results['api']['tests'].append(f"⚠️  {endpoint} - CÓDIGO {response.status_code}")
+                        self.results['api']['failed'] += 1
+                        print(f"      ⚠️  {description} - Código {response.status_code}")
+                        
+                except requests.exceptions.RequestException as e:
+                    self.results['api']['tests'].append(f"❌ {endpoint} - NO ACCESIBLE: {e}")
+                    self.results['api']['failed'] += 1
+                    print(f"      ❌ {description} - No accesible")
+            
+            # Verificar que al menos la mayoría de endpoints funcionan
+            if successful_tests >= 5:
+                print("   ✅ API - LA MAYORÍA DE ENDPOINTS FUNCIONAN")
+                return True
+            else:
+                print("   ⚠️  API - MUCHOS ENDPOINTS NO RESPONDEN")
+                return False
+                
+        except ImportError:
+            self.results['api']['tests'].append("ℹ️  Módulo 'requests' no instalado")
+            print("   ℹ️  API - Pruebas omitidas (falta 'requests')")
+            return True
+        except Exception as e:
+            error_msg = f"❌ Error probando endpoints: {e}"
+            self.results['api']['tests'].append(error_msg)
+            self.results['api']['failed'] += 1
+            print(f"   {error_msg}")
+            return False
     
     def test_flujo_completo(self):
-        """Prueba de integración completa del flujo del carrito"""
-        cart = Cart()
+        """PRUEBA DE FLUJO COMPLETO DEL SISTEMA"""
+        print("🔄 EJECUTANDO PRUEBA DE FLUJO COMPLETO...")
         
-        print("      🧪 Simulando flujo completo de usuario...")
-        
-        # Paso 1: Usuario agrega juegos al carrito
-        cart.agregar_articulo("game-001", "Cyberpunk 2077", 49.99)
-        cart.agregar_articulo("game-002", "The Witcher 3", 29.99)
-        cart.agregar_articulo("game-003", "GTA V", 39.99)
-        
-        # Verificar estado intermedio
-        assert len(cart.articulos) == 3, "Debería tener 3 juegos en el carrito"
-        total_parcial = cart.calcular_total()
-        expected_parcial = 49.99 + 29.99 + 39.99
-        assert abs(total_parcial - expected_parcial) < 0.01, f"Total parcial incorrecto"
-        
-        # Paso 2: Usuario elimina un juego
-        cart.remover_articulo("game-002")
-        assert len(cart.articulos) == 2, "Debería tener 2 juegos después de eliminar uno"
-        
-        # Paso 3: Usuario agrega otro juego diferente
-        cart.agregar_articulo("game-004", "Red Dead Redemption 2", 59.99)
-        assert len(cart.articulos) == 3, "Debería tener 3 juegos después de agregar uno nuevo"
-        
-        # Paso 4: Verificar total final
-        total_final = cart.calcular_total()
-        expected_final = 49.99 + 39.99 + 59.99
-        assert abs(total_final - expected_final) < 0.01, f"Total final incorrecto"
-        
-        # Paso 5: Usuario limpia todo el carrito
-        cart.limpiar_carrito()
-        assert len(cart.articulos) == 0, "Debería estar vacío al final"
-        assert cart.calcular_total() == 0.0, "Total debería ser 0 al final"
-        
-        print("      ✅ Flujo completo ejecutado correctamente")
-        return True
+        try:
+            from estim_py_api.Shopping_cart import Cart
+            
+            # Simular flujo completo de un usuario
+            cart = Cart()
+            
+            print("   🔸 Flujo: Carrito vacío...")
+            # 1. Usuario ve carrito vacío
+            assert len(cart.articulos) == 0, "Carrito debería empezar vacío"
+            
+            print("   🔸 Flujo: Agregar juegos...")
+            # 2. Usuario agrega juegos al carrito
+            cart.agregar_articulo("game-1", "The Legend of Zelda", 59.99)
+            cart.agregar_articulo("game-2", "Mario Kart", 49.99)
+            cart.agregar_articulo("game-3", "Animal Crossing", 54.99)
+            
+            # 3. Verificar estado
+            assert len(cart.articulos) == 3, "Debería tener 3 juegos"
+            total = cart.calcular_total()
+            expected_total = 59.99 + 49.99 + 54.99
+            assert abs(total - expected_total) < 0.01, f"Total debería ser {expected_total}, es {total}"
+            
+            print("   🔸 Flujo: Eliminar juego...")
+            # 4. Usuario elimina un juego
+            cart.remover_articulo("game-2")
+            assert len(cart.articulos) == 2, "Debería tener 2 juegos después de eliminar"
+            
+            print("   🔸 Flujo: Agregar juego diferente...")
+            # 5. Usuario agrega otro juego
+            cart.agregar_articulo("game-4", "Cyberpunk 2077", 39.99)
+            assert len(cart.articulos) == 3, "Debería tener 3 juegos"
+            
+            print("   🔸 Flujo: Verificar total final...")
+            # 6. Verificar total final
+            total_final = cart.calcular_total()
+            expected_final = 59.99 + 54.99 + 39.99
+            assert abs(total_final - expected_final) < 0.01, f"Total final debería ser {expected_final}, es {total_final}"
+            
+            print("   🔸 Flujo: Limpiar carrito...")
+            # 7. Usuario limpia el carrito
+            cart.limpiar_carrito()
+            assert len(cart.articulos) == 0, "Debería estar vacío al final"
+            assert cart.calcular_total() == 0.0, "Total debería ser 0 al final"
+            
+            self.results['carrito']['tests'].append("✅ Flujo completo del sistema - PASÓ")
+            self.results['carrito']['passed'] += 1
+            
+            print("   ✅ FLUJO COMPLETO - SIMULACIÓN EXITOSA")
+            return True
+            
+        except Exception as e:
+            error_msg = f"❌ Error en flujo completo: {e}"
+            self.results['carrito']['tests'].append(error_msg)
+            self.results['carrito']['failed'] += 1
+            print(f"   {error_msg}")
+            return False
     
     def run_all_tests(self):
         """Ejecuta todas las pruebas"""
         self.start_time = time.time()
-        self.print_banner()
+        self.print_header()
         
-        print("🚀 Iniciando suite de pruebas...\n")
+        print("🚀 INICIANDO SUITE COMPLETA DE PRUEBAS...\n")
         
-        # Lista de todas las pruebas a ejecutar
+        # Ejecutar todas las pruebas
         tests = [
-            ("Inserción de Artículos", self.test_agregar_articulo),
-            ("Eliminación de Artículos", self.test_remover_articulo),
-            ("Cálculo de Total", self.test_calcular_total),
-            ("Limpieza de Carrito", self.test_limpiar_carrito),
-            ("Flujo Completo", self.test_flujo_completo)
+            ("CARRITO DE COMPRAS", self.test_carrito_basico),
+            ("SERVICIO DE BÚSQUEDA", self.test_servicio_busqueda), 
+            ("ENDPOINTS API", self.test_endpoints_api),
+            ("FLUJO COMPLETO", self.test_flujo_completo)
         ]
         
-        # Ejecutar cada prueba
-        for test_name, test_function in tests:
-            self.run_test(test_name, test_function)
-            print()  # Línea en blanco entre pruebas
+        for test_name, test_func in tests:
+            print(f"🎯 {test_name}")
+            print("-" * 50)
+            test_func()
+            print()  # Línea en blanco entre tests
         
         self.show_results()
         
-        return self.tests_failed == 0
+        return self.calculate_success()
+    
+    def calculate_success(self):
+        """Calcula si las pruebas fueron exitosas en general"""
+        total_passed = (self.results['carrito']['passed'] + 
+                       self.results['busqueda']['passed'] + 
+                       self.results['api']['passed'])
+        
+        total_failed = (self.results['carrito']['failed'] + 
+                       self.results['busqueda']['failed'] + 
+                       self.results['api']['failed'])
+        
+        return total_failed == 0
     
     def show_results(self):
-        """Muestra los resultados finales de las pruebas"""
+        """Muestra los resultados detallados"""
         duration = time.time() - self.start_time
-        total_tests = self.tests_passed + self.tests_failed
         
-        print("\n" + "📊" * 60)
-        print("📊                     RESUMEN DE RESULTADOS                     📊")
+        print("📊" * 60)
+        print("📈 RESUMEN COMPLETO DE PRUEBAS")
         print("📊" * 60)
         
         print(f"\n⏱️  Tiempo total de ejecución: {duration:.2f} segundos")
-        print(f"🧪 Total de pruebas ejecutadas: {total_tests}")
-        print(f"✅ Pruebas exitosas: {self.tests_passed}")
-        print(f"❌ Pruebas fallidas: {self.tests_failed}")
         
-        # Calcular porcentaje de éxito
+        # Mostrar resultados por categoría
+        for category, data in self.results.items():
+            total_tests = data['passed'] + data['failed']
+            if total_tests > 0:
+                success_rate = (data['passed'] / total_tests) * 100
+            else:
+                success_rate = 0
+                
+            print(f"\n🔹 {category.upper()}:")
+            print(f"   Pruebas: {total_tests} | ✅ {data['passed']} | ❌ {data['failed']} | 📈 {success_rate:.1f}%")
+            for test in data['tests']:
+                print(f"   {test}")
+        
+        # Totales generales
+        total_passed = sum(data['passed'] for data in self.results.values())
+        total_failed = sum(data['failed'] for data in self.results.values())
+        total_tests = total_passed + total_failed
+        
         if total_tests > 0:
-            success_rate = (self.tests_passed / total_tests) * 100
-            print(f"📈 Tasa de éxito: {success_rate:.1f}%")
+            overall_success_rate = (total_passed / total_tests) * 100
+        else:
+            overall_success_rate = 0
         
-        # Mostrar errores si los hay
-        if self.errors:
-            print(f"\n⚠️  Errores detectados:")
-            for error in self.errors:
-                print(f"   • {error}")
+        print(f"\n🎯 TOTAL GENERAL: {total_tests} pruebas ejecutadas")
+        print(f"✅ Pruebas exitosas: {total_passed}")
+        print(f"❌ Pruebas fallidas: {total_failed}")
+        print(f"📈 Tasa de éxito general: {overall_success_rate:.1f}%")
         
         # Resultado final
-        print("\n" + "🎯" * 60)
-        if self.tests_failed == 0:
+        print("\n" + "🎮" * 60)
+        if total_failed == 0:
             print("🎉 ¡TODAS LAS PRUEBAS PASARON EXITOSAMENTE! 🎉")
-            print("🚀 El sistema de carrito está funcionando PERFECTAMENTE")
-            print("💪 El código es confiable y listo para producción")
+            print("🚀 El sistema ESTIM está funcionando PERFECTAMENTE")
+            print("💪 Carrito + Búsqueda + API - TODO LISTO PARA PRODUCCIÓN")
         else:
             print("💥 ALGUNAS PRUEBAS FALLARON")
-            print("🔧 Revisa los errores arriba y corrige el código")
-        print("🎯" * 60)
+            print("🔧 Revisa los detalles arriba para corregir los problemas")
+            print("💡 Ejecuta pruebas individuales para debugging específico")
+        print("🎮" * 60)
 
 def main():
     """Función principal"""
@@ -290,6 +422,8 @@ def main():
         return False
     except Exception as e:
         print(f"\n💥 ERROR CRÍTICO: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 if __name__ == "__main__":
