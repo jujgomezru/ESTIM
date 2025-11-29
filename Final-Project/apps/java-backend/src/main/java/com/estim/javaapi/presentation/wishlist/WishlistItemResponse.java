@@ -1,5 +1,3 @@
-// com.estim.javaapi.presentation.wishlist.WishlistItemResponse
-
 package com.estim.javaapi.presentation.wishlist;
 
 import java.math.BigDecimal;
@@ -19,5 +17,5 @@ public record WishlistItemResponse(
     Instant addedAt,
     Map<String, Boolean> notificationPreferences,
     BigDecimal currentPrice
-) {
-}
+) {}
+
