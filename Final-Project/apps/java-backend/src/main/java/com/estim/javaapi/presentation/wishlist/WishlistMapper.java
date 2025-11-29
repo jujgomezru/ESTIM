@@ -9,19 +9,26 @@ import java.math.BigDecimal;
 public class WishlistMapper {
 
     /**
-     * Maps a domain WishlistItem to a response DTO.
+     * Maps a domain WishlistItem to the response DTO.
      *
-     * @param item         domain wishlist item
-     * @param currentPrice current price from catalog (may be null)
+     * @param item            domain wishlist item
+     * @param gameTitle       resolved game title (placeholder for now)
+     * @param coverImageUrl   resolved game cover URL (placeholder for now)
+     * @param currentPrice    current price (may be null)
      */
-    public WishlistItemResponse toResponse(WishlistItem item, BigDecimal currentPrice) {
-        String gameId = item.getGameId().getValue().toString();
-
+    public WishlistItemResponse toResponse(
+        WishlistItem item,
+        String gameTitle,
+        String coverImageUrl,
+        BigDecimal currentPrice
+    ) {
         return new WishlistItemResponse(
-            gameId,
-            item.getAddedAt(),
-            item.getNotificationPreferences(),
-            currentPrice
+            item.getGameId().getValue().toString(),  // gameId
+            gameTitle,                               // NEW
+            coverImageUrl,                           // NEW
+            item.getAddedAt(),                       // addedAt
+            item.getNotificationPreferences(),       // preferences
+            currentPrice                             // currentPrice
         );
     }
 }

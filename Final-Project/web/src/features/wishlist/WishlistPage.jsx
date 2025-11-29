@@ -16,22 +16,54 @@ export default function WishlistPage() {
     loadWishlist();
   }, []);
 
-  async function loadWishlist() {
-    try {
-      const data = await getWishlist();
-      
-      if (!data || data.length === 0) {
-        setWishlist(EXAMPLE_WISHLIST);
-      } else {
-        setWishlist(data);
+    async function loadWishlist() {
+      try {
+        const data = await getWishlist(); // array de WishlistItemResponse
+
+        if (!Array.isArray(data) || data.length === 0) {
+          // Sin items → mostramos estado vacío real
+          setWishlist([]);
+          return;
+        }
+
+        // Mapear respuesta del backend a la forma que usa la UI
+        const mapped = data.map((item) => {
+          const id = item.gameId;
+          const price =
+            item.currentPrice !== null && item.currentPrice !== undefined
+              ? Number(item.currentPrice)
+              : 0;
+
+          const title =
+            item.gameTitle ||
+            `Wishlist game ${String(id).slice(0, 8)}...`;
+
+          const image =
+            item.coverImageUrl ||
+            "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop";
+
+          return {
+            id,               // usado para keys, rutas y handleRemove
+            title,
+            image,
+            price,
+            discount: 0,      // aún no tenemos descuentos dinámicos
+            category: "Desconocido",
+            multiplayer: false,
+            addedAt: item.addedAt,
+          };
+        });
+
+        setWishlist(mapped);
+      } catch (error) {
+        console.error("Error loading wishlist:", error);
+        // En caso de error → mostramos vacía (o podrías usar EXAMPLE_WISHLIST para debug)
+        setWishlist([]);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error loading wishlist:", error);
-      setWishlist(EXAMPLE_WISHLIST);
-    } finally {
-      setLoading(false);
     }
-  }
+
 
   async function handleAddToCart(gameId) {
     try {
@@ -154,7 +186,7 @@ export default function WishlistPage() {
               game={game}
               onAddToCart={handleAddToCart}
               onRemove={handleRemoveFromWishlist}
-              onViewDetails={() => navigate(`/game/${game.id}`)}
+              onViewDetails={() => navigate(`/games/${game.id}`)}
             />
           ))}
         </div>
