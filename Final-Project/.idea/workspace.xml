@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/controllers/WishlistController.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/controllers/WishlistController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/wishlist/WishlistItemResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/wishlist/WishlistItemResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/wishlist/WishlistMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/apps/java-backend/src/main/java/com/estim/javaapi/presentation/wishlist/WishlistMapper.java" afterDir="false" />
-    </list>
+    <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -90,7 +85,7 @@
       <window_info id="Backup and Sync History" />
       <window_info id="Pull Requests" />
       <window_info id="Learn" show_stripe_button="false" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29785156" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.29785156" />
       <window_info id="Commit" order="1" weight="0.25" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" />
@@ -100,7 +95,7 @@
       <window_info anchor="bottom" id="File Transfer" />
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Problems" order="1" />
-      <window_info active="true" anchor="bottom" id="Problems View" order="2" visible="true" weight="0.3302696" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.3302696" />
       <window_info anchor="bottom" id="Terminal" order="3" />
       <window_info anchor="bottom" id="Services" order="4" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.3302696" />
