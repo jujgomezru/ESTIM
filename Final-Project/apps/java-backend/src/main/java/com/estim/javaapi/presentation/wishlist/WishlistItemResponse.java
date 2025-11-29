@@ -12,10 +12,10 @@ import java.util.Map;
  */
 public record WishlistItemResponse(
     String gameId,
-    String gameTitle,                       
+    String gameTitle,
     String coverImageUrl,
     Instant addedAt,
     Map<String, Boolean> notificationPreferences,
     BigDecimal currentPrice
-) {
-}
+) {}
+
