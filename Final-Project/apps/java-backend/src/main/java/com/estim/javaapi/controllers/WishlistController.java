@@ -56,24 +56,11 @@ public class WishlistController {
      * Lists all wishlist items for the current user.
      */
     @GetMapping
-    public List<WishlistItemResponse> getWishlist(@AuthenticationPrincipal AuthenticatedUser currentUser) {
+    public List<WishlistItemResponse> getWishlist(
+        @AuthenticationPrincipal AuthenticatedUser currentUser
+    ) {
         UserId userId = currentUser.userId();
-
-        List<WishlistItem> items = listWishlistService.listWishlist(
-            new ListWishlistForUserQuery(userId)
-        );
-
-        // TODO: integrate catalog/pricing to set currentPrice
-        BigDecimal currentPrice = null;
-
-        return items.stream()
-            .map(item -> wishlistMapper.toResponse(
-                item,
-                defaultGameTitle(item),
-                defaultCoverImageUrl(),
-                currentPrice
-            ))
-            .toList();
+        return listWishlistService.listWishlist(new ListWishlistForUserQuery(userId));
     }
 
     /**
@@ -106,24 +93,13 @@ public class WishlistController {
             );
         }
 
-        // 3) Reload to build response
-        List<WishlistItem> items = listWishlistService.listWishlist(
-            new ListWishlistForUserQuery(userId)
-        );
-
-        WishlistItem created = items.stream()
-            .filter(it -> it.getGameId().getValue().equals(gameId.getValue()))
+        // 3) Reload enriched view and return the created item
+        String gameIdStr = gameId.getValue().toString();
+        return listWishlistService.listWishlist(new ListWishlistForUserQuery(userId))
+            .stream()
+            .filter(it -> it.gameId().equals(gameIdStr))
             .findFirst()
-            .orElseThrow(); // Should not happen if services work correctly
-
-        BigDecimal currentPrice = null; // TODO integrate catalog/pricing
-
-        return wishlistMapper.toResponse(
-            created,
-            defaultGameTitle(created),
-            defaultCoverImageUrl(),
-            currentPrice
-        );
+            .orElseThrow(); // should not happen if services behave correctly
     }
 
     /**

@@ -93,11 +93,27 @@
       <window_info anchor="bottom" id="Profiler" />
       <window_info anchor="bottom" id="TODO" />
       <window_info anchor="bottom" id="File Transfer" />
+<<<<<<< HEAD
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Problems" order="1" />
       <window_info anchor="bottom" id="Problems View" order="2" weight="0.3302696" />
       <window_info anchor="bottom" id="Terminal" order="3" />
       <window_info anchor="bottom" id="Services" order="4" />
+=======
+<<<<<<< HEAD
+      <window_info anchor="bottom" id="Version Control" order="0" />
+      <window_info anchor="bottom" id="Problems" order="1" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.28615195" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.278799" />
+      <window_info anchor="bottom" id="Services" order="4" weight="0.4332108" />
+=======
+      <window_info anchor="bottom" id="Terminal" order="0" side_tool="true" visible="true" weight="0.6170343" />
+      <window_info anchor="bottom" id="Version Control" order="1" />
+      <window_info anchor="bottom" id="Problems" order="2" />
+      <window_info anchor="bottom" id="Problems View" order="3" weight="0.28615195" />
+      <window_info anchor="bottom" id="Services" order="4" weight="0.2777778" />
+>>>>>>> main
+>>>>>>> java-backend
       <window_info anchor="bottom" id="Find" order="5" weight="0.3302696" />
       <window_info anchor="bottom" id="Run" order="6" weight="0.3302696" />
       <window_info anchor="bottom" id="Debug" order="7" weight="0.3302696" />
