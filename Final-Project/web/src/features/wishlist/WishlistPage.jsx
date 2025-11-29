@@ -16,44 +16,53 @@ export default function WishlistPage() {
     loadWishlist();
   }, []);
 
-  async function loadWishlist() {
-    try {
-      const data = await getWishlist(); // array de WishlistItemResponse
+    async function loadWishlist() {
+      try {
+        const data = await getWishlist(); // array de WishlistItemResponse
 
-      if (!data || data.length === 0) {
-        // Sin items reales → mostramos estado vacío
+        if (!Array.isArray(data) || data.length === 0) {
+          // Sin items → mostramos estado vacío real
+          setWishlist([]);
+          return;
+        }
+
+        // Mapear respuesta del backend a la forma que usa la UI
+        const mapped = data.map((item) => {
+          const id = item.gameId;
+          const price =
+            item.currentPrice !== null && item.currentPrice !== undefined
+              ? Number(item.currentPrice)
+              : 0;
+
+          const title =
+            item.gameTitle ||
+            `Wishlist game ${String(id).slice(0, 8)}...`;
+
+          const image =
+            item.coverImageUrl ||
+            "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop";
+
+          return {
+            id,               // usado para keys, rutas y handleRemove
+            title,
+            image,
+            price,
+            discount: 0,      // aún no tenemos descuentos dinámicos
+            category: "Desconocido",
+            multiplayer: false,
+            addedAt: item.addedAt,
+          };
+        });
+
+        setWishlist(mapped);
+      } catch (error) {
+        console.error("Error loading wishlist:", error);
+        // En caso de error → mostramos vacía (o podrías usar EXAMPLE_WISHLIST para debug)
         setWishlist([]);
-        return;
+      } finally {
+        setLoading(false);
       }
-
-      // Mapear respuesta del backend a la forma que usa la UI
-      const mapped = data.map((item) => {
-        const id = item.gameId; // UUID del juego
-        const price = item.currentPrice ?? 0;
-
-        return {
-          id,                     // usado para keys, rutas, etc.
-          title: `Juego ${id.slice(0, 8)}...`, // placeholder hasta integrar catálogo
-          image:
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop",
-          price,
-          discount: 0,            // no tenemos info de descuento aún
-          category: "Desconocido",
-          multiplayer: false,
-          // extra: podrías guardar addedAt si quisieras mostrarlo
-          addedAt: item.addedAt,
-        };
-      });
-
-      setWishlist(mapped);
-    } catch (error) {
-      console.error("Error loading wishlist:", error);
-      // En producción es mejor NO rellenar con ejemplos; mostramos vacía:
-      setWishlist([]);
-    } finally {
-      setLoading(false);
     }
-  }
 
 
   async function handleAddToCart(gameId) {
@@ -177,7 +186,7 @@ export default function WishlistPage() {
               game={game}
               onAddToCart={handleAddToCart}
               onRemove={handleRemoveFromWishlist}
-              onViewDetails={() => navigate(`/game/${game.id}`)}
+              onViewDetails={() => navigate(`/games/${game.id}`)}
             />
           ))}
         </div>
