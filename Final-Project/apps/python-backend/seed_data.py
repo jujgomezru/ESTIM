@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from sqlalchemy.orm import Session
-from .database import GameDB
+from database import GameDB
 
 def create_sample_games(db: Session):
     """Inserta juegos de prueba en la base de datos - VERSIÓN QUE SI FUNCIONA"""
