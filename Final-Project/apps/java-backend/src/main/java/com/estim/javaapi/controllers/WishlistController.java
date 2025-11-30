@@ -11,10 +11,10 @@ import com.estim.javaapi.application.wishlist.UpdateWishlistItemService;
 import com.estim.javaapi.domain.library.GameId;
 import com.estim.javaapi.domain.user.UserId;
 import com.estim.javaapi.domain.wishlist.WishlistItem;
+import com.estim.javaapi.infrastructure.security.AuthenticatedUser;
 import com.estim.javaapi.presentation.wishlist.WishlistItemRequest;
 import com.estim.javaapi.presentation.wishlist.WishlistItemResponse;
 import com.estim.javaapi.presentation.wishlist.WishlistMapper;
-import com.estim.javaapi.infrastructure.security.AuthenticatedUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -56,19 +56,11 @@ public class WishlistController {
      * Lists all wishlist items for the current user.
      */
     @GetMapping
-    public List<WishlistItemResponse> getWishlist(@AuthenticationPrincipal AuthenticatedUser currentUser) {
-        UserId userId = currentUser.userId(); // adjust if your AuthenticatedUser API is different
-
-        List<WishlistItem> items = listWishlistService.listWishlist(
-            new ListWishlistForUserQuery(userId)
-        );
-
-        // TODO: integrate catalog/pricing to set currentPrice
-        BigDecimal currentPrice = null;
-
-        return items.stream()
-            .map(item -> wishlistMapper.toResponse(item, currentPrice))
-            .toList();
+    public List<WishlistItemResponse> getWishlist(
+        @AuthenticationPrincipal AuthenticatedUser currentUser
+    ) {
+        UserId userId = currentUser.userId();
+        return listWishlistService.listWishlist(new ListWishlistForUserQuery(userId));
     }
 
     /**
@@ -85,7 +77,7 @@ public class WishlistController {
         @AuthenticationPrincipal AuthenticatedUser currentUser,
         @RequestBody WishlistItemRequest request
     ) {
-        UserId userId = currentUser.userId(); // adjust as needed
+        UserId userId = currentUser.userId();
         GameId gameId = GameId.fromString(request.gameId());
 
         // 1) Add to wishlist
@@ -101,19 +93,13 @@ public class WishlistController {
             );
         }
 
-        // 3) Reload to build response
-        List<WishlistItem> items = listWishlistService.listWishlist(
-            new ListWishlistForUserQuery(userId)
-        );
-
-        WishlistItem created = items.stream()
-            .filter(it -> it.getGameId().getValue().equals(gameId.getValue()))
+        // 3) Reload enriched view and return the created item
+        String gameIdStr = gameId.getValue().toString();
+        return listWishlistService.listWishlist(new ListWishlistForUserQuery(userId))
+            .stream()
+            .filter(it -> it.gameId().equals(gameIdStr))
             .findFirst()
-            .orElseThrow(); // Should not happen if services work correctly
-
-        BigDecimal currentPrice = null; // TODO integrate catalog/pricing
-
-        return wishlistMapper.toResponse(created, currentPrice);
+            .orElseThrow(); // should not happen if services behave correctly
     }
 
     /**
@@ -127,11 +113,24 @@ public class WishlistController {
         @AuthenticationPrincipal AuthenticatedUser currentUser,
         @PathVariable("gameId") String gameIdStr
     ) {
-        UserId userId = currentUser.userId(); // adjust as needed
+        UserId userId = currentUser.userId();
         GameId gameId = GameId.fromString(gameIdStr);
 
         removeFromWishlistService.removeFromWishlist(
             new RemoveFromWishlistCommand(userId, gameId)
         );
+    }
+
+    // ---------- helpers for now (no GameRepository yet) ----------
+
+    private String defaultGameTitle(WishlistItem item) {
+        // You can tweak this to any placeholder you want
+        String shortId = item.getGameId().getValue().toString().substring(0, 8);
+        return "Wishlist game " + shortId;
+    }
+
+    private String defaultCoverImageUrl() {
+        // Same placeholder you were using in the frontend
+        return "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop";
     }
 }

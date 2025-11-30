@@ -8,17 +8,16 @@ import java.math.BigDecimal;
 @Component
 public class WishlistMapper {
 
-    /**
-     * Maps a domain WishlistItem to a response DTO.
-     *
-     * @param item         domain wishlist item
-     * @param currentPrice current price from catalog (may be null)
-     */
-    public WishlistItemResponse toResponse(WishlistItem item, BigDecimal currentPrice) {
-        String gameId = item.getGameId().getValue().toString();
-
+    public WishlistItemResponse toResponse(
+        WishlistItem item,
+        String gameTitle,
+        String coverImageUrl,
+        BigDecimal currentPrice
+    ) {
         return new WishlistItemResponse(
-            gameId,
+            item.getGameId().getValue().toString(),  // gameId
+            gameTitle,                               // title from games table
+            coverImageUrl,                           // cover from game_media
             item.getAddedAt(),
             item.getNotificationPreferences(),
             currentPrice

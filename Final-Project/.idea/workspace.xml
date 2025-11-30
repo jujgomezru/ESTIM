@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="" />
+    <list default="true" id="90adf62e-f6ac-4e6e-8979-e638b0438edf" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/java-api.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/java-api.main.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/java-api.test.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,16 +99,24 @@
       <window_info anchor="bottom" id="Profiler" />
       <window_info anchor="bottom" id="TODO" />
       <window_info anchor="bottom" id="File Transfer" />
-      <window_info anchor="bottom" id="Terminal" order="0" side_tool="true" visible="true" weight="0.2555147" />
+<<<<<<< HEAD
+      <window_info anchor="bottom" id="Version Control" order="0" />
+      <window_info anchor="bottom" id="Problems" order="1" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.28615195" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.278799" />
+      <window_info anchor="bottom" id="Services" order="4" weight="0.4332108" />
+=======
+      <window_info anchor="bottom" id="Terminal" order="0" side_tool="true" visible="true" weight="0.6170343" />
       <window_info anchor="bottom" id="Version Control" order="1" />
       <window_info anchor="bottom" id="Problems" order="2" />
       <window_info anchor="bottom" id="Problems View" order="3" weight="0.28615195" />
-      <window_info anchor="bottom" id="Services" order="5" weight="0.2777778" />
-      <window_info anchor="bottom" id="Find" order="6" weight="0.3302696" />
-      <window_info anchor="bottom" id="Run" order="7" weight="0.3302696" />
-      <window_info anchor="bottom" id="Debug" order="8" weight="0.3302696" />
-      <window_info anchor="bottom" id="Build" order="9" weight="0.29963237" />
-      <window_info anchor="bottom" id="JPA Console" order="10" weight="0.28615195" />
+      <window_info anchor="bottom" id="Services" order="4" weight="0.2777778" />
+>>>>>>> main
+      <window_info anchor="bottom" id="Find" order="5" weight="0.3302696" />
+      <window_info anchor="bottom" id="Run" order="6" weight="0.3302696" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.3302696" />
+      <window_info anchor="bottom" id="Build" order="8" weight="0.29963237" />
+      <window_info anchor="bottom" id="JPA Console" order="9" weight="0.28615195" />
       <window_info anchor="right" id="Notifications" order="0" weight="0.2503255" />
       <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
       <window_info anchor="right" id="Database" order="2" weight="0.25097656" />
@@ -114,19 +128,8 @@
     </layout>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="java-api_main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="java-api_main" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
     <configuration name="JavaApiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="java-api_main" />
+      <module name="java-api.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.estim.javaapi.JavaApiApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -154,6 +157,7 @@
       <workItem from="1763305084703" duration="37757000" />
       <workItem from="1763387494960" duration="6505000" />
       <workItem from="1763405695264" duration="12809000" />
+      <workItem from="1764300204974" duration="658000" />
     </task>
     <servers />
   </component>
