@@ -1,21 +1,33 @@
-import { apiGet } from "../../api/apiClient";
+// src/features/games/gameService.js
+import { pyGet } from "../../api/apiClient";
+import { ENDPOINTS } from "../../api/endpoints";
 
 // Obtener todos los juegos de la tienda
 export async function getAllGames() {
-  return await apiGet("/games");
+  // GET (PY): /games  (FastAPI lo tiene como /games/, redirige sin problema)
+  return await pyGet(ENDPOINTS.GAMES);
 }
 
-// Obtener juegos por categoría
+// Obtener juegos por categoría (género)
+// Usa el endpoint PY: GET /games/search/genre/?genre=...
 export async function getGamesByCategory(category) {
-  return await apiGet(`/games/category/${category}`);
+  return await pyGet(ENDPOINTS.gamesByGenre(category));
 }
 
-// Obtener un juego específico
+// Obtener un juego específico por ID
+// ⚠️ Requiere que el backend tenga GET /games/{game_id}
+// Si aún no lo creas en main.py, esta función devolverá 404.
 export async function getGameById(id) {
-  return await apiGet(`/games/${id}`);
+  return await pyGet(ENDPOINTS.gameById(id));
 }
 
-// Buscar juegos
+// Buscar juegos por texto
+// GET /games/search/?q=...
 export async function searchGames(query) {
-  return await apiGet(`/games/search?q=${query}`);
+  const path =
+    query && query.trim()
+      ? `${ENDPOINTS.GAMES_SEARCH}?q=${encodeURIComponent(query)}`
+      : ENDPOINTS.GAMES_SEARCH;
+
+  return await pyGet(path);
 }
