@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuite name="com.estim.javaapi.controllers.OAuthControllerTest" tests="0" skipped="0" failures="0" errors="0" timestamp="1970-01-01T00:00:00Z" hostname="DESKTOP-T5D8MHC" time="0.0">
   <properties/>
-  <system-out><![CDATA[2025-11-27T23:21:12.201-05:00  INFO 25482 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.OAuthControllerTest]: OAuthControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-11-27T23:21:12.203-05:00  INFO 25482 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.OAuthControllerTest
+  <system-out><![CDATA[2025-11-30T14:18:41.856-05:00  INFO 21835 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.OAuthControllerTest]: OAuthControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-30T14:18:41.860-05:00  INFO 21835 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.OAuthControllerTest
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
