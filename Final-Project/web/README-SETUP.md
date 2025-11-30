@@ -85,6 +85,7 @@ Los tests están organizados en `src/components/__test__/`:
 
 - Node.js v16+
 - npm o yarn
+- Compatibilidad: React 19 con @testing-library/react 16+
 
 ## Estructura del Proyecto
 
