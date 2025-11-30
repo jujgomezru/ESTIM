@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # COPY requirements primero para mejor cache
 COPY requirements.txt .
 
-# Install ALL dependencies from requirements.txt  ← ESTO ES LO QUE FALTA
+# Install ALL dependencies from requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt  
 
