@@ -6,7 +6,23 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from datetime import datetime
 
-DATABASE_URL = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+db_user = os.getenv('DB_USER', 'estim')
+db_pass = os.getenv('DB_PASS', 'estim')
+db_host = os.getenv('DB_HOST', 'localhost')
+db_name = os.getenv('DB_NAME', 'estim')
+
+db_port_str = os.getenv('DB_PORT', '5432')
+if db_port_str == 'None':
+    db_port = 5432
+else:
+    try:
+        db_port = int(db_port_str) 
+    except (ValueError, TypeError):
+        db_port = 5432 
+
+DATABASE_URL = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+
+print(f"🔗 Conectando a PostgreSQL: {db_host}:{db_port}/{db_name}")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
