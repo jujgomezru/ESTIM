@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
 from database import get_db, GameDB, create_tables
-from Shopping_cart import cart
+from shopping_cart import cart
 from search_service import SearchService
 
 app = FastAPI()
