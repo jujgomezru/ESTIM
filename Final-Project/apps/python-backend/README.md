@@ -1,122 +1,123 @@
-# DOCUMENTACIÓN PYTHON-BACKEND
+# PYTHON-BACKEND DOCUMENTATION
 
-## 🚀 Endpoints Implementados
+## 🚀 Implemented Endpoints
 
-### 🔍 Endpoints Básicos
-| Método | Endpoint | Descripción |
+### 🔍 Basic Endpoints
+| Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/` | Health check básico |
-| `GET` | `/health` | Estado del servicio |
-| `GET` | `/test-db` | Verifica la conexión con la base de datos |
+| `GET` | `/` | Basic health check |
+| `GET` | `/health` | Service status |
+| `GET` | `/test-db` | Verify database connection |
 
-### 🛒 Carrito de Compras
-| Método | Endpoint | Descripción |
+### 🛒 Shopping Cart
+| Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/shopping_cart/items/{game_id}` | Agregar al carrito |
-| `DELETE` | `/shopping_cart/items/{game_id}` | Eliminar artículo del carrito |
-| `GET` | `/shopping_cart` | Consultar carrito |
-| `GET` | `/shopping_cart/total` | Calcular total |
-| `DELETE` | `/shopping_cart/clear` | Eliminar todo el carrito |
+| `POST` | `/shopping_cart/items/{game_id}` | Add to cart |
+| `DELETE` | `/shopping_cart/items/{game_id}` | Remove item from cart |
+| `GET` | `/shopping_cart` | Query cart |
+| `GET` | `/shopping_cart/total` | Calculate total |
+| `DELETE` | `/shopping_cart/clear` | Clear entire cart |
 
-### 🎮 Catálogo de Juegos
-| Método | Endpoint | Descripción |
+### 🎮 Games Catalog
+| Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/games/` | Lista de juegos disponibles |
-| `GET` | `/games/search` | Busca por nombre, precio mínimo y máximo |
-| `GET` | `/games/search/genre` | Busca por género |
-| `GET` | `/games/popular` | Juegos más populares actualmente |
-| `GET` | `/games/recent` | Búsquedas recientes |
+| `GET` | `/games/` | List of available games |
+| `GET` | `/games/search` | Search by name, minimum and maximum price |
+| `GET` | `/games/search/genre` | Search by genre |
+| `GET` | `/games/popular` | Currently most popular games |
+| `GET` | `/games/recent` | Recent searches |
 
-### ⚙️ Administración
-| Método | Endpoint | Descripción |
+### ⚙️ Administration
+| Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/admin/seed-data` | Insertar datos de prueba |
+| `POST` | `/admin/seed-data` | Insert test data |
 
--------------------------------
+---
 
-## 🔄 FLUJO DE DATOS
-Cliente → FastAPI Endpoint
+## 🔄 DATA FLOW
+Client → FastAPI Endpoint
 ⬇️
-Endpoint → Dependency Injection (BD Session)
+Endpoint → Dependency Injection (DB Session)
 ⬇️
 Business Logic → Cart Operations
 ⬇️
 Data Access → SQLAlchemy Query
 ⬇️
 Response → Pydantic Model → JSON
---------------------------------
 
-## 📐 PRINCIPIOS SOLID APLICADOS
+---
 
-### 1. ✅ **Principio de Responsabilidad Única (SRP)**
-Cada módulo tiene una única razón para cambiar:
+## 📐 APPLIED SOLID PRINCIPLES
 
-- **`main.py`**: Responsable exclusivamente de definir los endpoints de la API y manejar las rutas HTTP
-- **`Shopping_cart.py`**: Responsable únicamente de la lógica de negocio del carrito de compras
-- **`database.py`**: Responsable exclusivamente de la conexión a base de datos y definición de modelos
-- **`seed_data.py`**: Responsable únicamente de la inserción de datos de prueba
+### 1. ✅ **Single Responsibility Principle (SRP)**
+Each module has a single reason to change:
 
-### 2. ✅ **Principio Abierto/Cerrado (OCP)**
-Las entidades deben estar abiertas para extensión pero cerradas para modificación:
+- **`main.py`**: Exclusively responsible for defining API endpoints and handling HTTP routes
+- **`Shopping_cart.py`**: Solely responsible for shopping cart business logic
+- **`database.py`**: Exclusively responsible for database connection and model definition
+- **`seed_data.py`**: Solely responsible for test data insertion
 
-- El sistema está diseñado para extender funcionalidades sin modificar código existente
-- Podemos agregar nuevos tipos de items al carrito (DLCs, paquetes, suscripciones) sin cambiar la lógica base
-- Podemos añadir nuevos endpoints sin afectar los existentes
-- La estructura de modelos permite agregar nuevos campos sin romper funcionalidad existente
+### 2. ✅ **Open/Closed Principle (OCP)**
+Entities should be open for extension but closed for modification:
 
-### 3. ✅ **Principio de Sustitución de Liskov (LSP)**
-Los objetos deben ser reemplazables por instancias de sus subtipos sin alterar el comportamiento:
+- The system is designed to extend functionality without modifying existing code
+- We can add new cart item types (DLCs, packages, subscriptions) without changing base logic
+- We can add new endpoints without affecting existing ones
+- The model structure allows adding new fields without breaking existing functionality
 
-- Los modelos de respuesta Pydantic pueden usarse indistintamente donde se esperan datos de juegos
-- El carrito maneja items de forma genérica, permitiendo futuros tipos de productos
-- Las dependencias inyectadas (sesiones de BD) son intercambiables y consistentes
-- Las respuestas de error mantienen una estructura uniforme en toda la API
+### 3. ✅ **Liskov Substitution Principle (LSP)**
+Objects should be replaceable with instances of their subtypes without altering behavior:
 
-### 4. ✅ **Principio de Segregación de Interfaces (ISP)**
-Muchas interfaces específicas son mejores que una interfaz general:
+- Pydantic response models can be used interchangeably where game data is expected
+- The cart handles items generically, allowing for future product types
+- Injected dependencies (DB sessions) are interchangeable and consistent
+- Error responses maintain uniform structure throughout the API
 
-- **Endpoints específicos para operaciones específicas**:
-  - `GET /shopping_cart` solo para consultar
-  - `POST /shopping_cart/items` solo para agregar
-  - `DELETE /shopping_cart/items` solo para eliminar
+### 4. ✅ **Interface Segregation Principle (ISP)**
+Many specific interfaces are better than one general interface:
 
-- **Dependencias separadas para diferentes concerns**:
-  - Dependencia de base de datos para operaciones CRUD
-  - Dependencia de carrito para operaciones de negocio
-  - Modelos de respuesta específicos para diferentes vistas de datos
+- **Specific endpoints for specific operations**:
+  - `GET /shopping_cart` only for querying
+  - `POST /shopping_cart/items` only for adding
+  - `DELETE /shopping_cart/items` only for removing
 
-### 5. ✅ **Principio de Inversión de Dependencias (DIP)**
-Depender de abstracciones, no de implementaciones concretas:
+- **Separate dependencies for different concerns**:
+  - Database dependency for CRUD operations
+  - Cart dependency for business operations
+  - Specific response models for different data views
 
-- Los endpoints dependen de la abstracción Session de SQLAlchemy, no de una implementación específica de PostgreSQL
-- La lógica de negocio depende de interfaces de carrito, no de implementaciones concretas de almacenamiento
-- FastAPI inyecta dependencias a través de abstracciones, no de implementaciones directas
-- El sistema podría cambiar de PostgreSQL a MySQL modificando solo la capa de datos, sin afectar el negocio
+### 5. ✅ **Dependency Inversion Principle (DIP)**
+Depend on abstractions, not on concrete implementations:
 
--------------------------------------
+- Endpoints depend on SQLAlchemy Session abstraction, not specific PostgreSQL implementation
+- Business logic depends on cart interfaces, not concrete storage implementations
+- FastAPI injects dependencies through abstractions, not direct implementations
+- The system could switch from PostgreSQL to MySQL by modifying only the data layer, without affecting business logic
 
-## 🏗️ ARQUITECTURA DEL SISTEMA
-                CAPA DE PRESENTACIÓN
+---
+
+## 🏗️ SYSTEM ARCHITECTURE
+                PRESENTATION LAYER
                 (FastAPI Endpoints)
                         ⬇️
-                 CAPA DE SERVICIOS
-            (Lógica de Negocio - Carrito)
+                 SERVICE LAYER
+            (Business Logic - Cart)
                         ⬇️
-                CAPA DE ACCESO A DATOS
+                DATA ACCESS LAYER
               (SQLAlchemy ORM + Models)
                         ⬇️
-                  CAPA DE DATOS
+                  DATA LAYER
                (PostgreSQL Database)
 
--------------------------------------
+---
 
-## 🧪 PRUEBAS UNITARIAS
+## 🧪 UNIT TESTS
 
-Se creó el archivo `run_tests.py` donde se corren las pruebas de:
-- ✅ Agregar artículo
-- ✅ Remover artículo  
-- ✅ Cálculo del total
+Created `run_tests.py` file that runs tests for:
+- ✅ Add item
+- ✅ Remove item  
+- ✅ Total calculation
 
-**Con resultados positivos**
+**With positive results**
 
 ![alt text](image.png)
