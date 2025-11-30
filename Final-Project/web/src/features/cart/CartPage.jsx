@@ -41,15 +41,19 @@ export default function CartPage() {
     }
   }
 
-  const subtotal = cartItems.reduce((sum, item) => {
-    const price = item.discount > 0 
-      ? item.price * (1 - item.discount / 100) 
-      : item.price;
-    return sum + price;
-  }, 0);
+  // Asegurarnos de que siempre trabajamos con un array
+const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
 
-  const tax = subtotal * 0.19;
-  const total = subtotal + tax;
+const subtotal = safeCartItems.reduce((sum, item) => {
+  const price =
+    item.discount > 0
+      ? item.price * (1 - item.discount / 100)
+      : item.price;
+  return sum + price;
+}, 0);
+
+const tax = subtotal * 0.19;
+const total = subtotal + tax;
 
   if (loading) {
     return (
@@ -69,13 +73,13 @@ export default function CartPage() {
         <h1 style={styles.title}>🛒 Mi Carrito</h1>
       </div>
 
-      {cartItems.length === 0 ? (
+      {safeCartItems.length === 0 ? (
         <EmptyCart navigate={navigate} />
       ) : (
         <div style={styles.content}>
           <div style={styles.itemsSection}>
             <div style={styles.sectionHeader}>
-              <h2 style={styles.sectionTitle}>Artículos ({cartItems.length})</h2>
+              <h2 style={styles.sectionTitle}>Artículos ({safeCartItems.length})</h2>
               <button 
                 style={styles.clearButton}
                 onClick={() => {
@@ -89,7 +93,7 @@ export default function CartPage() {
             </div>
 
             <div style={styles.itemsList}>
-              {cartItems.map((item) => (
+              {safeCartItems.map((item) => (
                 <CartItem 
                   key={item.id} 
                   item={item} 
