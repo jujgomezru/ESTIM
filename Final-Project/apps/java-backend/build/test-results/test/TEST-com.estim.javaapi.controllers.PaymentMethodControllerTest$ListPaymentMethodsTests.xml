@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="GET /me/payment-methods" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-11-30T19:18:48.726Z" hostname="DESKTOP-T5D8MHC" time="0.181">
+<testsuite name="GET /me/payment-methods" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-11-30T21:29:06.477Z" hostname="DESKTOP-T5D8MHC" time="0.116">
   <properties/>
-  <testcase name="should return 401 UNAUTHORIZED when SecurityContext has no current user" classname="com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests" time="0.015"/>
-  <testcase name="should list payment methods for authenticated user" classname="com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests" time="0.149"/>
-  <testcase name="should return 401 UNAUTHORIZED when auth fails (e.g. missing header)" classname="com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests" time="0.013"/>
-  <system-out><![CDATA[2025-11-30T14:18:48.720-05:00  INFO 21835 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests]: ListPaymentMethodsTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-11-30T14:18:48.722-05:00  INFO 21835 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests
+  <testcase name="should return 401 UNAUTHORIZED when SecurityContext has no current user" classname="com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests" time="0.013"/>
+  <testcase name="should list payment methods for authenticated user" classname="com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests" time="0.089"/>
+  <testcase name="should return 401 UNAUTHORIZED when auth fails (e.g. missing header)" classname="com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests" time="0.012"/>
+  <system-out><![CDATA[2025-11-30T16:29:06.471-05:00  INFO 50497 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests]: ListPaymentMethodsTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-30T16:29:06.473-05:00  INFO 50497 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.PaymentMethodControllerTest$ListPaymentMethodsTests
 
 MockHttpServletRequest:
       HTTP Method = GET
