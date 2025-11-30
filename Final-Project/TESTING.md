@@ -58,6 +58,7 @@ npm test -- --watchAll=false
 
 - Node.js v16 o superior
 - npm o yarn
+- React 19.x con @testing-library/react 16+
 
 ## Troubleshooting
 
