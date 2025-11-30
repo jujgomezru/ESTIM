@@ -2,7 +2,7 @@ name: Python application
 
 on:
   push:
-    branches: [ "main", "CICD" ]
+    branches: [ "main" ]
     paths:
       - "apps/python-backend/**"
       - ".github/workflows/python-app.yml"
@@ -44,3 +44,4 @@ jobs:
 
       - name: Test with pytest
         run: pytest
+
