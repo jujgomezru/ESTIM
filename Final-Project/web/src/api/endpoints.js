@@ -17,4 +17,15 @@ export const ENDPOINTS = {
   RECENT: "/games/recent",
   SEED: "/admin/seed-data",
   SIMPSON_CHARACTER: "https://thesimpsonsapi.com/api/characters/1",//simpsons
+
+  // Library endpoints
+  MY_LIBRARY: "/me/library",                    // GET, POST
+  myLibraryEntry: (gameId) => `/me/library/${gameId}`, // PATCH /me/library/{gameId}
+
+  // Wishlist endpoints
+  MY_WISHLIST: "/me/wishlist",                             // GET, POST
+  myWishlistItem: (gameId) => `/me/wishlist/${gameId}`,    // DELETE /me/wishlist/{gameId}
+
+  // Simpsons
+  SIMPSON_CHARACTER: "https://thesimpsonsapi.com/api/characters/1",
 };

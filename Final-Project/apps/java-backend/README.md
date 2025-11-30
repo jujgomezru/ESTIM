@@ -444,12 +444,9 @@ The architecture used in **com.estim.javaapi** is justified by the following des
 
 ---
 
-## 5. Summary
 
-The `com.estim.javaapi` backend:
 
-- Implements a **clean, layered, hexagonal architecture**.
-- Separates **controllers, DTOs, use cases, domain, and infrastructure**.
-- Uses **domain events** and **event handlers** to model significant business actions and side effects.
-- Is designed to be **extensible**, **testable**, and **educational**, serving as a reference implementation for modern backend architectures in Java.
+
+
+
 
