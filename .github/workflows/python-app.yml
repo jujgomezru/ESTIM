@@ -2,7 +2,7 @@ name: Python application
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "CICD-2" ]
     paths:
       - "apps/python-backend/**"
       - ".github/workflows/python-app.yml"
@@ -29,7 +29,8 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"   # or 3.11 if that’s your local version
+          python-version: "3.10"
+          cache: "pip"        # 💡 cache para pip según requirements.txt
 
       - name: Install dependencies
         run: |
@@ -39,9 +40,22 @@ jobs:
 
       - name: Lint with flake8
         run: |
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          # Errores graves (rompen el build)
+          flake8 . \
+            --count \
+            --select=E9,F63,F7,F82 \
+            --show-source \
+            --statistics \
+            --exclude=.venv,venv,__pycache__,.git
+
+          # Estilo más relajado (no rompe el build)
+          flake8 . \
+            --count \
+            --exit-zero \
+            --max-complexity=10 \
+            --max-line-length=127 \
+            --statistics \
+            --exclude=.venv,venv,__pycache__,.git
 
       - name: Test with pytest
-        run: pytest
-
+        run: python run_tests.py
