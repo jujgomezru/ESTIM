@@ -31,6 +31,8 @@ async function handleResponse(res) {
   return data;
 }
 
+// ---------- Java backend helpers ----------
+
 export async function apiGet(endpoint) {
   const res = await fetch(BASE_URL + endpoint, {
     method: "GET",
@@ -68,7 +70,6 @@ export async function apiPut(endpoint, data) {
   return handleResponse(res);
 }
 
-// we had added this earlier
 export async function apiPatch(endpoint, data) {
   const res = await fetch(BASE_URL + endpoint, {
     method: "PATCH",
@@ -96,6 +97,49 @@ export async function apiDelete(endpoint, data = null) {
   }
 
   const res = await fetch(BASE_URL + endpoint, options);
+  return handleResponse(res);
+}
+
+// ---------- Python backend helpers ----------
+
+export async function pyGet(endpoint) {
+  const res = await fetch(BASE_URL_PY + endpoint, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      ...authHeader(),
+    },
+  });
+  return handleResponse(res);
+}
+
+export async function pyPost(endpoint, data) {
+  const res = await fetch(BASE_URL_PY + endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      ...authHeader(),
+    },
+    body: JSON.stringify(data),
+  });
+  return handleResponse(res);
+}
+
+export async function pyDelete(endpoint, data = null) {
+  const options = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      ...authHeader(),
+    },
+  };
+  if (data) {
+    options.body = JSON.stringify(data);
+  }
+
+  const res = await fetch(BASE_URL_PY + endpoint, options);
   return handleResponse(res);
 }
 
