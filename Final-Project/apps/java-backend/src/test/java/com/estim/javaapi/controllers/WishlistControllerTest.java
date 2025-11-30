@@ -10,7 +10,6 @@ import com.estim.javaapi.application.wishlist.UpdateWishlistItemCommand;
 import com.estim.javaapi.application.wishlist.UpdateWishlistItemService;
 import com.estim.javaapi.domain.library.GameId;
 import com.estim.javaapi.domain.user.UserId;
-import com.estim.javaapi.domain.wishlist.WishlistItem;
 import com.estim.javaapi.infrastructure.security.AuthenticatedUser;
 import com.estim.javaapi.presentation.wishlist.WishlistItemRequest;
 import com.estim.javaapi.presentation.wishlist.WishlistItemResponse;
@@ -22,7 +21,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +28,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-
 
 /**
  * Unit tests for {@link WishlistController}.
@@ -61,6 +57,7 @@ class WishlistControllerTest {
     @Mock
     private UpdateWishlistItemService updateWishlistItemService;
 
+    // Still injected in the controller, but no longer used in its logic
     @Mock
     private WishlistMapper wishlistMapper;
 
@@ -91,36 +88,18 @@ class WishlistControllerTest {
         Instant addedAt = Instant.parse("2025-11-19T04:45:00Z");
         Map<String, Boolean> prefs = Map.of("notifyOnAnyDiscount", true);
 
-        WishlistItem domainItem = WishlistItem.of(
-            userId,
-            gameId,
-            addedAt,
-            null, // priceWhenAdded
-            prefs
-        );
-
-        List<WishlistItem> domainItems = List.of(domainItem);
-
-        // 🔧 Relaxed stubbing: accept any ListWishlistForUserQuery
-        when(listWishlistService.listWishlist(any(ListWishlistForUserQuery.class)))
-            .thenReturn(domainItems);
-
         WishlistItemResponse responseDto = new WishlistItemResponse(
             gameId.getValue().toString(),                                     // gameId
-            "Wishlist game " + RAW_GAME_ID.toString().substring(0, 8),       // gameTitle (placeholder)
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop", // coverImageUrl (placeholder)
+            "Wishlist game " + RAW_GAME_ID.toString().substring(0, 8),        // gameTitle (placeholder)
+            "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop", // coverImageUrl
             addedAt,
             prefs,
             null // currentPrice
         );
 
-// Stubbing: accept any title/cover/currentPrice
-        when(wishlistMapper.toResponse(
-            any(WishlistItem.class),
-            anyString(),
-            anyString(),
-            any()
-        )).thenReturn(responseDto);
+        // Service now returns DTOs directly
+        when(listWishlistService.listWishlist(any(ListWishlistForUserQuery.class)))
+            .thenReturn(List.of(responseDto));
 
         // Act
         List<WishlistItemResponse> result = controller.getWishlist(authenticatedUser);
@@ -135,14 +114,7 @@ class WishlistControllerTest {
         assertEquals(prefs, first.notificationPreferences());
         assertNull(first.currentPrice());
 
-        // 🔧 Relaxed verify: just ensure it was called
         verify(listWishlistService).listWishlist(any(ListWishlistForUserQuery.class));
-        verify(wishlistMapper).toResponse(
-            any(WishlistItem.class),
-            anyString(),
-            anyString(),
-            any()
-        );
         verifyNoInteractions(addToWishlistService, updateWishlistItemService, removeFromWishlistService);
     }
 
@@ -151,34 +123,18 @@ class WishlistControllerTest {
         // Arrange
         Instant addedAt = Instant.parse("2025-11-19T05:00:00Z");
 
-        WishlistItem createdItem = WishlistItem.of(
-            userId,
-            gameId,
-            addedAt,
-            null,
-            Map.of()
-        );
-
-        // 🔧 Relaxed stubbing
-        when(listWishlistService.listWishlist(any(ListWishlistForUserQuery.class)))
-            .thenReturn(List.of(createdItem));
-
         WishlistItemResponse responseDto = new WishlistItemResponse(
             gameId.getValue().toString(),
             "Wishlist game " + RAW_GAME_ID.toString().substring(0, 8),
             "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop",
             addedAt,
-            Map.of(),
+            Map.of(),  // no notificationPreferences
             null
         );
 
-        when(wishlistMapper.toResponse(
-            any(WishlistItem.class),
-            anyString(),
-            anyString(),
-            any()
-        )).thenReturn(responseDto);
-
+        // After adding, the controller reloads the wishlist via the service
+        when(listWishlistService.listWishlist(any(ListWishlistForUserQuery.class)))
+            .thenReturn(List.of(responseDto));
 
         WishlistItemRequest request = new WishlistItemRequest(
             RAW_GAME_ID.toString(),
@@ -205,6 +161,8 @@ class WishlistControllerTest {
 
         // No notification prefs → no update call
         verify(updateWishlistItemService, never()).updateWishlistItem(any());
+        // Controller should have reloaded wishlist to get the created item
+        verify(listWishlistService).listWishlist(any(ListWishlistForUserQuery.class));
     }
 
     @Test
@@ -217,18 +175,6 @@ class WishlistControllerTest {
             "notifyOnBigSale", false
         );
 
-        WishlistItem createdItem = WishlistItem.of(
-            userId,
-            gameId,
-            addedAt,
-            null,
-            prefs
-        );
-
-        // 🔧 Relaxed stubbing
-        when(listWishlistService.listWishlist(any(ListWishlistForUserQuery.class)))
-            .thenReturn(List.of(createdItem));
-
         WishlistItemResponse responseDto = new WishlistItemResponse(
             gameId.getValue().toString(),
             "Wishlist game " + RAW_GAME_ID.toString().substring(0, 8),
@@ -238,13 +184,9 @@ class WishlistControllerTest {
             null
         );
 
-        when(wishlistMapper.toResponse(
-            any(WishlistItem.class),
-            anyString(),
-            anyString(),
-            any()
-        )).thenReturn(responseDto);
-
+        // After add+update, controller reloads wishlist via the service
+        when(listWishlistService.listWishlist(any(ListWishlistForUserQuery.class)))
+            .thenReturn(List.of(responseDto));
 
         WishlistItemRequest request = new WishlistItemRequest(
             RAW_GAME_ID.toString(),
@@ -273,6 +215,9 @@ class WishlistControllerTest {
         assertEquals(userId, updateCmd.getUserId());
         assertEquals(RAW_GAME_ID, updateCmd.getGameId().getValue());
         assertEquals(prefs, updateCmd.getNotificationPreferences());
+
+        // Controller should have reloaded wishlist to get the created item
+        verify(listWishlistService).listWishlist(any(ListWishlistForUserQuery.class));
     }
 
     @Test

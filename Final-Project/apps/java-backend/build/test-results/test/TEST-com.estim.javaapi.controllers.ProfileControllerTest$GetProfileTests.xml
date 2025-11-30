@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="GET /users/{id}/profile" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-11-28T04:21:19.038Z" hostname="DESKTOP-T5D8MHC" time="0.101">
+<testsuite name="GET /users/{id}/profile" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-11-30T19:18:50.910Z" hostname="DESKTOP-T5D8MHC" time="0.191">
   <properties/>
-  <testcase name="should return 403 PROFILE_PRIVATE when profile is private for this viewer" classname="com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests" time="0.012"/>
-  <testcase name="should return public profile to anonymous viewer (auth fails, requesterId = all-zeros)" classname="com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests" time="0.058"/>
-  <testcase name="should return public profile when authenticated viewer requests it" classname="com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests" time="0.017"/>
+  <testcase name="should return 403 PROFILE_PRIVATE when profile is private for this viewer" classname="com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests" time="0.021"/>
+  <testcase name="should return public profile to anonymous viewer (auth fails, requesterId = all-zeros)" classname="com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests" time="0.144"/>
+  <testcase name="should return public profile when authenticated viewer requests it" classname="com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests" time="0.013"/>
   <testcase name="should return 404 PROFILE_NOT_FOUND when user profile does not exist" classname="com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests" time="0.01"/>
-  <system-out><![CDATA[2025-11-27T23:21:19.035-05:00  INFO 25482 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests]: GetProfileTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-11-27T23:21:19.036-05:00  INFO 25482 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests
+  <system-out><![CDATA[2025-11-30T14:18:50.902-05:00  INFO 21835 --- [java-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests]: GetProfileTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-30T14:18:50.906-05:00  INFO 21835 --- [java-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.estim.javaapi.JavaApiApplication for test class com.estim.javaapi.controllers.ProfileControllerTest$GetProfileTests
 
 MockHttpServletRequest:
       HTTP Method = GET
