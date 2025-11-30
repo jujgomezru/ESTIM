@@ -2,7 +2,11 @@ import { apiGet } from "../../api/apiClient";
 
 // Obtener todos los juegos de la tienda
 export async function getAllGames() {
-  return await apiGet("/games");
+  const response = await fetch("http://localhost:8000/games/");
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`); 
+  }
+  return await response.json();
 }
 
 // Obtener juegos por categoría
@@ -17,5 +21,9 @@ export async function getGameById(id) {
 
 // Buscar juegos
 export async function searchGames(query) {
-  return await apiGet(`/games/search?q=${query}`);
+  const response = await fetch(`http://localhost:8000/games/search/?q=${query}`);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return await response.json();
 }

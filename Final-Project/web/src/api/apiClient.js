@@ -1,5 +1,7 @@
 const BASE_URL =
   import.meta.env.VITE_JAVA_API_BASE || "http://localhost:8080";
+const BASE_URL_PY =
+  import.meta.env.VITE_PY_API_BASE || "http://localhost:8000";
 
 async function handleResponse(res) {
   const text = await res.text();
