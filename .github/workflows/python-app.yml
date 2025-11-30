@@ -56,6 +56,5 @@ jobs:
             --exclude=.venv,venv,__pycache__,.git
 
       - name: Test with pytest
-        run: pytest
-        # o, si prefieres:
-        # run: python run_tests.py
+        run: python run_tests.py
+
