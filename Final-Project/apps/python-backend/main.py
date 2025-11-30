@@ -1,13 +1,21 @@
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 import uuid
-
-# ✅ CORREGIR: SIN punto en los imports
 from database import get_db, GameDB, create_tables
 from Shopping_cart import cart
 from search_service import SearchService
 
 app = FastAPI()
+
+# Configurar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # URL de tu frontend Vite
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos los métodos (GET, POST, etc.)
+    allow_headers=["*"],  # Permite todos los headers
+)
 
 @app.on_event("startup")
 def startup_event():

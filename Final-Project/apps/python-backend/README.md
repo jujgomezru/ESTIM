@@ -5,17 +5,29 @@ Endpoints implementados:
 
 GET/                                    - Health check básico
 
-GET /health                             - Estado del servicio y BD
+GET /health                             - Estado del servicio
 
-GET /games/                             - Lista de juegos disponibles
+GET /test-db                      - Verifica la conexíon con la base de datos
 
 POST /shopping_cart/items/{game_id}     - Agregar al carrito
 
+DELETE /shopping_cart/items/{game_id}   - Eliminar articulo del carrito
+
 GET /shopping_cart                      - Consultar carrito
 
-DELETE /shopping_cart/items/{game_id}   - Eliminar del carrito
-
 GET /shopping_cart/total                - Calcular total
+
+DELETE /shopping_cart/clear             - Eliminar todo el carrito
+
+GET /games/                             - Lista de juegos disponibles
+
+GET /games/search                       - Busca en el catálogo de juegos por nombre, precio mínimo y máximo
+
+GET /games/search/genre                 - Busca en el catálogo de juegos por género
+
+GET /games/popular                      - Busca en el catálogo de juegos por más populares actualmente
+
+GET /games/recent                       - Busca en el catálogo de juegos por lo que se ha bucado últimamete
 
 POST /admin/seed-data                   - Insertar datos de prueba
 
