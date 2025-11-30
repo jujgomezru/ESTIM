@@ -2,7 +2,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main", "CICD" ]
+    branches: [ "main" ]
     paths:
       - "web/**"
       - ".github/workflows/node.js.yml"
@@ -45,3 +45,4 @@ jobs:
 
       - name: Test
         run: npm test --if-present
+
