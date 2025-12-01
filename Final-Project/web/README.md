@@ -24,170 +24,180 @@ npm install react-router-dom
 npm run dev
 
 # Production build
+
+<!--
+README mejorado para la carpeta `web` (frontend) — en español.
+-->
+
+<!--
+Comprehensive English README for the `web` frontend (React + Vite).
+-->
+
+# Frontend — `web` (React + Vite)
+
+Overview
+--------
+This folder contains the web client for the ESTIM project — a small game store UI implemented with React (v19) and Vite. The frontend is organized into feature folders and reusable components and communicates with the backend via the centralized API endpoints in `src/api/endpoints.js`.
+
+If you are exploring the repository, start here to learn how to run, build, test, and deploy the frontend.
+
+Prerequisites
+-------------
+- Node.js 16+ (Node 18 or 20 recommended).
+- npm (v8+) or yarn.
+- Docker (optional, for containerized runs).
+- Modern browser for local testing.
+
+Quick start
+-----------
+From the `Final-Project/web` directory:
+
+```powershell
+# Install dependencies
+npm install
+
+# Start development server (HMR)
+npm run dev
+
+# Create production build
 npm run build
 
-# Build preview
+# Preview production build locally
 npm run preview
-````
+```
 
----
+Available scripts (in `package.json`)
+-----------------------------------
+- `npm run dev` — Run Vite dev server (hot module reloading).
+- `npm run build` — Build the app for production.
+- `npm run preview` — Preview the production build locally.
+- `npm run test` — Run tests with Jest.
+- `npm run lint` — Run ESLint (note: current lint script targets tests and uses `|| true` to avoid failing the script).
 
-## Project Structure (summary)
+Docker
+------
+A `Dockerfile` is included for quick containerized development. The container runs the Vite dev server and exposes port 5173.
+
+Build and run example:
+
+```powershell
+# Build image
+docker build -t estim-web:local .
+
+# Run container and map port 5173
+docker run --rm -p 5173:5173 estim-web:local
+```
+
+Note: the Dockerfile runs `npm run dev`. For production containers you may prefer to build and serve static files from an nginx image.
+
+Project structure (high level)
+------------------------------
 
 ```
 web/
+├── public/                 # static assets
 ├── src/
-│   ├── app/
-│   │   ├── App.jsx            ← starts the app
-│   │   ├── main.jsx           ← mounts App to the DOM
-│   │   └── routes.jsx         ← app routes
-│   ├── api/
-│   │   ├── apiClient.js       ← backend request handler
-│   │   └── endpoints.js       ← backend URLs
-│   ├── components/            ← reusable components
-│   │   ├── Button.jsx
-│   │   └── __test__/          ← component tests
-│   ├── hooks/
-│   │   └── useFetch.js
-│   ├── features/
-│   │   └── auth/
-│   │   │  ├── LoginPage.jsx
-│   │   │  ├── RegisterPage.jsx
-│   │   │  └── .../
-│   │   └── .../
-│   ├── styles/
-│   │   └── globals.css
-│   └── setupTests.js          ← global test configuration
+│   ├── app/                # app bootstrap and routes (main.jsx, App.jsx, routes.jsx)
+│   ├── api/                # api client and endpoints (apiClient.js, endpoints.js)
+│   ├── components/         # shared UI components (Header, Button, GameCard...)
+│   ├── features/           # feature folders (games, cart, auth, library, etc.)
+│   ├── styles/             # global CSS and style utilities
+│   └── setupTests.js       # testing setup
 ├── jest.config.js
 ├── babel.config.cjs
 ├── vite.config.js
+├── Dockerfile
 └── package.json
 ```
 
----
+How the app works (data flow)
+-----------------------------
+1. `src/app/main.jsx` mounts the React app to the DOM and initializes providers (if any).
+2. `src/app/App.jsx` configures global layout and shared providers (theme, auth, etc.).
+3. `src/app/routes.jsx` defines client routes and lazy-loaded pages.
+4. Pages live under `src/features/<feature>/` and are responsible for the page UI and coordinating actions.
+5. Feature pages call feature services (e.g., `gamesService.js`) which prepare requests and call the API client.
+6. `src/api/apiClient.js` is the thin HTTP layer that performs fetch/axios calls, attaches tokens, and handles common errors.
+7. `src/api/endpoints.js` centralizes backend routes and makes it easy to point the frontend to different backends or environments.
 
-## General Flow (how layers communicate)
+Suggested environment and API configuration
+-------------------------------------------
+- The codebase currently centralizes endpoints in `src/api/endpoints.js`. To support multiple environments, expose the backend base URL via a Vite environment variable, for example `VITE_API_BASE_URL`.
 
-```
-src/app/main.jsx
-  ↓ (app starts)
-src/app/App.jsx
-  ↓ (loads routes)
-src/app/routes.jsx
-  ↓ (renders page based on URL)
-src/features/.../Page.jsx
-  ↓ (renders UI and calls service)
-src/features/.../service.js
-  ↓ (prepares request)
-src/api/apiClient.js  +  src/api/endpoints.js
-  ↓ (fetch to backend)
-BACKEND JAVA < localhost:8080 >
-  ↓ (JSON response)
-src/features/.../Page.jsx
-  ↓ (updates UI)
+Example `.env` (create in `Final-Project/web`):
+
+```text
+VITE_API_BASE_URL=http://localhost:8080/api
 ```
 
----
+Then, in `src/api/endpoints.js` or `apiClient.js`, use `import.meta.env.VITE_API_BASE_URL` to build full URLs.
 
-## Testing
+Testing
+-------
+This project uses Jest and @testing-library/react for unit tests of components.
 
-### Run tests
+Run tests:
 
-```bash
+```powershell
 npm test
-```
 
-### Useful commands
-
-```bash
-# Watch mode (development)
+# watch mode
 npm test -- --watch
 
-# Run once (no watch)
-npm test -- --watchAll=false
-
-# Coverage
+# coverage
 npm test -- --coverage
-
-# Specific test file
-npm test -- src/components/__test__/Button.test.jsx
 ```
 
-### Expected output (example)
+Tests are located in `src/components/__test__/` and test utilities are configured in `src/setupTests.js`.
 
-```
- PASS  src/components/__test__/Button.test.jsx
- PASS  src/components/__test__/GameCard.test.jsx
- PASS  src/components/__test__/Header.test.jsx
+Linting and code quality
+------------------------
+- ESLint is included as a dev dependency. Run `npm run lint` to run the configured linters.
+- You can add Husky / pre-commit hooks to run lint and tests before commits (recommended for teams).
 
-Test Suites: 3 passed, 3 total
-Tests:       15 passed, 15 total
-Snapshots:   0 total
-Time:        ~2s
-```
+Deployment notes
+----------------
+- For static hosting: run `npm run build` and upload the contents of `dist/` to a static host (Netlify, Vercel, GitHub Pages, S3 + CloudFront, etc.).
+- If deploying to a subpath (GitHub Pages or a subdirectory), keep or adjust `base` in `vite.config.js` (currently `base: "/ESTIM/"`).
+- For server-based deployment, you can build the static files and serve them with nginx or any static file server.
 
-### Included tests (location: `src/components/__test__/`)
+Troubleshooting
+---------------
+- If dependency installation fails: remove `node_modules` and `package-lock.json`, then run `npm install` again.
 
-* `Button.test.jsx` — 5 tests
-* `GameCard.test.jsx` — 6 tests
-* `Header.test.jsx` — 4 tests
-  **TOTAL:** 15 tests
-
-### Testing configuration
-
-* Jest
-* @testing-library/react
-* @testing-library/jest-dom
-* babel-jest
-
-Relevant files: `jest.config.js`, `babel.config.cjs`, `src/setupTests.js`
-
----
-
-## Troubleshooting (common issues)
-
-```bash
-# Reinstall dependencies
-rm -rf node_modules package-lock.json
+```powershell
+Remove-Item -Recurse -Force node_modules,package-lock.json
 npm install
-
-# Clear Jest cache
-npm test -- --clearCache
-
-# If jsdom environment is missing
-npm install --save-dev jest-environment-jsdom
-
-# Check Node version
-node --version  # should be v16+
 ```
 
-If hook-related errors persist: verify `src/setupTests.js`, clear cache, and reinstall `node_modules`.
+- If Jest complains about jsdom environment, ensure `jest-environment-jsdom` is installed as a dev dependency.
+- If CORS errors occur when the frontend talks to the backend, add CORS headers on the backend during development or enable a proxy in Vite config.
 
----
+Recommendations and next steps
+------------------------------
+- Document environment variables and required backend endpoints in `src/api/endpoints.js`.
+- Add a `README_COMPONENTS.md` or Storybook to document and visually test shared components.
+- Add CI (GitHub Actions) to run lint and tests on PRs.
+- Consider a production-ready Dockerfile that builds the app and serves `dist/` via nginx for production images.
+
+Contributing
+------------
+- Fork the repository, create a feature branch, implement changes and tests, then open a Pull Request to `main`.
+- Add tests for new components and follow the existing folder conventions.
+
+License
+-------
+See the top-level `LICENSE` file in the repository for licensing details.
+
+Contact / Help
+--------------
+If you want, I can:
+- Add environment variable documentation and example `.env` files.
+- Create a production Dockerfile and nginx config for static serving.
+- Add a small CI workflow that runs tests and lint on PRs.
+
+Tell me which of the above you want next and I will implement it.
+
 
 ## Development & lint
-
-```bash
-# Dev server with HMR
-npm run dev
-
-# Build
-npm run build
-
-# Preview
-npm run preview
-
-# Lint
-npm run lint
-```
-
----
-
-## Notes and conventions
-
-* Each feature must have its own `Page.jsx` (view) and `service.js` (logic/requests).
-* All backend communication **goes through** `apiClient.js`.
-* Centralize backend routes in `endpoints.js`.
-* The described flow applies to all features.
-
 
