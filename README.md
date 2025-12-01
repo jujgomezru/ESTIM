@@ -361,3 +361,5 @@ If calling Java API fails from the browser but works with curl, it is always a C
 ---
 
 🧠 *Developed as part of a software engineering academic project.*
+#   T r i g g e r   w o r k f l o w  
+ 
