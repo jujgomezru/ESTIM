@@ -3,9 +3,7 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "main", "CICD-2", "CICD" ]
-    paths:
-      - "Final-Project/apps/java-backend/**"
-      - ".github/workflows/gradle.yml"
+
   pull_request:
     branches: [ "main" ]
     paths:
