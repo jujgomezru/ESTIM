@@ -1,27 +1,27 @@
-# GAMESTORE - Instrucciones de Ejecución de Tests
+# GAMESTORE - Test Execution Instructions
 
-## Para Desarrolladores que Clonan el Repositorio
+## For Developers Cloning the Repository
 
-Si acabas de clonar este proyecto y quieres ejecutar los tests de la aplicación web, sigue estos pasos:
+If you have just cloned this project and want to run the web application tests, follow these steps:
 
-### Paso 1: Navegar al directorio web
+### Step 1: Navigate to the web directory
 ```bash
 cd Final-Project/web
 ```
 
-### Paso 2: Instalar dependencias
+### Step 2: Install dependencies
 ```bash
 npm install
 ```
-Esto instalará todas las dependencias incluyendo Jest y librerías de testing.
+This will install all dependencies including Jest and testing libraries.
 
-### Paso 3: Ejecutar los tests
+### Step 3: Run the tests
 ```bash
 npm test
 ```
 
-### Paso 4: Resultado esperado
-Deberías ver algo como esto:
+### Step 4: Expected result
+You should see something like this:
 ```
  PASS  src/components/__test__/Button.test.jsx
  PASS  src/components/__test__/GameCard.test.jsx
@@ -33,60 +33,60 @@ Snapshots:   0 total
 Time:        ~2s
 ```
 
-## Información de Testing
+## Testing Information
 
-### ¿Dónde están los tests?
-Los tests están en: `src/components/__test__/`
+### Where are the tests located?
+The tests are in: `src/components/__test__/`
 
-### ¿Qué se prueba?
-- **Button.test.jsx**: Tests del componente Button (5 tests)
-- **GameCard.test.jsx**: Tests del componente GameCard (6 tests)
-- **Header.test.jsx**: Tests del componente Header (4 tests)
+### What is tested?
+- **Button.test.jsx**: Button component tests (5 tests)
+- **GameCard.test.jsx**: GameCard component tests (6 tests)
+- **Header.test.jsx**: Header component tests (4 tests)
 
-### Ejecutar tests en modo watch (modo desarrollo)
+### Run tests in watch mode (development mode)
 ```bash
 npm test -- --watch
 ```
-Los tests se re-ejecutarán automáticamente cuando cambies archivos.
+The tests will re-run automatically when you change files.
 
-### Ejecutar tests una sola vez (sin watch)
+### Run tests only once (without watch)
 ```bash
 npm test -- --watchAll=false
 ```
 
-## Requisitos
+## Requirements
 
-- Node.js v16 o superior
-- npm o yarn
-- React 19.x con @testing-library/react 16+
+- Node.js v16 or higher
+- npm or yarn
+- React 19.x with @testing-library/react 16+
 
 ## Troubleshooting
 
-Si tienes problemas:
+If you have issues:
 
-1. **Asegúrate de estar en el directorio correcto**
+1. **Make sure you are in the correct directory**
    ```bash
    cd Final-Project/web
-   pwd  # o "cd" en Windows para ver la ruta actual
+   pwd  # or "cd" on Windows to see the current path
    ```
 
-2. **Reinstala node_modules**
+2. **Reinstall node_modules**
    ```bash
    rm -rf node_modules package-lock.json
    npm install
    ```
 
-3. **Limpia el caché de Jest**
+3. **Clear Jest cache**
    ```bash
    npm test -- --clearCache
    ```
 
-4. **Verifica la versión de Node**
+4. **Verify Node version**
    ```bash
    node --version
-   # Debe ser v16 o superior
+   # Should be v16 or higher
    ```
 
-## Documentación Adicional
+## Additional Documentation
 
-Ver `README-SETUP.md` en el directorio `web/` para más detalles sobre la configuración del proyecto y comandos disponibles.
+See `README-SETUP.md` in the `web/` directory for more details about project setup and available commands.
