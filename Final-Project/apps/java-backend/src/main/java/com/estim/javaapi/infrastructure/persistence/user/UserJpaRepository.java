@@ -16,6 +16,9 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
 
     boolean existsByEmail(String email);
 
+    // NEW: username/displayName uniqueness
+    boolean existsByDisplayName(String displayName);
+
     @Query("""
         SELECT u
         FROM UserJpaEntity u
@@ -28,3 +31,4 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
         @Param("externalUserId") String externalUserId
     );
 }
+
