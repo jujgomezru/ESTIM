@@ -25,39 +25,43 @@ import WishlistPage from "../features/wishlist/WishlistPage";
 // EXTRAS
 import SimpsonsPage from "../features/simpsons/SimpsonsPage";
 
-
 export default function AppRoutes() {
+  // Vite injects BASE_URL based on the `base` option.
+  // It usually has a trailing slash, so we trim it.
+  const basename =
+    (import.meta.env.BASE_URL && import.meta.env.BASE_URL.replace(/\/$/, "")) ||
+    "/";
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Routes>
-
-
         {/* AUTH */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-      <Route element={<Layout />}>
-        {/* GAMES */}
-        <Route path="/" element={<StorePage />} />
-        <Route path="/games" element={<GamesListPage />} />
-        <Route path="/game/:id" element={<GameDetailPage />} />
+        <Route element={<Layout />}>
+          {/* GAMES */}
+          <Route path="/" element={<StorePage />} />
+          <Route path="/games" element={<GamesListPage />} />
+          <Route path="/game/:id" element={<GameDetailPage />} />
 
-        {/* CART */}
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/cart/success" element={<PurchaseSuccessPage />} />
+          {/* CART */}
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/cart/success" element={<PurchaseSuccessPage />} />
 
-        {/* LIBRARY */}
-        <Route path="/library" element={<LibraryPage />} />
+          {/* LIBRARY */}
+          <Route path="/library" element={<LibraryPage />} />
 
-        {/* WISHLIST */}
-        <Route path="/wishlist" element={<WishlistPage />} />
+          {/* WISHLIST */}
+          <Route path="/wishlist" element={<WishlistPage />} />
 
-        {/* EXTRAS */}
-        <Route path="/simpsons" element={<SimpsonsPage />} />
-      </Route>
+          {/* EXTRAS */}
+          <Route path="/simpsons" element={<SimpsonsPage />} />
+        </Route>
 
+        {/* Optional: fallback route */}
+        {/* <Route path="*" element={<StorePage />} /> */}
       </Routes>
     </BrowserRouter>
   );
 }
-
