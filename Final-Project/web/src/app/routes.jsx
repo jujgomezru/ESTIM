@@ -22,7 +22,6 @@ import LibraryPage from "../features/library/LibraryPage";
 // WISHLIST
 import WishlistPage from "../features/wishlist/WishlistPage";
 
-
 // EXTRAS
 import SimpsonsPage from "../features/simpsons/SimpsonsPage";
 

@@ -512,8 +512,65 @@ CREATE INDEX idx_refunds_user    ON refund_requests(user_id);
 CREATE INDEX idx_refunds_order   ON refund_requests(order_id);
 CREATE INDEX idx_refunds_status  ON refund_requests(status);
 CREATE INDEX idx_refunds_created ON refund_requests(created_at);
-CREATE INDEX idx_password_reset_tokens_user_id ON password_reset_tokens(user_id);
-CREATE INDEX idx_password_reset_tokens_expires_at ON password_reset_tokens(expires_at);
 CREATE INDEX idx_user_oauth_accounts_user_id ON user_oauth_accounts(user_id);
+
+CREATE TABLE community_posts (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  author_id   UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title       VARCHAR(255) NOT NULL,
+  body        TEXT NOT NULL,
+  type        VARCHAR(32) NOT NULL,    -- Java: PostType (BLOG, FORUM, WORKSHOP)
+  status      VARCHAR(32) NOT NULL,    -- Java: PostStatus (DRAFT, PUBLISHED, DELETED)
+  pinned      BOOLEAN NOT NULL DEFAULT FALSE,
+  game_id     UUID REFERENCES games(id) ON DELETE CASCADE,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_community_posts_author_id ON community_posts(author_id);
+CREATE INDEX idx_community_posts_game_id   ON community_posts(game_id);
+CREATE INDEX idx_community_posts_type      ON community_posts(type);
+CREATE INDEX idx_community_posts_status    ON community_posts(status);
+CREATE INDEX idx_community_posts_created   ON community_posts(created_at);
+
+-- Optional: keep updated_at in sync via your trigger helper
+CREATE TRIGGER trg_community_posts_set_updated_at
+BEFORE UPDATE ON community_posts
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+
+-- ==================== COMMUNITY POST TAGS ====================
+
+CREATE TABLE community_post_tags (
+  post_id UUID NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+  tag     TEXT NOT NULL,
+  PRIMARY KEY (post_id, tag)
+);
+
+CREATE INDEX idx_community_post_tags_tag ON community_post_tags(tag);
+
+
+-- ==================== COMMUNITY COMMENTS ====================
+
+CREATE TABLE community_comments (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id     UUID NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+  author_id   UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  body        TEXT NOT NULL,
+  status      VARCHAR(32) NOT NULL,  -- Java: CommentStatus (ACTIVE, DELETED)
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_community_comments_post_id   ON community_comments(post_id);
+CREATE INDEX idx_community_comments_author_id ON community_comments(author_id);
+CREATE INDEX idx_community_comments_status    ON community_comments(status);
+CREATE INDEX idx_community_comments_created   ON community_comments(created_at);
+
+CREATE TRIGGER trg_community_comments_set_updated_at
+BEFORE UPDATE ON community_comments
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
 
 
