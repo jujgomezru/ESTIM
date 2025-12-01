@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 // COMPONENTS
 import Layout from "../components/Layout";
@@ -26,14 +26,8 @@ import WishlistPage from "../features/wishlist/WishlistPage";
 import SimpsonsPage from "../features/simpsons/SimpsonsPage";
 
 export default function AppRoutes() {
-  // Vite injects BASE_URL based on the `base` option.
-  // It usually has a trailing slash, so we trim it.
-  const basename =
-    (import.meta.env.BASE_URL && import.meta.env.BASE_URL.replace(/\/$/, "")) ||
-    "/";
-
   return (
-    <BrowserRouter basename={basename}>
+    <HashRouter>
       <Routes>
         {/* AUTH */}
         <Route path="/login" element={<LoginPage />} />
@@ -58,10 +52,7 @@ export default function AppRoutes() {
           {/* EXTRAS */}
           <Route path="/simpsons" element={<SimpsonsPage />} />
         </Route>
-
-        {/* Optional: fallback route */}
-        {/* <Route path="*" element={<StorePage />} /> */}
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
