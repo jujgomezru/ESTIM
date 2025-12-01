@@ -28,7 +28,7 @@ Each service mirrors the same clean structure.
 The official architecture of the project will be expanded as the project gets bigger and more polished.  
 Below is the current simplified **project structure diagram**:
 
-<pre>
+```
 Final-Project/
 │
 ├── apps/
@@ -44,8 +44,7 @@ Final-Project/
 │
 ├── workers/                → Event workers (future)
 └── README.md
-</pre>
-
+```
 
 > 📁 *The structure will grow as new modules (e.g., backend, frontend, database) are added.*
 
@@ -56,26 +55,18 @@ Purpose: Convert HTTP requests into application commands.
 Includes:
 
 - React frontend (`web/`)
-
 - Pages
-
 - API routes
-
 - API client wrappers for Java & Python services
-
 - Java controllers (`apps/java-backend/controllers`)
-
 - Python controllers (`apps/python-backend`)
 
 The Presentation Layer never contains business logic.
 Its job is to:
 
 - Validate input
-
 - Build DTOs / Requests
-
 - Call the appropriate Service
-
 - Return an HTTP response
 
 ### 2️⃣ Business Layer — (Services, Workflows, Domain Models)
@@ -85,27 +76,18 @@ Purpose: Implement the core application logic.
 Includes (per backend):
 
 - Application services:
-
-- Authentication
-
-- Library handling
-
-- Payment methods
-
-- Game workflows
-
+  - Authentication
+  - Library handling
+  - Payment methods
+  - Game workflows
 - Domain models: User, Game, Review, LibraryEntry, etc.
-
 - Domain events (event bus planned but not fully implemented)
 
 This layer:
 
 - Has no idea about controllers or HTTP
-
 - Speaks only in domain entities
-
-- Sends domain events when important things occur
-(e.g., GamePurchased, UserRegistered)
+- Sends domain events when important things occur (e.g., GamePurchased, UserRegistered)
 
 ### 3️⃣ Event Handlers Layer — (Async, Side Effects)
 
@@ -116,11 +98,8 @@ Each backend has its own event handlers (i.e. `apps/java/backend/application/han
 Example responsibilities (future):
 
 - Send emails
-
 - Update search indexes
-
 - Run background workers
-
 - Sync stats
 
 ### 4️⃣ Data Access Layer — (Repositories, DAOs, Mappers)
@@ -130,11 +109,8 @@ Purpose: Convert domain entities ⇄ database rows.
 Contains:
 
 - Repositories (Java + Python)
-
 - ORM/JPA entities or SQL DAOs
-
 - Row-to-domain mappers
-
 - Database adapters
 
 This layer isolates the Business Layer from the database.
@@ -145,15 +121,13 @@ The Business Layer never sees SQL or ORM code.
 Purpose: Persist everything.
 
 - Primary database → PostgreSQL dockerized DB via docker-compose
-
 - Migrations and seeds in `/db`
-
-Redis/Cache layer not implemented yet
+- Redis/Cache layer not implemented yet
 
 ---
 
-## 🚀 ESTIM — Development Environment Guide  
-  
+## 🚀 ESTIM — Development Environment Guide
+
 This section explains everything a new developer needs to get the environment running exactly as intended: folder structure, setup steps, commands, troubleshooting, and expectations.
 
 ## 🛠️ Prerequisites
@@ -184,8 +158,6 @@ If something is missing, install it before proceeding.
 
 Run these steps once after cloning the repository.
 
----
-
 ### 1) Install frontend dependencies
 
 ```bash
@@ -195,6 +167,7 @@ cd ..
 ```
 
 ### 2) Create Python virtual environment
+
 ```bash
 cd apps/python-backend
 python3 -m venv .venv
@@ -204,8 +177,9 @@ pip install fastapi uvicorn
 cd ../../..
 ```
 
+The project uses `.venv/bin/python -m uvicorn`, so no need to activate the venv for normal development.
 
-The project uses .venv/bin/python -m uvicorn, so no need to activate the venv for normal development.
+---
 
 ## ▶️ Running the Project (with Makefile)
 
@@ -217,34 +191,35 @@ From the project root, run:
 make web
 ```
 
-
-Starts Vite dev server on:
+Starts Vite dev server on:  
 👉 http://localhost:5173
 
 **Java Backend**
+
 ```bash
 make java
 ```
 
-
-Starts Spring Boot dev server on:
+Starts Spring Boot dev server on:  
 👉 http://localhost:8080/health
 
 The window stays open because Spring Boot runs continuously.
-Press CTRL+C to stop it.
+Press `CTRL+C` to stop it.
 
 **Python Backend**
+
 ```bash
 make py
 ```
 
-
 Uses virtualenv automatically (no manual activation needed).
 
-Starts FastAPI dev server on:
+Starts FastAPI dev server on:  
 👉 http://localhost:8000/health
 
-Press CTRL+C to stop it.
+Press `CTRL+C` to stop it.
+
+---
 
 ## ▶️ Running Everything with Docker
 
@@ -255,14 +230,11 @@ docker compose build
 docker compose up -d
 ```
 
-
 Then check:
 
-Frontend: http://localhost:5173
-
-Java API: http://localhost:8080/health
-
-Python API: http://localhost:8000/health
+- Frontend: http://localhost:5173
+- Java API: http://localhost:8080/health
+- Python API: http://localhost:8000/health
 
 Stop with:
 
@@ -270,33 +242,39 @@ Stop with:
 docker compose down
 ```
 
-🔥 Health 
+---
 
-**Java** 
+## 🔥 Health Checks
 
+**Java**
+
+```
 GET http://localhost:8080/health
+```
 
-
-Returns plain text, e.g.:
-
-java-api:ok
+Returns plain text, e.g.: `java-api:ok`
 
 **Python backend**
 
+```
 GET http://localhost:8000/health
-
+```
 
 Returns JSON:
 
+```json
 {
   "status": "py-api:ok"
 }
+```
 
 **Frontend (React)**
 
 The homepage shows both backend statuses.
 
-**🧬 Environment Variables (Frontend)**
+---
+
+## 🧬 Environment Variables (Frontend)
 
 The React app expects:
 
@@ -305,8 +283,7 @@ VITE_JAVA_API_BASE=http://localhost:8080
 VITE_PY_API_BASE=http://localhost:8000
 ```
 
-
-Create web/.env.development.local:
+Create `web/.env.development.local`:
 
 ```bash
 cd web
@@ -314,10 +291,12 @@ echo "VITE_JAVA_API_BASE=http://localhost:8080" >> .env.development.local
 echo "VITE_PY_API_BASE=http://localhost:8000" >> .env.development.local
 ```
 
-
 Restart Vite after editing env files.
 
-### 🔐 CORS Configuration
+---
+
+## 🔐 CORS Configuration
+
 **Python backend**
 
 Already supports CORS for http://localhost:5173.
@@ -326,16 +305,18 @@ Already supports CORS for http://localhost:5173.
 
 Controller is annotated with:
 
-```bash
+```java
 @CrossOrigin(origins = "http://localhost:5173")
 ```
 
-
-Or global CORS config is defined in /config.
+Or global CORS config is defined in `/config`.
 
 If calling Java API fails from the browser but works with curl, it is always a CORS issue.
 
-### 🧰 Developer Commands Summary
+---
+
+## 🧰 Developer Commands Summary
+
 | Task               | Command                | Notes                      |
 | ------------------ | ---------------------- | -------------------------- |
 | Run React frontend | `make web`             | Port **5173**              |
@@ -346,21 +327,21 @@ If calling Java API fails from the browser but works with curl, it is always a C
 | Rebuild containers | `docker compose build` | After code changes         |
 | Stop Docker stack  | `docker compose down`  |                            |
 
+---
 
 ## 📹 Video
 
 [![YouTube Thumbnail](https://img.youtube.com/vi/QlC2CWs5sQE/maxresdefault.jpg)](https://www.youtube.com/watch?v=QlC2CWs5sQE)
 
+---
+
 ## 👥 Collaborators
 
 - 🥷🏼 **[Jeisson Duván Bareño Ruiz](https://github.com/Jeissonerreape)**
-- 👑 **[Juan Jeronimo Gomez Rubiano](https://github.com/jujgomezru)** 
-- ✍️ **[Jacobo Alzate Corredor](https://github.com/jalzateco)** 
-- 🏥 **[John Jairo Paez Albino](https://github.com/john00-dev)** 
+- 👑 **[Juan Jeronimo Gomez Rubiano](https://github.com/jujgomezru)**
+- ✍️ **[Jacobo Alzate Corredor](https://github.com/jalzateco)**
+- 🏥 **[John Jairo Paez Albino](https://github.com/john00-dev)**
 
 ---
 
 🧠 *Developed as part of a software engineering academic project.*
-#   T r i g g e r   w o r k f l o w 
- 
- 
