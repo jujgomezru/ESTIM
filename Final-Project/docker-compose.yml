@@ -61,6 +61,7 @@ services:
       DB_PASS: ${POSTGRES_PASSWORD}
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      ESTIM_CORS_ORIGINS: "http://localhost:${WEB_PORT},https://jujgomezru.github.io"
     depends_on:
       - redis
       - db
