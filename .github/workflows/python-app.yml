@@ -3,9 +3,6 @@ name: Python application
 on:
   push:
     branches: [ "main", "CICD-2" ]
-    paths:
-      - "Final-Project/apps/python-backend/**"
-      - ".github/workflows/python-app.yml"
   pull_request:
     branches: [ "main" ]
     paths:
