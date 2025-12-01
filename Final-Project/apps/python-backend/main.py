@@ -13,14 +13,29 @@ app = FastAPI()
 
 # ==================== CORS ====================
 
+_raw_origins = os.getenv("ESTIM_CORS_ORIGINS")
+
+if _raw_origins:
+    # Split comma-separated list and strip spaces
+    allowed_origins = [
+        origin.strip()
+        for origin in _raw_origins.split(",")
+        if origin.strip()
+    ]
+else:
+    # Safe defaults for local dev + GitHub Pages
+    allowed_origins = [
+        "http://localhost:5173",          # Vite dev
+        "https://jujgomezru.github.io",   # GitHub Pages (ESTIM under /ESTIM/)
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # URL del frontend Vite
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # ==================== STARTUP: SOLO COMPROBACIÓN, NO SCHEMA ====================
 
