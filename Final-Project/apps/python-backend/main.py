@@ -1,9 +1,9 @@
-# main.py
-
+import os
+import uuid
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
-import uuid
+
 
 from database import get_db, GameDB
 from shopping_cart import cart
