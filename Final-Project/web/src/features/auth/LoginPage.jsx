@@ -15,7 +15,8 @@ export default function LoginPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      await loginUser(form);
+      const result = await loginUser(form);
+      console.log("Logged in:", result);
       alert("¡Inicio de sesión exitoso!");
       navigate("/library");
     } catch (error) {
