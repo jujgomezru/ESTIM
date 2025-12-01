@@ -1,0 +1,61 @@
+name: Deploy frontend to GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "Final-Project/web/**"
+      - ".github/workflows/pages.yml"
+
+permissions:
+  contents: read
+  pages: write       # needed to publish to Pages
+  id-token: write    # needed by deploy-pages for OIDC
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"   # or match your local Node version
+
+      - name: Install dependencies
+        working-directory: ./Final-Project/web
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./Final-Project/web
+        run: npm run build
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Folder with the built static site
+          path: ./Final-Project/web/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
