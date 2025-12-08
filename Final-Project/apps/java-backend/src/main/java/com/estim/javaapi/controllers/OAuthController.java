@@ -42,6 +42,15 @@ public class OAuthController {
         try {
             authenticationProvider.authenticateFromAuthorizationHeader(authorizationHeader);
 
+            if (request.externalToken() == null || request.externalToken().isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(
+                        "OAUTH_LINK_FAILED",
+                        "Missing OAuth access token",
+                        null
+                    ));
+            }
+
             var userId = SecurityContext.getCurrentUserId()
                 .orElseThrow(() -> new IllegalStateException("No authenticated user"));
 
@@ -67,6 +76,15 @@ public class OAuthController {
     @PostMapping("/login")
     public ResponseEntity<?> loginWithOAuth(@RequestBody OAuthLoginRequest request) {
         try {
+            if (request.externalToken() == null || request.externalToken().isBlank()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse(
+                        "OAUTH_LOGIN_FAILED",
+                        "Missing OAuth access token",
+                        null
+                    ));
+            }
+
             LoginWithOAuthCommand command = new LoginWithOAuthCommand(
                 request.provider(),
                 request.externalToken(),
