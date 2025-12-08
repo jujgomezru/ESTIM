@@ -60,7 +60,6 @@ public class JwtTokenService implements TokenService {
             .setIssuedAt(Date.from(now))
             .setExpiration(Date.from(expiry))
             .claim("typ", type)
-            // This variant still works on 0.12.x (might be deprecated, but compiles):
             .signWith(signingKey, SignatureAlgorithm.HS256)
             .compact();
     }
@@ -69,27 +68,24 @@ public class JwtTokenService implements TokenService {
     public UserId parseUserIdFromAccessToken(String token) {
         try {
             Claims claims = Jwts.parserBuilder()
-                .setSigningKey(signingKey)   // SecretKey from Keys.hmacShaKeyFor(...)
+                .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
 
-            String subject = claims.getSubject(); // user UUID as String
+            String subject = claims.getSubject();
             return new UserId(UUID.fromString(subject));
 
         } catch (JwtException | IllegalArgumentException ex) {
-            // Includes ExpiredJwtException, malformed token, bad signature, etc.
             throw new IllegalArgumentException("Invalid or expired access token", ex);
         }
     }
 
     @Override
     public void revokeRefreshToken(String refreshToken) {
-        // no-op for pure stateless JWT
     }
 
     @Override
     public void revokeAllForUser(UserId userId) {
-        // no-op for pure stateless JWT
     }
 }

@@ -1,15 +1,3 @@
--- db/seeds/002_games.sql
--- Extra seed games for ESTIM catalog
--- Assumes these publishers already exist:
---   - Bob Games Studio
---   - Starforge Interactive
---   - Cozy Leaf Studios
---   - Neon Byte Labs
---   - Quantum Ember Studios
-
----------------------------------------------------------------
--- 0) Cube Quest (Bob Games Studio)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -24,7 +12,7 @@ SELECT
   14.99,
   TRUE,
   CURRENT_DATE - INTERVAL '30 days',
-  'E',
+  'E'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -46,9 +34,6 @@ WHERE p.company_name = 'Bob Games Studio'
     SELECT 1 FROM games g WHERE g.title = 'Cube Quest'
   );
 
----------------------------------------------------------------
--- 1) Speed Racing Ultimate — arcade racing (Starforge Interactive)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -61,7 +46,7 @@ SELECT
   'Neon-soaked arcade drifting.',
   19.99, 29.99, TRUE,
   CURRENT_DATE - INTERVAL '90 days',
-  'T',
+  'T'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -90,9 +75,6 @@ WHERE p.company_name = 'Starforge Interactive'
     SELECT 1 FROM games g WHERE g.title = 'Speed Racing Ultimate'
   );
 
----------------------------------------------------------------
--- 2) Space Odyssey — city builder (Cozy Leaf Studios)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -105,7 +87,7 @@ SELECT
   'Cozy floating-islands city builder.',
   24.99, 39.99, TRUE,
   CURRENT_DATE - INTERVAL '200 days',
-  'E',
+  'E'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -134,9 +116,6 @@ WHERE p.company_name = 'Cozy Leaf Studios'
     SELECT 1 FROM games g WHERE g.title = 'Space Odyssey'
   );
 
----------------------------------------------------------------
--- 3) Pixel Adventure — hacking roguelite (Neon Byte Labs)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -149,7 +128,7 @@ SELECT
   'Terminal-style hacking roguelite.',
   14.99, 19.99, TRUE,
   CURRENT_DATE - INTERVAL '60 days',
-  'T',
+  'T'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -171,9 +150,6 @@ WHERE p.company_name = 'Neon Byte Labs'
     SELECT 1 FROM games g WHERE g.title = 'Pixel Adventure'
   );
 
----------------------------------------------------------------
--- 4) Fantasy Quest Online — cozy farming sim (Cozy Leaf Studios)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -186,7 +162,7 @@ SELECT
   'Cozy farming on a tiny asteroid.',
   12.99, 19.99, TRUE,
   CURRENT_DATE - INTERVAL '15 days',
-  'E',
+  'E'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -208,9 +184,6 @@ WHERE p.company_name = 'Cozy Leaf Studios'
     SELECT 1 FROM games g WHERE g.title = 'Fantasy Quest Online'
   );
 
----------------------------------------------------------------
--- 5) Cyberpunk Legends — tactical shooter (Starforge Interactive)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -223,7 +196,7 @@ SELECT
   'Round-based tactical FPS.',
   39.99, 59.99, TRUE,
   CURRENT_DATE - INTERVAL '365 days',
-  'M',
+  'M'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -252,9 +225,6 @@ WHERE p.company_name = 'Starforge Interactive'
     SELECT 1 FROM games g WHERE g.title = 'Cyberpunk Legends'
   );
 
----------------------------------------------------------------
--- 6) Dark Chronicles — puzzle, unreleased (Quantum Ember Studios)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -267,7 +237,7 @@ SELECT
   'Teach tiny robots to solve puzzles.',
   4.99, 9.99, FALSE,
   CURRENT_DATE + INTERVAL '45 days',
-  'E',
+  'E'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -289,9 +259,6 @@ WHERE p.company_name = 'Quantum Ember Studios'
     SELECT 1 FROM games g WHERE g.title = 'Dark Chronicles'
   );
 
----------------------------------------------------------------
--- 7) Dungeon Master — rhythm roguelite (Neon Byte Labs)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -304,7 +271,7 @@ SELECT
   'Rhythm-driven dungeon crawler.',
   11.99, 14.99, TRUE,
   CURRENT_DATE - INTERVAL '10 days',
-  'T',
+  'T'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -326,9 +293,6 @@ WHERE p.company_name = 'Neon Byte Labs'
     SELECT 1 FROM games g WHERE g.title = 'Dungeon Master'
   );
 
----------------------------------------------------------------
--- 8) Medieval Kingdoms (Starforge Interactive)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -341,7 +305,7 @@ SELECT
   'Epic medieval strategy.',
   29.99, 39.99, TRUE,
   CURRENT_DATE - INTERVAL '120 days',
-  'T',
+  'T'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -364,9 +328,6 @@ WHERE p.company_name = 'Starforge Interactive'
     SELECT 1 FROM games g WHERE g.title = 'Medieval Kingdoms'
   );
 
----------------------------------------------------------------
--- 9) Tactical Warfare (Quantum Ember Studios)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -379,7 +340,7 @@ SELECT
   'Asymmetric online chess-like.',
   0.00, 4.99, TRUE,
   CURRENT_DATE - INTERVAL '7 days',
-  'E',
+  'E'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",
@@ -401,9 +362,6 @@ WHERE p.company_name = 'Quantum Ember Studios'
     SELECT 1 FROM games g WHERE g.title = 'Tactical Warfare'
   );
 
----------------------------------------------------------------
--- 10) Zombie Survival (Bob Games Studio)
----------------------------------------------------------------
 INSERT INTO games (
   publisher_id, title, description, short_description,
   price, base_price, is_published, release_date, age_rating,
@@ -416,7 +374,7 @@ SELECT
   'Post-apocalyptic survival.',
   14.99, 19.99, TRUE,
   CURRENT_DATE - INTERVAL '30 days',
-  'E',
+  'E'::age_rating_type,
   '{
     "minimum": {
       "os": "Windows 10 64-bit",

@@ -32,14 +32,6 @@ public class LibraryRepositoryImpl implements LibraryRepository {
     }
 
     @Override
-    public List<LibraryEntry> findByUser(UserId userId) {
-        return jpaRepository.findByUserId(userId.value())
-            .stream()
-            .map(LibraryEntryMapper::toDomain)
-            .toList();
-    }
-
-    @Override
     public LibraryEntry save(LibraryEntry entry) {
         LibraryEntryJpaEntity entity = LibraryEntryMapper.toEntity(entry);
         LibraryEntryJpaEntity saved = jpaRepository.save(entity);

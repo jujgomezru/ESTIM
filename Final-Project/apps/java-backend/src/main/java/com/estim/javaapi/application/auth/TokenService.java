@@ -23,13 +23,11 @@ public interface TokenService {
      * Implementations may no-op if revocation is not supported.
      */
     default void revokeRefreshToken(String refreshToken) {
-        // default no-op
     }
 
     /**
      * Revokes all active tokens for a given user, if the implementation supports it.
      */
     default void revokeAllForUser(UserId userId) {
-        // default no-op
     }
 }

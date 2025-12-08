@@ -47,7 +47,6 @@ public class RequestPasswordResetService {
             .orElse(null);
 
         if (user == null) {
-            // silently ignore to avoid leaking which emails exist
             return;
         }
 

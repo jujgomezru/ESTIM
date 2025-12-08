@@ -8,5 +8,4 @@ public enum OAuthProvider {
     STEAM,
     GITHUB,
     FACEBOOK
-    // Add more if needed (TWITCH, DISCORD, etc.)
 }

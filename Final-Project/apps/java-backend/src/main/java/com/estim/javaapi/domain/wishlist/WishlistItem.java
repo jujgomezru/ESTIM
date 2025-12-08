@@ -35,9 +35,8 @@ public final class WishlistItem {
         this.userId = Objects.requireNonNull(userId, "userId must not be null");
         this.gameId = Objects.requireNonNull(gameId, "gameId must not be null");
         this.addedAt = Objects.requireNonNull(addedAt, "addedAt must not be null");
-        this.priceWhenAdded = priceWhenAdded; // optional
+        this.priceWhenAdded = priceWhenAdded;
 
-        // store as unmodifiable to keep immutability
         this.notificationPreferences = notificationPreferences == null
             ? Collections.emptyMap()
             : Collections.unmodifiableMap(notificationPreferences);

@@ -10,10 +10,6 @@ public abstract class AbstractDomainEvent implements DomainEvent {
         this.occurredAt = Instant.now();
     }
 
-    protected AbstractDomainEvent(Instant occurredAt) {
-        this.occurredAt = occurredAt != null ? occurredAt : Instant.now();
-    }
-
     @Override
     public Instant occurredAt() {
         return occurredAt;

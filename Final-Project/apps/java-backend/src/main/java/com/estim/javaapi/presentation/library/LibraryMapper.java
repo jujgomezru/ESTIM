@@ -29,8 +29,8 @@ public final class LibraryMapper {
         return new LibraryEntryResponse(
             entry.getId().getValue(),
             entry.getGameId().getValue(),
-            gameTitle,                           // may be null
-            coverImageUrl,                       // may be null
+            gameTitle,
+            coverImageUrl,
             source != null ? source.name() : null,
             entry.getAddedAt()
         );

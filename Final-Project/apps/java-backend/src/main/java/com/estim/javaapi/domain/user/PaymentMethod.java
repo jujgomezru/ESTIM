@@ -1,18 +1,13 @@
 package com.estim.javaapi.domain.user;
 
 import java.util.Objects;
-import java.util.UUID;
 
-/**
- * Represents a vaulted payment method stored for a user.
- * Only stores provider, masked reference, and external vault token.
- */
 public class PaymentMethod {
 
     private final PaymentMethodId id;
     private final PaymentProvider provider;
-    private final String externalToken; // token from payment gateway (not card)
-    private final String last4;         // last 4 digits for display only
+    private final String externalToken;
+    private final String last4;
     private final boolean isDefault;
 
     public PaymentMethod(PaymentMethodId id,
@@ -21,11 +16,30 @@ public class PaymentMethod {
                          String last4,
                          boolean isDefault) {
 
-        this.id = Objects.requireNonNull(id);
-        this.provider = Objects.requireNonNull(provider);
-        this.externalToken = Objects.requireNonNull(externalToken);
-        this.last4 = Objects.requireNonNull(last4);
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.provider = Objects.requireNonNull(provider, "provider must not be null");
+        this.externalToken = Objects.requireNonNull(externalToken, "externalToken must not be null");
+        this.last4 = Objects.requireNonNull(last4, "last4 must not be null");
         this.isDefault = isDefault;
+    }
+
+    /**
+     * Factory method used when adding a new payment method for a user.
+     * Generates a fresh PaymentMethodId and enforces basic invariants.
+     */
+    public static PaymentMethod newMethod(
+        PaymentProvider provider,
+        String externalToken,
+        String last4,
+        boolean isDefault
+    ) {
+        return new PaymentMethod(
+            PaymentMethodId.newId(),
+            provider,
+            externalToken,
+            last4,
+            isDefault
+        );
     }
 
     public PaymentMethodId id() {
@@ -46,20 +60,5 @@ public class PaymentMethod {
 
     public boolean isDefault() {
         return isDefault;
-    }
-
-    /**
-     * Returns a new PaymentMethod with updated default flag.
-     * (Domain entities remain effectively immutable.)
-     */
-    public PaymentMethod markDefault(boolean value) {
-        return new PaymentMethod(this.id, this.provider, this.externalToken, this.last4, value);
-    }
-
-    public static PaymentMethod newMethod(PaymentProvider provider,
-                                          String externalToken,
-                                          String last4,
-                                          boolean isDefault) {
-        return new PaymentMethod(new PaymentMethodId(UUID.randomUUID()), provider, externalToken, last4, isDefault);
     }
 }

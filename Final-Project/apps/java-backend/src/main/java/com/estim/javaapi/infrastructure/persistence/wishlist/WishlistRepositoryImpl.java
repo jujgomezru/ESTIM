@@ -22,7 +22,7 @@ public class WishlistRepositoryImpl implements WishlistRepository {
 
     @Override
     public List<WishlistItem> findByUserId(UserId userId) {
-        UUID userUuid = userId.value(); // ✔ UserId → value()
+        UUID userUuid = userId.value();
         return jpaRepository.findByUserId(userUuid)
             .stream()
             .map(this::toDomain)
@@ -31,8 +31,8 @@ public class WishlistRepositoryImpl implements WishlistRepository {
 
     @Override
     public Optional<WishlistItem> findByUserIdAndGameId(UserId userId, GameId gameId) {
-        UUID userUuid = userId.value();     // ✔
-        UUID gameUuid = gameId.getValue();  // ✔ GameId → getValue()
+        UUID userUuid = userId.value();
+        UUID gameUuid = gameId.getValue();
 
         return jpaRepository.findByUserIdAndGameId(userUuid, gameUuid)
             .map(this::toDomain);
@@ -40,7 +40,7 @@ public class WishlistRepositoryImpl implements WishlistRepository {
 
     @Override
     public List<WishlistItem> findByGameId(GameId gameId) {
-        UUID gameUuid = gameId.getValue(); // GameId → getValue()
+        UUID gameUuid = gameId.getValue();
         return jpaRepository.findByGameId(gameUuid)
             .stream()
             .map(this::toDomain)
@@ -50,8 +50,8 @@ public class WishlistRepositoryImpl implements WishlistRepository {
 
     @Override
     public void save(WishlistItem item) {
-        UUID userUuid = item.getUserId().value();      // UserId → value()
-        UUID gameUuid = item.getGameId().getValue();   // GameId → getValue()
+        UUID userUuid = item.getUserId().value();
+        UUID gameUuid = item.getGameId().getValue();
 
         var existing = jpaRepository.findByUserIdAndGameId(userUuid, gameUuid);
 
@@ -62,18 +62,14 @@ public class WishlistRepositoryImpl implements WishlistRepository {
                 item.getAddedAt()
             )
         );
-
-        // keep addedAt in sync (if you want)
         entity.setAddedAt(item.getAddedAt());
-
-        // NO priceWhenAdded here anymore – it's not in the entity nor in the table
         jpaRepository.save(entity);
     }
 
     @Override
     public void delete(WishlistItem item) {
-        UUID userUuid = item.getUserId().value();     // ✔
-        UUID gameUuid = item.getGameId().getValue();  // ✔
+        UUID userUuid = item.getUserId().value();
+        UUID gameUuid = item.getGameId().getValue();
 
         jpaRepository.findByUserIdAndGameId(userUuid, gameUuid)
             .ifPresent(jpaRepository::delete);
@@ -82,8 +78,8 @@ public class WishlistRepositoryImpl implements WishlistRepository {
     @Override
     public boolean existsByUserIdAndGameId(UserId userId, GameId gameId) {
         return jpaRepository.existsByUserIdAndGameId(
-            userId.value(),       // ✔
-            gameId.getValue()     // ✔
+            userId.value(),
+            gameId.getValue()
         );
     }
 
@@ -92,8 +88,8 @@ public class WishlistRepositoryImpl implements WishlistRepository {
             new UserId(entity.getUserId()),
             new GameId(entity.getGameId()),
             entity.getAddedAt(),
-            null,                  // priceWhenAdded not stored in DB
-            Collections.emptyMap() // notificationPreferences not persisted yet
+            null,
+            Collections.emptyMap()
         );
     }
 }

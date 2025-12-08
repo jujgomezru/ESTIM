@@ -39,11 +39,9 @@ public class UpdateUserProfileService {
         UserProfile existingProfile = user.profile();
         PrivacySettings existingPrivacy = existingProfile != null
             ? existingProfile.privacySettings()
-            : new PrivacySettings(true, true, true); // sane default if null
+            : new PrivacySettings(true, true, true);
 
-        // --- Merge fields ---
-
-        // Display name: prefer command, then existing profile; if still null, it's an invariant violation
+        // ----- displayName -----
         String displayName;
         if (command.displayName() != null) {
             displayName = command.displayName();
@@ -53,18 +51,12 @@ public class UpdateUserProfileService {
             throw new IllegalStateException("User profile has no display name");
         }
 
+        // ----- avatarUrl -----
         String avatarUrl = command.avatarUrl() != null
             ? command.avatarUrl()
             : existingProfile != null ? existingProfile.avatarUrl() : null;
 
-        String bio = command.bio() != null
-            ? command.bio()
-            : existingProfile != null ? existingProfile.bio() : null;
-
-        String location = command.location() != null
-            ? command.location()
-            : existingProfile != null ? existingProfile.location() : null;
-
+        // ----- privacy -----
         boolean showProfile = command.showProfile() != null
             ? command.showProfile()
             : existingPrivacy.showProfile();
@@ -83,11 +75,10 @@ public class UpdateUserProfileService {
             showWishlist
         );
 
+        // New UserProfile only has displayName, avatarUrl, privacySettings
         UserProfile newProfile = new UserProfile(
             displayName,
             avatarUrl,
-            bio,
-            location,
             newPrivacy
         );
 

@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
  */
 public final class Email {
 
-    // Very simple sanity-check regex; real validation is usually delegated to higher layers.
     private static final Pattern SIMPLE_EMAIL_REGEX =
         Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
@@ -34,7 +33,6 @@ public final class Email {
             throw new IllegalArgumentException("email cannot be empty");
         }
 
-        // normalize to lower case (common for identity)
         normalized = normalized.toLowerCase();
 
         if (!SIMPLE_EMAIL_REGEX.matcher(normalized).matches()) {

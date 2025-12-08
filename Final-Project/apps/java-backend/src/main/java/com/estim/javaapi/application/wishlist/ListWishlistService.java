@@ -60,8 +60,6 @@ public class ListWishlistService {
                 String coverImageUrl = rs.getString("cover_image_url");
                 BigDecimal currentPrice = rs.getBigDecimal("current_price");
 
-                // NOTE: schema you pasted for wishlists has no notification_preferences column,
-                // so we default to an empty map for now.
                 Map<String, Boolean> notificationPreferences = Map.of();
 
                 return new WishlistItemResponse(

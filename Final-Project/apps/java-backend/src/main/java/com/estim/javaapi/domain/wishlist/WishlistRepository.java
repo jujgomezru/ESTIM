@@ -18,6 +18,5 @@ public interface WishlistRepository {
 
     boolean existsByUserIdAndGameId(UserId userId, GameId gameId);
 
-    // 👇 NEW: used by the pricing handler
     List<WishlistItem> findByGameId(GameId gameId);
 }

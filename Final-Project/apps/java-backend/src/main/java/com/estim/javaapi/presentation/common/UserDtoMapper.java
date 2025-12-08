@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 public final class UserDtoMapper {
 
     private UserDtoMapper() {
-        // utility class
     }
 
     public static CurrentUserResponse toCurrentUserResponse(User user) {
@@ -46,11 +45,12 @@ public final class UserDtoMapper {
             user.id().toString(),
             profile != null ? profile.displayName() : null,
             profile != null ? profile.avatarUrl() : null,
-            profile != null ? profile.bio() : null,
-            profile != null ? profile.location() : null,
+            null,  // bio no longer stored
+            null,  // location no longer stored
             toPrivacySettingsResponse(privacy)
         );
     }
+
 
     private static PrivacySettingsResponse toPrivacySettingsResponse(PrivacySettings privacy) {
         if (privacy == null) {

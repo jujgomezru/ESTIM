@@ -18,7 +18,7 @@ public class SendPasswordResetEmailOnRequested {
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final EmailSender emailSender;
-    private final String resetBaseUrl; // e.g. https://estim.com/reset-password?token=
+    private final String resetBaseUrl;
 
     public SendPasswordResetEmailOnRequested(
         UserRepository userRepository,
