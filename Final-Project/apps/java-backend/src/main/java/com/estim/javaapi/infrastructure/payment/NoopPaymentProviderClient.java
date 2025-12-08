@@ -12,7 +12,5 @@ public class NoopPaymentProviderClient implements PaymentProviderClient {
 
     @Override
     public void validateToken(String provider, String externalToken) {
-        // Intentionally do nothing: always treat token as valid.
-        // Replace with real validation against PagSeguro/Stripe/etc. later.
     }
 }

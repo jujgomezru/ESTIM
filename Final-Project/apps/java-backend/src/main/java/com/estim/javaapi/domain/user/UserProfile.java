@@ -4,26 +4,22 @@ import java.util.Objects;
 
 /**
  * Immutable value object representing a user's profile data.
+ * Now aligned to the DB schema: displayName + avatarUrl.
+ * PrivacySettings stays as a purely in-memory concept.
  */
 public final class UserProfile {
 
     private final String displayName;
     private final String avatarUrl;
-    private final String bio;
-    private final String location;
     private final PrivacySettings privacySettings;
 
     public UserProfile(
         String displayName,
         String avatarUrl,
-        String bio,
-        String location,
         PrivacySettings privacySettings
     ) {
         this.displayName = displayName;
         this.avatarUrl = avatarUrl;
-        this.bio = bio;
-        this.location = location;
         this.privacySettings = privacySettings;
     }
 
@@ -33,14 +29,6 @@ public final class UserProfile {
 
     public String avatarUrl() {
         return avatarUrl;
-    }
-
-    public String bio() {
-        return bio;
-    }
-
-    public String location() {
-        return location;
     }
 
     public PrivacySettings privacySettings() {
@@ -54,15 +42,11 @@ public final class UserProfile {
     public UserProfile with(
         String displayName,
         String avatarUrl,
-        String bio,
-        String location,
         PrivacySettings privacySettings
     ) {
         return new UserProfile(
             displayName != null ? displayName : this.displayName,
             avatarUrl != null ? avatarUrl : this.avatarUrl,
-            bio != null ? bio : this.bio,
-            location != null ? location : this.location,
             privacySettings != null ? privacySettings : this.privacySettings
         );
     }
@@ -73,13 +57,11 @@ public final class UserProfile {
         if (!(o instanceof UserProfile other)) return false;
         return Objects.equals(displayName, other.displayName)
             && Objects.equals(avatarUrl, other.avatarUrl)
-            && Objects.equals(bio, other.bio)
-            && Objects.equals(location, other.location)
             && Objects.equals(privacySettings, other.privacySettings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(displayName, avatarUrl, bio, location, privacySettings);
+        return Objects.hash(displayName, avatarUrl, privacySettings);
     }
 }

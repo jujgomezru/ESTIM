@@ -1,11 +1,8 @@
 package com.estim.javaapi.domain.user;
 
 import com.estim.javaapi.domain.common.DomainEvent;
-import com.estim.javaapi.domain.user.events.UserBanned;
-import com.estim.javaapi.domain.user.events.UserEmailVerified;
 import com.estim.javaapi.domain.user.events.UserProfileUpdated;
 import com.estim.javaapi.domain.user.events.UserRegistered;
-import com.estim.javaapi.domain.user.events.UserUnbanned;
 import com.estim.javaapi.domain.user.events.OAuthAccountLinked;
 import com.estim.javaapi.domain.user.events.PaymentMethodAdded;
 import com.estim.javaapi.domain.user.events.PaymentMethodRemoved;
@@ -78,8 +75,8 @@ public class User {
             id,
             email,
             passwordHash,
-            UserStatus.ACTIVE, // or PENDING_ACTIVATION if you add that status
-            false,             // email not verified yet
+            UserStatus.ACTIVE,
+            false,
             initialProfile,
             List.of(),
             List.of(),
@@ -92,43 +89,6 @@ public class User {
         return user;
     }
 
-    // ---------- Domain behavior ----------
-
-    /**
-     * Marks the user's email as verified (idempotent).
-     */
-    public void verifyEmail() {
-        if (this.emailVerified) {
-            return;
-        }
-        this.emailVerified = true;
-        touchUpdated();
-        registerEvent(new UserEmailVerified(this.id, Instant.now()));
-    }
-
-    /**
-     * Bans the user (idempotent).
-     */
-    public void ban() {
-        if (this.status == UserStatus.BANNED) {
-            return;
-        }
-        this.status = UserStatus.BANNED;
-        touchUpdated();
-        registerEvent(new UserBanned(this.id, Instant.now()));
-    }
-
-    /**
-     * Unbans the user (idempotent) – typically sets back to ACTIVE.
-     */
-    public void unban() {
-        if (this.status != UserStatus.BANNED) {
-            return;
-        }
-        this.status = UserStatus.ACTIVE;
-        touchUpdated();
-        registerEvent(new UserUnbanned(this.id, Instant.now()));
-    }
 
     /**
      * Updates the user profile based on a profile update object.
@@ -192,11 +152,9 @@ public class User {
         registerEvent(new OAuthAccountLinked(this.id, account.provider(), account.externalUserId(), Instant.now()));
     }
 
-    // Optional: update last login (e.g. on successful authentication)
     public void markLogin() {
         this.lastLoginAt = Instant.now();
         touchUpdated();
-        // could emit a UserLoggedIn event if you define one
     }
 
     /**
@@ -242,7 +200,7 @@ public class User {
         this.domainEvents.clear();
     }
 
-    // ---------- Getters (no setters: aggregate invariants must go through behavior) ----------
+    // ---------- Getters ----------
 
     public UserId id() {
         return id;

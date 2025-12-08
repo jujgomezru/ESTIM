@@ -15,8 +15,6 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
     Optional<UserJpaEntity> findByEmail(String email);
 
     boolean existsByEmail(String email);
-
-    // NEW: username/displayName uniqueness
     boolean existsByDisplayName(String displayName);
 
     @Query("""

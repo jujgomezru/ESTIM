@@ -31,10 +31,7 @@ public class PasswordResetTokenJpaEntity {
     private boolean used;
 
     protected PasswordResetTokenJpaEntity() {
-        // for JPA
     }
-
-    // Getters & setters
 
     public UUID getId() {
         return id;

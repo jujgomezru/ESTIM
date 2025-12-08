@@ -16,8 +16,8 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-            "http://localhost:5173",           // Vite dev
-            "https://jujgomezru.github.io"    // GitHub Pages (ESTIM lives under /ESTIM/)
+            "http://localhost:5173",
+            "https://jujgomezru.github.io"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));

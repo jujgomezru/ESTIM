@@ -8,8 +8,6 @@ import com.estim.javaapi.domain.user.UserId;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 /**
  * Handler that reacts when a game purchase is completed and
  * adds the game to the user's library.
@@ -46,6 +44,6 @@ public class AddGameToLibraryOnGamePurchased {
      */
     public interface GamePurchased {
         UserId userId();
-        String gameId(); // string UUID from DB / message
+        String gameId();
     }
 }

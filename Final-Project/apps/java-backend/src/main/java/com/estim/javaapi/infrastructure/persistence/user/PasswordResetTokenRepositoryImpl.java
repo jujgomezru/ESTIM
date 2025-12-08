@@ -7,7 +7,6 @@ import com.estim.javaapi.domain.user.UserId;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public class PasswordResetTokenRepositoryImpl implements PasswordResetTokenRepository {

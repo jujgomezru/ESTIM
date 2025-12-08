@@ -42,9 +42,9 @@ public final class WishlistNotificationTriggered extends AbstractDomainEvent {
 
         this.userId = Objects.requireNonNull(userId, "userId must not be null");
         this.gameId = Objects.requireNonNull(gameId, "gameId must not be null");
-        this.previousPrice = previousPrice;           // optional
-        this.currentPrice = currentPrice;             // optional, depending on pricing integration
-        this.discountPercentage = discountPercentage; // optional
+        this.previousPrice = previousPrice;
+        this.currentPrice = currentPrice;
+        this.discountPercentage = discountPercentage;
     }
 
     public UserId getUserId() {

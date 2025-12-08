@@ -33,24 +33,17 @@ public class AddToWishlistService {
         var userId = command.getUserId();
         var gameId = command.getGameId();
 
-        // 1) Block if the game is already in the user's library
         if (libraryRepository.findByUserAndGame(userId, gameId).isPresent()) {
-            // You could later replace this with a custom exception type
-            // if you want more structured error codes.
             throw new IllegalStateException("Game is already in library");
         }
 
-        // 2) Block duplicates in the wishlist (existing rule)
         if (wishlistRepository.existsByUserIdAndGameId(userId, gameId)) {
-            // You can make this a no-op if you prefer idempotency
             throw new IllegalStateException("Game is already in wishlist");
         }
 
-        // 3) Create and persist wishlist item
         WishlistItem item = WishlistItem.newItem(userId, gameId);
         wishlistRepository.save(item);
 
-        // 4) Publish domain event
         eventPublisher.publish(new GameAddedToWishlist(userId, gameId));
     }
 }

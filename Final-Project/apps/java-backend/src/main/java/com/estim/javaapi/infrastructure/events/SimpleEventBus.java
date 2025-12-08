@@ -44,7 +44,6 @@ public class SimpleEventBus implements DomainEventPublisher {
         } else if (event instanceof UserLoggedIn e) {
             auditHandler.handle(e);
         }
-        // You can extend this with more event types as needed
     }
 
     @Override

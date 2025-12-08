@@ -31,10 +31,7 @@ public class PaymentMethodJpaEntity {
     private boolean isDefault;
 
     protected PaymentMethodJpaEntity() {
-        // for JPA
     }
-
-    // Getters & setters
 
     public UUID getId() {
         return id;

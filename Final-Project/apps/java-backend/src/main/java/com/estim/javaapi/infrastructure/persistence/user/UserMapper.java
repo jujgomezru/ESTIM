@@ -1,18 +1,15 @@
 package com.estim.javaapi.infrastructure.persistence.user;
 
 import com.estim.javaapi.domain.user.*;
-import org.springframework.stereotype.Component;  // <--- add this import
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Constructor;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class UserMapper {
-
-    // ---------- Domain -> JPA ----------
 
     public UserJpaEntity toEntity(User user) {
         UserJpaEntity entity = new UserJpaEntity();
@@ -20,7 +17,7 @@ public class UserMapper {
         entity.setId(user.id().value());
         entity.setEmail(user.email().value());
         entity.setPasswordHash(user.passwordHash().value());
-        entity.setStatus(user.status());
+        entity.setStatus(user.status()); // transient, in-memory only
         entity.setEmailVerified(user.emailVerified());
         entity.setCreatedAt(user.createdAt());
         entity.setUpdatedAt(user.updatedAt());
@@ -30,15 +27,7 @@ public class UserMapper {
         if (profile != null) {
             entity.setDisplayName(profile.displayName());
             entity.setAvatarUrl(profile.avatarUrl());
-            entity.setBio(profile.bio());
-            entity.setLocation(profile.location());
-
-            PrivacySettings privacy = profile.privacySettings();
-            if (privacy != null) {
-                entity.setPrivacyShowProfile(privacy.showProfile());
-                entity.setPrivacyShowActivity(privacy.showActivity());
-                entity.setPrivacyShowWishlist(privacy.showWishlist());
-            }
+            // Privacy settings are no longer persisted; purely domain-side.
         }
 
         List<PaymentMethodJpaEntity> paymentMethodEntities = new ArrayList<>();
@@ -70,26 +59,28 @@ public class UserMapper {
         return entity;
     }
 
-    // ---------- JPA -> Domain ----------
-
     public User toDomain(UserJpaEntity entity) {
         UserId id = new UserId(entity.getId());
         Email email = new Email(entity.getEmail());
         PasswordHash passwordHash = new PasswordHash(entity.getPasswordHash());
+
         UserStatus status = entity.getStatus();
+        if (status == null) {
+            status = UserStatus.ACTIVE; // default since it's no longer persisted
+        }
+
         boolean emailVerified = entity.isEmailVerified();
 
+        // Privacy settings are not persisted anymore; choose a sensible default.
         PrivacySettings privacy = new PrivacySettings(
-            entity.isPrivacyShowProfile(),
-            entity.isPrivacyShowActivity(),
-            entity.isPrivacyShowWishlist()
+            true,  // showProfile
+            true,  // showActivity
+            true   // showWishlist
         );
 
         UserProfile profile = new UserProfile(
             entity.getDisplayName(),
             entity.getAvatarUrl(),
-            entity.getBio(),
-            entity.getLocation(),
             privacy
         );
 

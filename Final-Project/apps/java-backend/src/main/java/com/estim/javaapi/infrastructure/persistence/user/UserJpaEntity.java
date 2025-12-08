@@ -22,35 +22,19 @@ public class UserJpaEntity {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 50)
+    // No "status" column in DB; keep domain concept but don't map it to a column.
+    @Transient
     private UserStatus status;
 
     @Column(name = "email_verified", nullable = false)
     private boolean emailVerified;
 
-    // Profile fields
-    @Column(name = "display_name", length = 100)
+    // Profile fields present in DB
+    @Column(name = "display_name", length = 100, nullable = false)
     private String displayName;
 
-    @Column(name = "avatar_url", length = 512)
+    @Column(name = "avatar_url")
     private String avatarUrl;
-
-    @Column(name = "bio", length = 2000)
-    private String bio;
-
-    @Column(name = "location", length = 100)
-    private String location;
-
-    // Privacy settings
-    @Column(name = "privacy_show_profile", nullable = false)
-    private boolean privacyShowProfile = true;
-
-    @Column(name = "privacy_show_activity", nullable = false)
-    private boolean privacyShowActivity = true;
-
-    @Column(name = "privacy_show_wishlist", nullable = false)
-    private boolean privacyShowWishlist = true;
 
     // Timestamps
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -59,7 +43,8 @@ public class UserJpaEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Column(name = "last_login_at")
+    // Column name in DB is "last_login"
+    @Column(name = "last_login")
     private Instant lastLoginAt;
 
     @OneToMany(
@@ -79,10 +64,7 @@ public class UserJpaEntity {
     private List<OAuthAccountJpaEntity> linkedAccounts = new ArrayList<>();
 
     protected UserJpaEntity() {
-        // for JPA
     }
-
-    // Getters & setters
 
     public UUID getId() {
         return id;
@@ -138,46 +120,6 @@ public class UserJpaEntity {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public boolean isPrivacyShowProfile() {
-        return privacyShowProfile;
-    }
-
-    public void setPrivacyShowProfile(boolean privacyShowProfile) {
-        this.privacyShowProfile = privacyShowProfile;
-    }
-
-    public boolean isPrivacyShowActivity() {
-        return privacyShowActivity;
-    }
-
-    public void setPrivacyShowActivity(boolean privacyShowActivity) {
-        this.privacyShowActivity = privacyShowActivity;
-    }
-
-    public boolean isPrivacyShowWishlist() {
-        return privacyShowWishlist;
-    }
-
-    public void setPrivacyShowWishlist(boolean privacyShowWishlist) {
-        this.privacyShowWishlist = privacyShowWishlist;
     }
 
     public Instant getCreatedAt() {
