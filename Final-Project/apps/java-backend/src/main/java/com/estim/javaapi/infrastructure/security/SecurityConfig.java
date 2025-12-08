@@ -30,15 +30,28 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .authorizeHttpRequests(auth -> auth
+                // CORS preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                // Public auth endpoints (password-based)
                 .requestMatchers("/auth/register", "/auth/login").permitAll()
+
+                // 🔓 Public OAuth endpoints (NO JWT required)
+                .requestMatchers("/auth/oauth/**").permitAll()
+
+                // Health
                 .requestMatchers("/health", "/actuator/health").permitAll()
+
+                // Public data
                 .requestMatchers(HttpMethod.GET, "/games", "/games/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/community/posts", "/community/posts/**").permitAll()
+
+                // Protected
                 .requestMatchers("/me/**").authenticated()
+
+                // Everything else requires authentication
                 .anyRequest().authenticated()
             )
-
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
