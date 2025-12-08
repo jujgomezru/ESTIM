@@ -59,6 +59,9 @@ class ProfileControllerTest {
 
     /**
      * Build a fully stubbed User with profile & privacy so UserDtoMapper works.
+     *
+     * NOTE: The "new" backend no longer exposes bio/location at domain level.
+     * UserProfile has: displayName, avatarUrl, PrivacySettings.
      */
     private User buildTestUserWithProfile() {
         User user = mock(User.class);
@@ -79,8 +82,8 @@ class ProfileControllerTest {
         when(user.profile()).thenReturn(profile);
         when(profile.displayName()).thenReturn("John Doe");
         when(profile.avatarUrl()).thenReturn("https://example.com/avatar.png");
-        when(profile.bio()).thenReturn("Hello, I am John");
-        when(profile.location()).thenReturn("Bogotá");
+        // bio/location methods no longer exist on UserProfile in the new model
+
         when(profile.privacySettings()).thenReturn(privacy);
 
         // privacy
@@ -128,12 +131,10 @@ class ProfileControllerTest {
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    // UserProfileResponse(userId, displayName, avatarUrl, bio, location, privacy)
+                    // New UserProfileResponse(userId, displayName, avatarUrl, privacy)
                     .andExpect(jsonPath("$.userId").value("user-123"))
                     .andExpect(jsonPath("$.displayName").value("John Doe"))
                     .andExpect(jsonPath("$.avatarUrl").value("https://example.com/avatar.png"))
-                    .andExpect(jsonPath("$.bio").value("Hello, I am John"))
-                    .andExpect(jsonPath("$.location").value("Bogotá"))
                     .andExpect(jsonPath("$.privacy.showProfile").value(true))
                     .andExpect(jsonPath("$.privacy.showActivity").value(false))
                     .andExpect(jsonPath("$.privacy.showWishlist").value(true));
@@ -260,6 +261,8 @@ class ProfileControllerTest {
             UUID userUuid = UUID.fromString("22222222-2222-2222-2222-222222222222");
             when(currentUserId.value()).thenReturn(userUuid);
 
+            // NOTE: Request still includes bio/location in the API contract,
+            // even if the domain no longer stores them.
             UpdateUserProfileRequest request = new UpdateUserProfileRequest(
                 "New Name",
                 "https://example.com/new-avatar.png",
