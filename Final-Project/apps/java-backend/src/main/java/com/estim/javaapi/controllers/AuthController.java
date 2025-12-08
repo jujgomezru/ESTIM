@@ -3,7 +3,6 @@ package com.estim.javaapi.controllers;
 import com.estim.javaapi.application.auth.*;
 import com.estim.javaapi.domain.user.User;
 import com.estim.javaapi.infrastructure.security.JwtAuthenticationProvider;
-import com.estim.javaapi.infrastructure.security.SecurityContext;
 import com.estim.javaapi.presentation.auth.LoginRequest;
 import com.estim.javaapi.presentation.auth.LoginResponse;
 import com.estim.javaapi.presentation.auth.RegisterUserRequest;
@@ -90,7 +89,6 @@ public class AuthController {
         com.estim.javaapi.infrastructure.security.AuthenticatedUser currentUser
     ) {
         if (currentUser == null) {
-            // No or invalid JWT → treat as AUTH_FAILED
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse("AUTH_FAILED", "No authenticated user", null));
         }
@@ -101,7 +99,6 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    // ---------- Helpers ----------
 
     private String extractBearerTokenOrNull(String authorizationHeader) {
         if (authorizationHeader == null || authorizationHeader.isBlank()) {

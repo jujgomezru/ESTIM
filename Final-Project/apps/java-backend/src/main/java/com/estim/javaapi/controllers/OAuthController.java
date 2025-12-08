@@ -69,9 +69,9 @@ public class OAuthController {
         try {
             LoginWithOAuthCommand command = new LoginWithOAuthCommand(
                 request.provider(),
-                request.externalToken(), // used as oauthExternalId for now
-                null,                    // email unknown at this stage
-                request.externalToken()  // also used as "token" for now
+                request.externalToken(),
+                null,
+                request.externalToken()
             );
 
             AuthenticationResult result = loginWithOAuthService.login(command);

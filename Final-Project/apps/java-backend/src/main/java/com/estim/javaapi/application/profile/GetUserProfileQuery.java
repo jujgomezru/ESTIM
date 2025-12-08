@@ -5,6 +5,6 @@ package com.estim.javaapi.application.profile;
  * privacy rules and the identity of the requesting user.
  */
 public record GetUserProfileQuery(
-    String requesterUserId, // the user making the request (may be same as target)
-    String targetUserId     // the profile owner
+    String requesterUserId,
+    String targetUserId
 ) {}

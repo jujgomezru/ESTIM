@@ -36,8 +36,6 @@ public class RemovePaymentMethodService {
         user.removePaymentMethod(paymentMethodId);
 
         userRepository.save(user);
-
-        // Publish events raised by the aggregate (e.g. PaymentMethodRemoved)
         eventPublisher.publishAll(user.domainEvents());
         user.clearDomainEvents();
     }

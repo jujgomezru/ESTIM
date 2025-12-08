@@ -38,7 +38,6 @@ public class PasswordController {
 
             requestPasswordResetService.requestReset(command);
 
-            // Do NOT reveal whether the email exists.
             PasswordResetResponse response = new PasswordResetResponse(
                 true,
                 "If an account exists for that email, a reset link has been sent."

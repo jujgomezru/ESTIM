@@ -2,7 +2,6 @@ package com.estim.javaapi.domain.user.events;
 
 import com.estim.javaapi.domain.common.DomainEvent;
 import com.estim.javaapi.domain.user.UserId;
-
 import java.time.Instant;
 
 /**

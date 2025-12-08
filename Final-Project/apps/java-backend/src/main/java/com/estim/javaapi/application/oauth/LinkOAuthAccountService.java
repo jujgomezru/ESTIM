@@ -39,9 +39,6 @@ public class LinkOAuthAccountService {
 
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        // TODO: Use provider + externalToken (+ redirectUri) to call Google/Steam
-        // and obtain real externalUserId + email. For now, we just reuse the token.
         String externalUserId = command.externalToken();
         String email = null;
 

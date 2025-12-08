@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -119,18 +118,5 @@ public class WishlistController {
         removeFromWishlistService.removeFromWishlist(
             new RemoveFromWishlistCommand(userId, gameId)
         );
-    }
-
-    // ---------- helpers for now (no GameRepository yet) ----------
-
-    private String defaultGameTitle(WishlistItem item) {
-        // You can tweak this to any placeholder you want
-        String shortId = item.getGameId().getValue().toString().substring(0, 8);
-        return "Wishlist game " + shortId;
-    }
-
-    private String defaultCoverImageUrl() {
-        // Same placeholder you were using in the frontend
-        return "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop";
     }
 }

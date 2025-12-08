@@ -24,11 +24,8 @@ SELECT
 FROM promotions p
 JOIN games g ON g.title = 'Cube Quest'
 WHERE p.name = 'Launch10'
-  AND NOT EXISTS (
-    SELECT 1 FROM promotion_games pg
-    WHERE pg.promotion_id = p.id
-      AND pg.game_id = g.id
-  );
+ON CONFLICT (promotion_id, game_id) DO NOTHING;
+
 
 INSERT INTO promotions (
   name, description, discount_type, discount_value,
@@ -56,11 +53,7 @@ SELECT
 FROM promotions p
 JOIN games g ON g.title = 'Fantasy Quest Online'
 WHERE p.name = 'Cozy25'
-  AND NOT EXISTS (
-    SELECT 1 FROM promotion_games pg
-    WHERE pg.promotion_id = p.id
-      AND pg.game_id = g.id
-  );
+ON CONFLICT (promotion_id, game_id) DO NOTHING;
 
 INSERT INTO promotion_games (promotion_id, game_id)
 SELECT
@@ -69,11 +62,8 @@ SELECT
 FROM promotions p
 JOIN games g ON g.title = 'Space Odyssey'
 WHERE p.name = 'Cozy25'
-  AND NOT EXISTS (
-    SELECT 1 FROM promotion_games pg
-    WHERE pg.promotion_id = p.id
-      AND pg.game_id = g.id
-  );
+ON CONFLICT (promotion_id, game_id) DO NOTHING;
+
 
 INSERT INTO promotions (
   name, description, discount_type, discount_value,
@@ -101,11 +91,7 @@ SELECT
 FROM promotions p
 JOIN games g ON g.title = 'Cyberpunk Legends'
 WHERE p.name = 'Action5'
-  AND NOT EXISTS (
-    SELECT 1 FROM promotion_games pg
-    WHERE pg.promotion_id = p.id
-      AND pg.game_id = g.id
-  );
+ON CONFLICT (promotion_id, game_id) DO NOTHING;
 
 INSERT INTO promotion_games (promotion_id, game_id)
 SELECT
@@ -114,11 +100,8 @@ SELECT
 FROM promotions p
 JOIN games g ON g.title = 'Zombie Survival'
 WHERE p.name = 'Action5'
-  AND NOT EXISTS (
-    SELECT 1 FROM promotion_games pg
-    WHERE pg.promotion_id = p.id
-      AND pg.game_id = g.id
-  );
+ON CONFLICT (promotion_id, game_id) DO NOTHING;
+
 
 INSERT INTO promotions (
   name, description, discount_type, discount_value,
@@ -146,11 +129,7 @@ SELECT
 FROM promotions p
 JOIN games g ON g.title = 'Tactical Warfare'
 WHERE p.name = 'StratWeekend'
-  AND NOT EXISTS (
-    SELECT 1 FROM promotion_games pg
-    WHERE pg.promotion_id = p.id
-      AND pg.game_id = g.id
-  );
+ON CONFLICT (promotion_id, game_id) DO NOTHING;
 
 INSERT INTO promotion_games (promotion_id, game_id)
 SELECT
@@ -159,56 +138,4 @@ SELECT
 FROM promotions p
 JOIN games g ON g.title = 'Medieval Kingdoms'
 WHERE p.name = 'StratWeekend'
-  AND NOT EXISTS (
-    SELECT 1 FROM promotion_games pg
-    WHERE pg.promotion_id = p.id
-      AND pg.game_id = g.id
-  );
-
-INSERT INTO promotion_usage (promotion_id, user_id, order_id)
-SELECT
-  p.id,
-  u.id,
-  o.id
-FROM promotions p
-JOIN users u ON u.email = 'alice@example.com'
-JOIN orders o ON o.order_number = 'EST-100001'
-WHERE p.name = 'Launch10'
-  AND NOT EXISTS (
-    SELECT 1
-    FROM promotion_usage pu
-    WHERE pu.promotion_id = p.id
-      AND pu.user_id = u.id
-  );
-
-INSERT INTO promotion_usage (promotion_id, user_id, order_id)
-SELECT
-  p.id,
-  u.id,
-  o.id
-FROM promotions p
-JOIN users u ON u.email = 'bob@example.com'
-JOIN orders o ON o.order_number = 'EST-100002'
-WHERE p.name = 'Cozy25'
-  AND NOT EXISTS (
-    SELECT 1
-    FROM promotion_usage pu
-    WHERE pu.promotion_id = p.id
-      AND pu.user_id = u.id
-  );
-
-INSERT INTO promotion_usage (promotion_id, user_id, order_id)
-SELECT
-  p.id,
-  u.id,
-  o.id
-FROM promotions p
-JOIN users u ON u.email = 'charlie@example.com'
-JOIN orders o ON o.order_number = 'EST-100003'
-WHERE p.name = 'Action5'
-  AND NOT EXISTS (
-    SELECT 1
-    FROM promotion_usage pu
-    WHERE pu.promotion_id = p.id
-      AND pu.user_id = u.id
-  );
+ON CONFLICT (promotion_id, game_id) DO NOTHING;

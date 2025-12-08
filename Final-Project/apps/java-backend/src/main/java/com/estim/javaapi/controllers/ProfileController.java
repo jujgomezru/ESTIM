@@ -7,7 +7,6 @@ import com.estim.javaapi.application.profile.UpdateUserProfileService;
 import com.estim.javaapi.presentation.profile.UpdateUserProfileRequest;
 import com.estim.javaapi.presentation.profile.UserProfileResponse;
 import com.estim.javaapi.domain.user.User;
-import com.estim.javaapi.domain.user.UserProfile;
 import com.estim.javaapi.infrastructure.security.JwtAuthenticationProvider;
 import com.estim.javaapi.infrastructure.security.SecurityContext;
 import com.estim.javaapi.presentation.common.ErrorResponse;
@@ -38,7 +37,6 @@ public class ProfileController {
         @RequestHeader(name = "Authorization", required = false) String authorizationHeader) {
 
         try {
-            // Requester is optional (anonymous) – if no auth, we pass some dummy id
             String requesterId = "00000000-0000-0000-0000-000000000000";
             try {
                 authenticationProvider.authenticateFromAuthorizationHeader(authorizationHeader);
@@ -46,7 +44,6 @@ public class ProfileController {
                     .map(id -> id.value().toString())
                     .orElse(requesterId);
             } catch (Exception ignored) {
-                // anonymous viewer
             }
 
             GetUserProfileQuery query = new GetUserProfileQuery(requesterId, targetUserId);

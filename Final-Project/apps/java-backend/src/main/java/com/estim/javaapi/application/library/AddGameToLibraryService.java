@@ -3,7 +3,6 @@ package com.estim.javaapi.application.library;
 import com.estim.javaapi.domain.common.DomainEventPublisher;
 import com.estim.javaapi.domain.library.GameId;
 import com.estim.javaapi.domain.library.LibraryEntry;
-import com.estim.javaapi.domain.library.LibraryEntryStatus;
 import com.estim.javaapi.domain.library.LibraryRepository;
 import com.estim.javaapi.domain.library.events.GameAddedToLibrary;
 import com.estim.javaapi.domain.user.UserId;

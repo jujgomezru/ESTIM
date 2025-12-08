@@ -32,9 +32,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String authorizationHeader = request.getHeader("Authorization");
-
-            // Debug 1: see the header
-            // (You can remove these logs once everything works.)
             System.out.println("[JWT] Incoming request " + request.getMethod() + " " + request.getRequestURI());
             System.out.println("[JWT] Authorization header = " + authorizationHeader);
 
@@ -72,13 +69,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }
                 }
             } else {
-                // No Bearer header -> ensure thread-local is clear
                 SecurityContext.clear();
             }
 
             filterChain.doFilter(request, response);
         } finally {
-            // Make sure we don’t leak the user between requests on the same thread
             SecurityContext.clear();
         }
     }

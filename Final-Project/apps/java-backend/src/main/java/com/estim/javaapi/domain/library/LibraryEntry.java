@@ -21,7 +21,7 @@ public class LibraryEntry {
         this.id = Objects.requireNonNull(id);
         this.userId = Objects.requireNonNull(userId);
         this.gameId = Objects.requireNonNull(gameId);
-        this.source = source; // nullable
+        this.source = source;
         this.addedAt = Objects.requireNonNull(addedAt);
     }
 

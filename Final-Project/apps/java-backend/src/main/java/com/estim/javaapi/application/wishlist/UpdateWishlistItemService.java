@@ -23,6 +23,5 @@ public class UpdateWishlistItemService {
         var updated = existing.withNotificationPreferences(newPreferences);
 
         wishlistRepository.save(updated);
-        // If you want, you could publish a "WishlistItemUpdated" event later.
     }
 }

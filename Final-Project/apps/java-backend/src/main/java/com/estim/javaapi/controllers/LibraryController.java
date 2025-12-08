@@ -51,8 +51,6 @@ public class LibraryController {
         }
 
         var query = new ListUserLibraryQuery(currentUser.userId());
-
-        // Service already returns enriched responses with title + image
         List<LibraryEntryResponse> response = listUserLibraryService.listUserLibrary(query);
 
         return ResponseEntity.ok(response);
@@ -95,12 +93,10 @@ public class LibraryController {
             return ResponseEntity.status(201).body(LibraryMapper.toResponse(entry));
 
         } catch (IllegalStateException ex) {
-            // duplicate game in library → 409
             return ResponseEntity.status(409)
                 .body(new ErrorResponse("LIBRARY_ADD_FAILED", ex.getMessage(), null));
 
         } catch (IllegalArgumentException ex) {
-            // validation error
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("LIBRARY_ADD_FAILED", ex.getMessage(), null));
         }

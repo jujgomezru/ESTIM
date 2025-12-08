@@ -38,11 +38,9 @@ public class JwtAuthenticationProvider {
             SecurityContext.setCurrentUser(authenticatedUser);
 
         } catch (ExpiredJwtException ex) {
-            // Token is structurally valid but no longer valid in time
             throw new IllegalArgumentException("Access token expired", ex);
 
         } catch (JwtException | IllegalArgumentException ex) {
-            // Any other parsing/validation error
             throw new IllegalArgumentException("Invalid or malformed access token", ex);
         }
     }

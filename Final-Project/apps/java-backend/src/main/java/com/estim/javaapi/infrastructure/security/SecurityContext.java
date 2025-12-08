@@ -17,7 +17,6 @@ public final class SecurityContext {
     private static final ThreadLocal<AuthenticatedUser> CURRENT = new ThreadLocal<>();
 
     private SecurityContext() {
-        // utility class
     }
 
     public static void setCurrentUser(AuthenticatedUser user) {

@@ -13,6 +13,6 @@ import java.util.UUID;
  */
 public record AddGameToLibraryRequest(
     UUID gameId,
-    String source // "PURCHASE" or "GIFT"
+    String source
 ) {
 }

@@ -53,7 +53,6 @@ public class ResetPasswordService {
         User user = userRepository.findById(resetToken.userId())
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Assumes User has a method like changePassword(PasswordHash)
         user.changePassword(passwordHasher.hash(command.newPassword()));
 
         resetToken.markUsed();

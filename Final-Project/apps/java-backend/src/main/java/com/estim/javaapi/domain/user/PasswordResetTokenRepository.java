@@ -1,7 +1,5 @@
 package com.estim.javaapi.domain.user;
 
-import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
 
 /**

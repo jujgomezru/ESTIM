@@ -23,7 +23,6 @@ public class WishlistItemJpaEntity {
     private Instant addedAt;
 
     protected WishlistItemJpaEntity() {
-        // for JPA
     }
 
     public WishlistItemJpaEntity(UUID userId,

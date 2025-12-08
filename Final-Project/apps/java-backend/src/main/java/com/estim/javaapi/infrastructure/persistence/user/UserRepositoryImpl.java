@@ -8,7 +8,6 @@ import com.estim.javaapi.domain.user.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {

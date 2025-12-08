@@ -38,12 +38,10 @@ public class GetUserProfileService {
         PrivacySettings privacy = profile.privacySettings();
         boolean isSelf = query.requesterUserId().equals(query.targetUserId());
 
-        // Simple privacy rule: if not self and profile is not visible, deny
         if (!isSelf && (privacy == null || !privacy.showProfile())) {
             throw new IllegalStateException("Profile is not public");
         }
 
-        // Return the full User aggregate; the controller/mapper will shape the DTO
         return user;
     }
 }

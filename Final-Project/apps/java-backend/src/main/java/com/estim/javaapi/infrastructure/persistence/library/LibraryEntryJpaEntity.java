@@ -20,7 +20,7 @@ public class LibraryEntryJpaEntity {
     private UUID gameId;
 
     @Column(name = "source")
-    private String source; // PURCHASE / GIFT / null
+    private String source;
 
     @Column(name = "added_at", nullable = false)
     private Instant addedAt;

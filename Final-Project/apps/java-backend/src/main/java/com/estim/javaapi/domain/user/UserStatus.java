@@ -45,19 +45,4 @@ public enum UserStatus {
         return this == ACTIVE;
     }
 
-    /**
-     * Returns true if a user in this status is allowed to perform purchases
-     * or other sensitive operations.
-     */
-    public boolean canPerformPurchases() {
-        return this == ACTIVE;
-    }
-
-    /**
-     * Returns true if this status represents some kind of blocked account
-     * (moderated, banned, removed, etc.).
-     */
-    public boolean isBlocked() {
-        return this == SUSPENDED || this == BANNED || this == DELETED;
-    }
 }
