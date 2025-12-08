@@ -100,6 +100,7 @@ public class UserMapper {
         for (OAuthAccountJpaEntity oaEntity : entity.getLinkedAccounts()) {
             OAuthAccount oa = new OAuthAccount(
                 new OAuthAccountId(oaEntity.getId()),
+                new UserId(entity.getId()),
                 oaEntity.getProvider(),
                 oaEntity.getExternalUserId(),
                 oaEntity.getEmail(),
@@ -107,6 +108,7 @@ public class UserMapper {
             );
             oauthAccounts.add(oa);
         }
+
 
         Instant createdAt = entity.getCreatedAt();
         Instant updatedAt = entity.getUpdatedAt();

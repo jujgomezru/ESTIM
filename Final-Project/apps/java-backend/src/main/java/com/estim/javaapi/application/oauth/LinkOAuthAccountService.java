@@ -1,36 +1,30 @@
 package com.estim.javaapi.application.oauth;
 
 import com.estim.javaapi.domain.common.DomainEventPublisher;
-import com.estim.javaapi.domain.user.OAuthAccount;
-import com.estim.javaapi.domain.user.OAuthAccountId;
-import com.estim.javaapi.domain.user.OAuthProvider;
-import com.estim.javaapi.domain.user.User;
-import com.estim.javaapi.domain.user.UserId;
-import com.estim.javaapi.domain.user.UserRepository;
+import com.estim.javaapi.domain.user.*;
+import com.estim.javaapi.infrastructure.oauth.GoogleOAuthClient;
+import com.estim.javaapi.infrastructure.oauth.OAuthUserInfo;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Application service for linking an OAuth account to an existing user.
- *
- * NOTE: For now, we treat externalToken as the external identifier.
- * Later you can integrate GoogleOAuthClient / SteamOAuthClient to
- * exchange the token for real user info (externalUserId + email).
- */
 @Component
 public class LinkOAuthAccountService {
 
     private final UserRepository userRepository;
+    private final OAuthAccountRepository oAuthAccountRepository;
     private final DomainEventPublisher eventPublisher;
+    private final GoogleOAuthClient googleOAuthClient;
 
     public LinkOAuthAccountService(UserRepository userRepository,
-                                   DomainEventPublisher eventPublisher) {
-
+                                   OAuthAccountRepository oAuthAccountRepository,
+                                   DomainEventPublisher eventPublisher,
+                                   GoogleOAuthClient googleOAuthClient) {
         this.userRepository = Objects.requireNonNull(userRepository);
+        this.oAuthAccountRepository = Objects.requireNonNull(oAuthAccountRepository);
         this.eventPublisher = Objects.requireNonNull(eventPublisher);
+        this.googleOAuthClient = Objects.requireNonNull(googleOAuthClient);
     }
 
     public void link(LinkOAuthAccountCommand command) {
@@ -39,22 +33,42 @@ public class LinkOAuthAccountService {
 
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        String externalUserId = command.externalToken();
+
+        String externalUserId;
         String email = null;
 
-        OAuthAccount account = new OAuthAccount(
-            new OAuthAccountId(UUID.randomUUID()),
+        if (provider == OAuthProvider.GOOGLE) {
+            // ✅ Wrap Google call → map any runtime error to IllegalArgumentException
+            try {
+                OAuthUserInfo info = googleOAuthClient.fetchUserInfo(command.externalToken());
+                externalUserId = info.externalUserId(); // "sub"
+                email = info.email();
+            } catch (RuntimeException ex) {
+                // invalid / expired token, network error, etc.
+                throw new IllegalArgumentException("Failed to validate OAuth token for linking", ex);
+            }
+        } else {
+            // For other providers we still treat externalToken as external ID (for now)
+            externalUserId = command.externalToken();
+        }
+
+        if (externalUserId == null || externalUserId.isBlank()) {
+            throw new IllegalArgumentException("Missing external user id");
+        }
+
+        OAuthAccount account = OAuthAccount.create(
+            userId,
             provider,
             externalUserId,
-            email,
-            Instant.now()
+            email
         );
 
+        oAuthAccountRepository.save(account);
         user.linkOAuthAccount(account);
-
         userRepository.save(user);
 
         eventPublisher.publishAll(user.domainEvents());
         user.clearDomainEvents();
     }
 }
+

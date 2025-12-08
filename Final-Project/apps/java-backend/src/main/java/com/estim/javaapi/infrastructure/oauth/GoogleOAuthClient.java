@@ -1,5 +1,10 @@
 package com.estim.javaapi.infrastructure.oauth;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,33 +18,22 @@ import java.util.Objects;
  *
  * Given a Google OAuth access token, this client can fetch basic user info
  * from the Google UserInfo endpoint.
- *
- * NOTE: This is a skeleton implementation. You should:
- *  - replace naive response handling with proper JSON parsing (e.g. Jackson),
- *  - add error handling / logging as needed.
  */
+@Component
 public class GoogleOAuthClient {
 
-    // Default Google userinfo endpoint
-    private static final String DEFAULT_USERINFO_ENDPOINT =
-        "https://www.googleapis.com/oauth2/v3/userinfo";
-
     private final String userInfoEndpoint;
+    private final ObjectMapper objectMapper;
 
-    public GoogleOAuthClient() {
-        this(DEFAULT_USERINFO_ENDPOINT);
-    }
-
-    public GoogleOAuthClient(String userInfoEndpoint) {
+    public GoogleOAuthClient(
+        @Value("${security.oauth.google.userinfo-endpoint:https://www.googleapis.com/oauth2/v3/userinfo}")
+        String userInfoEndpoint,
+        ObjectMapper objectMapper
+    ) {
         this.userInfoEndpoint = Objects.requireNonNull(userInfoEndpoint);
+        this.objectMapper = Objects.requireNonNull(objectMapper);
     }
 
-    /**
-     * Fetches user information from Google given a valid OAuth access token.
-     *
-     * @param accessToken Google OAuth access token (bearer token)
-     * @return OAuthUserInfo with externalUserId, email, and displayName
-     */
     public OAuthUserInfo fetchUserInfo(String accessToken) {
         Objects.requireNonNull(accessToken, "accessToken must not be null");
 
@@ -65,23 +59,15 @@ public class GoogleOAuthClient {
             }
 
             String json = sb.toString();
+            JsonNode root = objectMapper.readTree(json);
 
-            // TODO: parse JSON properly using Jackson or similar:
-            // {
-            //   "sub": "110169484474386276334",
-            //   "name": "John Doe",
-            //   "given_name": "...",
-            //   "family_name": "...",
-            //   "picture": "...",
-            //   "email": "john.doe@example.com",
-            //   ...
-            // }
+            String externalUserId = root.path("sub").asText();
+            String email = root.path("email").asText(null);
+            String displayName = root.path("name").asText("Google User");
 
-            // For now, this is a stub that just returns a generic user.
-            // Replace with real JSON parsing later.
-            String externalUserId = "google-" + accessToken.hashCode();
-            String email = "unknown@example.com";
-            String displayName = "Google User";
+            if (externalUserId == null || externalUserId.isBlank()) {
+                throw new RuntimeException("Google userinfo missing 'sub' field");
+            }
 
             return new OAuthUserInfo(externalUserId, email, displayName);
 
