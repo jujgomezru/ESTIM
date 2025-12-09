@@ -5,47 +5,61 @@ import com.estim.javaapi.application.auth.TokenService;
 import com.estim.javaapi.domain.common.DomainEventPublisher;
 import com.estim.javaapi.domain.user.*;
 import com.estim.javaapi.domain.user.events.UserLoggedIn;
+import com.estim.javaapi.infrastructure.oauth.GoogleOAuthClient;
+import com.estim.javaapi.infrastructure.oauth.OAuthUserInfo;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.Objects;
 
-/**
- * Application service for logging in a user using an OAuth provider.
- *
- * Now we:
- *  - look up the user by (provider, externalUserId),
- *  - generate tokens for that user.
- *
- * The linking is handled separately by LinkOAuthAccountService.
- */
 @Component
 public class LoginWithOAuthService {
 
+    private final OAuthAccountRepository oAuthAccountRepository;
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final DomainEventPublisher eventPublisher;
+    private final GoogleOAuthClient googleOAuthClient;
 
-    public LoginWithOAuthService(UserRepository userRepository,
+    public LoginWithOAuthService(OAuthAccountRepository oAuthAccountRepository,
+                                 UserRepository userRepository,
                                  TokenService tokenService,
-                                 DomainEventPublisher eventPublisher) {
-
+                                 DomainEventPublisher eventPublisher,
+                                 GoogleOAuthClient googleOAuthClient) {
+        this.oAuthAccountRepository = Objects.requireNonNull(oAuthAccountRepository);
         this.userRepository = Objects.requireNonNull(userRepository);
         this.tokenService = Objects.requireNonNull(tokenService);
         this.eventPublisher = Objects.requireNonNull(eventPublisher);
+        this.googleOAuthClient = Objects.requireNonNull(googleOAuthClient);
     }
 
     public AuthenticationResult login(LoginWithOAuthCommand command) {
         OAuthProvider provider = OAuthProvider.valueOf(command.provider().toUpperCase());
-        String externalId = command.oauthExternalId();
+
+        String externalId;
+
+        if (provider == OAuthProvider.GOOGLE) {
+            // ✅ Wrap Google call → map to IllegalArgumentException
+            try {
+                OAuthUserInfo info = googleOAuthClient.fetchUserInfo(command.token());
+                externalId = info.externalUserId();
+            } catch (RuntimeException ex) {
+                throw new IllegalArgumentException("Failed to validate OAuth token for login", ex);
+            }
+        } else {
+            externalId = command.oauthExternalId();
+        }
 
         if (externalId == null || externalId.isBlank()) {
             throw new IllegalArgumentException("Missing OAuth external id");
         }
 
-        User user = userRepository
-            .findByOAuthProviderAndExternalId(provider, externalId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found for OAuth login"));
+        OAuthAccount account = oAuthAccountRepository
+            .findByProviderAndExternalUserId(provider, externalId)
+            .orElseThrow(() -> new IllegalArgumentException("OAuth account not linked"));
+
+        User user = userRepository.findById(account.userId())
+            .orElseThrow(() -> new IllegalStateException("User not found for linked OAuth account"));
 
         user.markLogin();
         userRepository.save(user);
@@ -59,3 +73,4 @@ public class LoginWithOAuthService {
         return new AuthenticationResult(accessToken, refreshToken, user);
     }
 }
+

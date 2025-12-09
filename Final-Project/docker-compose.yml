@@ -101,9 +101,9 @@ services:
     ports:
       - "${PY_API_PORT}:8000"
 
-  web:
+  web-frontend:
     build:
-      context: ./web
+      context: ./web-frontend
       dockerfile: Dockerfile
     container_name: estim_web
     environment:

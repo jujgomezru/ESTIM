@@ -15,14 +15,17 @@ public class OAuthAccount {
     private final String externalUserId;  // e.g., Google sub, Steam ID
     private final String email;           // optional, may be null
     private final Instant linkedAt;
+    private final UserId userId;
 
     public OAuthAccount(OAuthAccountId id,
+                        UserId userId,
                         OAuthProvider provider,
                         String externalUserId,
                         String email,
                         Instant linkedAt) {
 
         this.id = Objects.requireNonNull(id);
+        this.userId = Objects.requireNonNull(userId);
         this.provider = Objects.requireNonNull(provider);
         this.externalUserId = Objects.requireNonNull(externalUserId);
         this.email = email;
@@ -49,12 +52,18 @@ public class OAuthAccount {
         return linkedAt;
     }
 
-    public static OAuthAccount create(OAuthProvider provider,
+    public UserId userId() {
+        return userId;
+    }
+
+    public static OAuthAccount create(UserId userId,
+                                      OAuthProvider provider,
                                       String externalUserId,
                                       String email) {
 
         return new OAuthAccount(
             new OAuthAccountId(UUID.randomUUID()),
+            userId,
             provider,
             externalUserId,
             email,
