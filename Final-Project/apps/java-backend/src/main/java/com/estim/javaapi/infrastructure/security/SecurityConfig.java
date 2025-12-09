@@ -35,6 +35,7 @@ public class SecurityConfig {
 
                 // Public auth endpoints (password-based)
                 .requestMatchers("/auth/register", "/auth/login").permitAll()
+                .requestMatchers("/auth/oauth/login", "/auth/oauth/register").permitAll()
 
                 // 🔓 Public OAuth endpoints (NO JWT required)
                 .requestMatchers("/auth/oauth/**").permitAll()
