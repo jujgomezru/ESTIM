@@ -16,7 +16,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: Final-Project/web
+        working-directory: Final-Project/web-frontend
 
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: Final-Project/web/package-lock.json
+          cache-dependency-path: Final-Project/web-frontend/package-lock.json
 
       - name: Install dependencies
         run: npm ci
