@@ -5,6 +5,8 @@ import com.estim.javaapi.application.oauth.LinkOAuthAccountCommand;
 import com.estim.javaapi.application.oauth.LinkOAuthAccountService;
 import com.estim.javaapi.application.oauth.LoginWithOAuthCommand;
 import com.estim.javaapi.application.oauth.LoginWithOAuthService;
+import com.estim.javaapi.application.oauth.RegisterWithOAuthCommand;
+import com.estim.javaapi.application.oauth.RegisterWithOAuthService;
 import com.estim.javaapi.infrastructure.security.JwtAuthenticationProvider;
 import com.estim.javaapi.infrastructure.security.SecurityContext;
 import com.estim.javaapi.presentation.auth.LoginResponse;
@@ -22,15 +24,18 @@ public class OAuthController {
 
     private final LinkOAuthAccountService linkOAuthAccountService;
     private final LoginWithOAuthService loginWithOAuthService;
+    private final RegisterWithOAuthService registerWithOAuthService;
     private final JwtAuthenticationProvider authenticationProvider;
 
     public OAuthController(LinkOAuthAccountService linkOAuthAccountService,
                            LoginWithOAuthService loginWithOAuthService,
+                           RegisterWithOAuthService registerWithOAuthService,
                            JwtAuthenticationProvider authenticationProvider,
                            UserDtoMapper userDtoMapper) {
 
         this.linkOAuthAccountService = linkOAuthAccountService;
         this.loginWithOAuthService = loginWithOAuthService;
+        this.registerWithOAuthService = registerWithOAuthService;
         this.authenticationProvider = authenticationProvider;
     }
 
@@ -41,6 +46,15 @@ public class OAuthController {
 
         try {
             authenticationProvider.authenticateFromAuthorizationHeader(authorizationHeader);
+
+            if (request.externalToken() == null || request.externalToken().isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(
+                        "OAUTH_LINK_FAILED",
+                        "Missing OAuth access token",
+                        null
+                    ));
+            }
 
             var userId = SecurityContext.getCurrentUserId()
                 .orElseThrow(() -> new IllegalStateException("No authenticated user"));
@@ -63,10 +77,18 @@ public class OAuthController {
         }
     }
 
-
     @PostMapping("/login")
     public ResponseEntity<?> loginWithOAuth(@RequestBody OAuthLoginRequest request) {
         try {
+            if (request.externalToken() == null || request.externalToken().isBlank()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse(
+                        "OAUTH_LOGIN_FAILED",
+                        "Missing OAuth access token",
+                        null
+                    ));
+            }
+
             LoginWithOAuthCommand command = new LoginWithOAuthCommand(
                 request.provider(),
                 request.externalToken(),
@@ -81,6 +103,33 @@ public class OAuthController {
         } catch (IllegalArgumentException | IllegalStateException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse("OAUTH_LOGIN_FAILED", ex.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerWithOAuth(@RequestBody OAuthLoginRequest request) {
+        try {
+            if (request.externalToken() == null || request.externalToken().isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(
+                        "OAUTH_REGISTER_FAILED",
+                        "Missing OAuth access token",
+                        null
+                    ));
+            }
+
+            RegisterWithOAuthCommand command = new RegisterWithOAuthCommand(
+                request.provider(),
+                request.externalToken()
+            );
+
+            AuthenticationResult result = registerWithOAuthService.register(command);
+            LoginResponse response = UserDtoMapper.toLoginResponse(result);
+            return ResponseEntity.ok(response);
+
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("OAUTH_REGISTER_FAILED", ex.getMessage(), null));
         }
     }
 }
