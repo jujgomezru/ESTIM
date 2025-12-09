@@ -30,11 +30,11 @@ jobs:
           node-version: "20"   # or match your local Node version
 
       - name: Install dependencies
-        working-directory: ./Final-Project/web
+        working-directory: ./Final-Project/web-frontend
         run: npm ci
 
       - name: Build frontend
-        working-directory: ./Final-Project/web
+        working-directory: ./Final-Project/web-frontend
         run: npm run build
 
       - name: Setup Pages
