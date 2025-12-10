@@ -4,13 +4,13 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - "Final-Project/web-frontend/**"   # <── was web/**
+      - "Final-Project/web-frontend/**"
       - ".github/workflows/pages.yml"
 
 permissions:
   contents: read
-  pages: write       # needed to publish to Pages
-  id-token: write    # needed by deploy-pages for OIDC
+  pages: write       
+  id-token: write    
 
 concurrency:
   group: "pages"
@@ -35,6 +35,8 @@ jobs:
 
       - name: Build frontend
         working-directory: ./Final-Project/web-frontend
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
         run: npm run build
 
       - name: Setup Pages
