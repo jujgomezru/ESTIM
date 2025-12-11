@@ -10,28 +10,31 @@ from sqlalchemy import (
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 
-
 # ==============================
-# 1) ELEGIR AUTOMÁTICAMENTE LA DB
+# 1) SELECCIÓN AUTOMÁTICA DE DB
 # ==============================
 
-render_db_url = os.getenv("DATABASE_URL")
+if os.getenv("GITHUB_ACTIONS") == "true":
+    # >>> USADO SOLO EN CI/CD <<<
+    DATABASE_URL = "sqlite:///./test.db"
+    print("🟡 Usando SQLite para GitHub Actions")
 
-if render_db_url:
-    DATABASE_URL = render_db_url
-    print("🟣 Usando base de datos de RENDER")
 else:
-    db_user = os.getenv("DB_USER", "estim")
-    db_pass = os.getenv("DB_PASS", "estim")
-    db_host = os.getenv("DB_HOST", "localhost")
-    db_name = os.getenv("DB_NAME", "estim")
-    db_port = os.getenv("DB_PORT", "5432")
+    render_db_url = os.getenv("DATABASE_URL")
+    if render_db_url:
+        DATABASE_URL = render_db_url
+        print("🟣 Usando base de datos de RENDER")
+    else:
+        db_user = os.getenv("DB_USER", "estim")
+        db_pass = os.getenv("DB_PASS", "estim")
+        db_host = os.getenv("DB_HOST", "localhost")
+        db_name = os.getenv("DB_NAME", "estim")
+        db_port = os.getenv("DB_PORT", "5432")
 
-    DATABASE_URL = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
-    print("🟢 Usando base de datos LOCAL")
+        DATABASE_URL = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+        print("🟢 Usando base de datos LOCAL")
 
-print(f"🔗 Conectando a PostgreSQL: {DATABASE_URL}")
-
+print(f"🔗 Conectando a BD: {DATABASE_URL}")
 
 # ==============================
 # 2) CONEXIÓN SQLALCHEMY
@@ -39,9 +42,7 @@ print(f"🔗 Conectando a PostgreSQL: {DATABASE_URL}")
 
 engine = create_engine(DATABASE_URL)
 Base = declarative_base()
-
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 
 # ==============================
 # 3) MODELO ORM
@@ -75,13 +76,11 @@ class GameDB(Base):
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
     updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
 
-
 # ==============================
-# 4) CREAR TABLAS *DESPUÉS* DE DEFINIR MODELOS
+# 4) CREAR TABLAS (ONLY IF NOT EXISTS)
 # ==============================
 
 Base.metadata.create_all(bind=engine)
-
 
 # ==============================
 # 5) SESIÓN PARA FASTAPI
