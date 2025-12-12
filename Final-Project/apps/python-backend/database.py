@@ -103,3 +103,4 @@ def get_db():
         db.close()
 
 # CI/CD funcionando correctamente
+
