@@ -80,12 +80,4 @@ public class JwtTokenService implements TokenService {
             throw new IllegalArgumentException("Invalid or expired access token", ex);
         }
     }
-
-    @Override
-    public void revokeRefreshToken(String refreshToken) {
-    }
-
-    @Override
-    public void revokeAllForUser(UserId userId) {
-    }
 }

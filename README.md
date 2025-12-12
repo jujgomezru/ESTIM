@@ -5,50 +5,38 @@
 
 ---
 
-## 🧩 Project Overview
+## Project Overview
 
 **ESTIM** simulates a digital distribution platform for video games.  
-Users can create accounts, browse games, add them to a shopping cart, complete mock purchases, and post reviews.  
-Distributors can publish games and access basic sales statistics.
-
-This project was developed for educational purposes to demonstrate:
-- Object-Oriented Programming principles (OOP)
-- Use of at least **two design patterns** (e.g., Singleton and Factory)
-- Integration with a **relational database** (SQLite)
-- RESTful API design and automated testing
-- Basic CI/CD pipeline with **GitHub Actions** and **Docker**
+Users can create accounts, log in to their account, browse games, use a shopping cart to buy games, check their existing library and add games to their wishlist.
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ESTIM follows a layered hexagonal-influenced architecture, split across the web, java-backend, and python-backend services.
 Each service mirrors the same clean structure.
 
-The official architecture of the project will be expanded as the project gets bigger and more polished.  
-Below is the current simplified **project structure diagram**:
+The specific architectural details of each module can be reviewed in the **README.md** files on their respective folders. Below is the current simplified **project structure diagram**: We applied this diagram in order to fulfill the official course guidelines for the structure of the project,
 
 ```
 Final-Project/
 │
 ├── apps/
 │   ├── java-backend/       → Spring Boot service (auth, users, library)
-│   └── python-backend/     → FastAPI service (misc endpoints)
+│   └── python-backend/     → FastAPI service (shopping cart)
 │
-├── web/                    → React+Vite frontend
+├── web-frontend/                    → React+Vite frontend
 │
 ├── db/
 │   ├── migrations/         → Database version control
-│   ├── seeds/              → Initial data
-│   └── smoke/              → Smoke tests
+│   └── seeds/              → Default data for testing
 │
-├── workers/                → Event workers (future)
+├── workers/                → Event workers (not used)
 └── README.md
 ```
 
-> 📁 *The structure will grow as new modules (e.g., backend, frontend, database) are added.*
-
-### 1️⃣ Presentation Layer — (User → Routes → API Clients → Controllers)
+### Presentation Layer — (User → Routes → API Clients → Controllers)
 
 Purpose: Convert HTTP requests into application commands.
 

@@ -5,6 +5,8 @@ import com.estim.javaapi.application.oauth.LinkOAuthAccountCommand;
 import com.estim.javaapi.application.oauth.LinkOAuthAccountService;
 import com.estim.javaapi.application.oauth.LoginWithOAuthCommand;
 import com.estim.javaapi.application.oauth.LoginWithOAuthService;
+import com.estim.javaapi.application.oauth.RegisterWithOAuthCommand;
+import com.estim.javaapi.application.oauth.RegisterWithOAuthService;
 import com.estim.javaapi.domain.user.Email;
 import com.estim.javaapi.domain.user.User;
 import com.estim.javaapi.domain.user.UserId;
@@ -53,6 +55,9 @@ class OAuthControllerTest {
     private LoginWithOAuthService loginWithOAuthService;
 
     @MockitoBean
+    private RegisterWithOAuthService registerWithOAuthService;
+
+    @MockitoBean
     private JwtAuthenticationProvider authenticationProvider;
 
     // ---------- Helper fixtures ----------
@@ -85,12 +90,12 @@ class OAuthControllerTest {
     class LinkOAuthAccountTests {
 
         @Test
-        @DisplayName("should link OAuth account for authenticated user and return 204")
+        @DisplayName("should link Google OAuth account for authenticated user and return 204")
         void linkSuccess() throws Exception {
             String header = "Bearer valid-token";
-            String provider = "STEAM";
-            String externalToken = "steam-external-token";
-            String redirectUri = "https://app.example.com/oauth/callback";
+            String provider = "GOOGLE";
+            String externalToken = "google-external-token";
+            String redirectUri = "https://app.example.com/oauth2/callback/google";
 
             OAuthLinkRequest request = new OAuthLinkRequest(
                 provider,
@@ -142,9 +147,9 @@ class OAuthControllerTest {
         @DisplayName("should return 400 OAUTH_LINK_FAILED when auth fails")
         void linkAuthFails() throws Exception {
             OAuthLinkRequest request = new OAuthLinkRequest(
-                "STEAM",
+                "GOOGLE",
                 "token",
-                "https://app.example.com/oauth/callback"
+                "https://app.example.com/oauth2/callback/google"
             );
 
             doThrow(new IllegalArgumentException("Missing Authorization header"))
@@ -177,9 +182,9 @@ class OAuthControllerTest {
             String header = "Bearer valid-token";
 
             OAuthLinkRequest request = new OAuthLinkRequest(
-                "STEAM",
+                "GOOGLE",
                 "token",
-                "https://app.example.com/oauth/callback"
+                "https://app.example.com/oauth2/callback/google"
             );
 
             doNothing().when(authenticationProvider)
@@ -214,7 +219,7 @@ class OAuthControllerTest {
             OAuthLinkRequest request = new OAuthLinkRequest(
                 "UNKNOWN_PROVIDER",
                 "token",
-                "https://app.example.com/oauth/callback"
+                "https://app.example.com/oauth2/callback/google"
             );
 
             doNothing().when(authenticationProvider)
@@ -258,11 +263,11 @@ class OAuthControllerTest {
     class OAuthLoginTests {
 
         @Test
-        @DisplayName("should login with OAuth provider and return LoginResponse")
+        @DisplayName("should login with Google OAuth provider and return LoginResponse")
         void oauthLoginSuccess() throws Exception {
-            String provider = "STEAM";
-            String externalToken = "steam-token-xyz";
-            String redirectUri = "https://app.example.com/oauth/callback";
+            String provider = "GOOGLE";
+            String externalToken = "google-token-xyz";
+            String redirectUri = "https://app.example.com/oauth2/callback/google";
 
             OAuthLoginRequest request = new OAuthLoginRequest(
                 provider,
@@ -300,9 +305,9 @@ class OAuthControllerTest {
         @DisplayName("should return 401 OAUTH_LOGIN_FAILED when service throws IllegalArgumentException")
         void oauthLoginFailsIllegalArgument() throws Exception {
             OAuthLoginRequest request = new OAuthLoginRequest(
-                "STEAM",
+                "GOOGLE",
                 "invalid-token",
-                "https://app.example.com/oauth/callback"
+                "https://app.example.com/oauth2/callback/google"
             );
 
             when(loginWithOAuthService.login(any(LoginWithOAuthCommand.class)))
@@ -324,9 +329,9 @@ class OAuthControllerTest {
         @DisplayName("should return 401 OAUTH_LOGIN_FAILED when service throws IllegalStateException")
         void oauthLoginFailsIllegalState() throws Exception {
             OAuthLoginRequest request = new OAuthLoginRequest(
-                "STEAM",
+                "GOOGLE",
                 "valid-but-unlinked-token",
-                "https://app.example.com/oauth/callback"
+                "https://app.example.com/oauth2/callback/google"
             );
 
             when(loginWithOAuthService.login(any(LoginWithOAuthCommand.class)))
@@ -342,6 +347,144 @@ class OAuthControllerTest {
                 .andExpect(jsonPath("$.message").value("OAuth account not linked"));
 
             verify(loginWithOAuthService).login(any(LoginWithOAuthCommand.class));
+        }
+
+        @Test
+        @DisplayName("should return 401 OAUTH_LOGIN_FAILED when externalToken is missing")
+        void oauthLoginMissingToken() throws Exception {
+            OAuthLoginRequest request = new OAuthLoginRequest(
+                "GOOGLE",
+                "",
+                "https://app.example.com/oauth2/callback/google"
+            );
+
+            mockMvc.perform(post("/auth/oauth/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value("OAUTH_LOGIN_FAILED"))
+                .andExpect(jsonPath("$.message").value("Missing OAuth access token"));
+
+            verifyNoInteractions(loginWithOAuthService);
+        }
+    }
+
+    // ======================================================
+    //               POST /auth/oauth/register
+    // ======================================================
+
+    @Nested
+    @DisplayName("POST /auth/oauth/register")
+    class OAuthRegisterTests {
+
+        @Test
+        @DisplayName("should register with Google OAuth provider and return LoginResponse")
+        void oauthRegisterSuccess() throws Exception {
+            String provider = "GOOGLE";
+            String externalToken = "google-register-token";
+            String redirectUri = "https://app.example.com/oauth2/callback/google";
+
+            OAuthLoginRequest request = new OAuthLoginRequest(
+                provider,
+                externalToken,
+                redirectUri
+            );
+
+            User user = buildTestUser();
+            AuthenticationResult authResult = mock(AuthenticationResult.class);
+            when(authResult.user()).thenReturn(user);
+            when(authResult.accessToken()).thenReturn("access-token-123");
+            when(authResult.refreshToken()).thenReturn("refresh-token-456");
+
+            when(registerWithOAuthService.register(any(RegisterWithOAuthCommand.class)))
+                .thenReturn(authResult);
+
+            mockMvc.perform(post("/auth/oauth/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.accessToken").value("access-token-123"))
+                .andExpect(jsonPath("$.refreshToken").value("refresh-token-456"))
+                .andExpect(jsonPath("$.user").exists())
+                .andExpect(jsonPath("$.user.userId").value("user-123"))
+                .andExpect(jsonPath("$.user.email").value("john@example.com"))
+                .andExpect(jsonPath("$.user.displayName").value("John Doe"))
+                .andExpect(jsonPath("$.user.emailVerified").value(true));
+
+            verify(registerWithOAuthService).register(any(RegisterWithOAuthCommand.class));
+        }
+
+        @Test
+        @DisplayName("should return 400 OAUTH_REGISTER_FAILED when externalToken is missing")
+        void oauthRegisterMissingToken() throws Exception {
+            OAuthLoginRequest request = new OAuthLoginRequest(
+                "GOOGLE",
+                "",
+                "https://app.example.com/oauth2/callback/google"
+            );
+
+            mockMvc.perform(post("/auth/oauth/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value("OAUTH_REGISTER_FAILED"))
+                .andExpect(jsonPath("$.message").value("Missing OAuth access token"));
+
+            verifyNoInteractions(registerWithOAuthService);
+        }
+
+        @Test
+        @DisplayName("should return 400 OAUTH_REGISTER_FAILED when service throws IllegalArgumentException")
+        void oauthRegisterFailsIllegalArgument() throws Exception {
+            OAuthLoginRequest request = new OAuthLoginRequest(
+                "GOOGLE",
+                "invalid-token",
+                "https://app.example.com/oauth2/callback/google"
+            );
+
+            when(registerWithOAuthService.register(any(RegisterWithOAuthCommand.class)))
+                .thenThrow(new IllegalArgumentException("Invalid OAuth token"));
+
+            mockMvc.perform(post("/auth/oauth/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value("OAUTH_REGISTER_FAILED"))
+                .andExpect(jsonPath("$.message").value("Invalid OAuth token"));
+
+            verify(registerWithOAuthService).register(any(RegisterWithOAuthCommand.class));
+        }
+
+        @Test
+        @DisplayName("should return 400 OAUTH_REGISTER_FAILED when service throws IllegalStateException")
+        void oauthRegisterFailsIllegalState() throws Exception {
+            OAuthLoginRequest request = new OAuthLoginRequest(
+                "GOOGLE",
+                "valid-but-conflicting-token",
+                "https://app.example.com/oauth2/callback/google"
+            );
+
+            when(registerWithOAuthService.register(any(RegisterWithOAuthCommand.class)))
+                .thenThrow(new IllegalStateException("OAuth account already linked"));
+
+            mockMvc.perform(post("/auth/oauth/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value("OAUTH_REGISTER_FAILED"))
+                .andExpect(jsonPath("$.message").value("OAuth account already linked"));
+
+            verify(registerWithOAuthService).register(any(RegisterWithOAuthCommand.class));
         }
     }
 }
