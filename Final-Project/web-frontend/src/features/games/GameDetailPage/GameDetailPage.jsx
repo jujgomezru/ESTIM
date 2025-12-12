@@ -4,7 +4,7 @@ import { getGameById } from "../gamesService";
 import { addToCart } from "../../cart/cartService";
 import { addToWishlist } from "../../wishlist/wishlistService";
 import LoadingSpinner from "../../../components/LoadingSpinner";
-import Button from "../../../components/Button/Button";
+import Button from "../../../components/Button";
 import Badge from "../../../components/Badge";
 import styles from "./GameDetailPage.module.css";
 

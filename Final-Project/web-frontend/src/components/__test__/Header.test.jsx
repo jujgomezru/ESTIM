@@ -19,7 +19,8 @@ jest.mock("../Header/Header", () => {
   };
 });
 
-import Header from "../Header";
+// ✅ Actualizar la ruta del import
+import Header from "../Header/Header";
 
 describe("Header component", () => {
   test("renders logo", () => {

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllGames } from "../gamesService";
 import { addToCart } from "../../cart/cartService";
 import GameCard from "../../../components/GameCard/GameCard";
-import Button from "../../../components/Button/Button";
+import Button from "../../../components/Button";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import Badge from "../../../components/Badge";
 import styles from "./GamesListPage.module.css";

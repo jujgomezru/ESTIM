@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button/Button";
+import Button from "../../components/Button";
 
 export default function PurchaseSuccessPage() {
   const navigate = useNavigate();

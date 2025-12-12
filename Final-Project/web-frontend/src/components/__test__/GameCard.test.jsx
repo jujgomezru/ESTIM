@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import GameCard from "../GameCard/GameCard";
 
 // Mock the component to avoid useState issues in tests
-jest.mock("../GameCard", () => {
+jest.mock("../GameCard/GameCard", () => {
   return function MockGameCard({ game, showPrice, showDiscount, showTags }) {
     return (
       <div data-testid="game-card">
