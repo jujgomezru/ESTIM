@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { registerUser } from "./authService";
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
+import Button from "../../components/Button/Button";
 import Input from "../../components/Input";
 import GoogleRegisterButton from "./oauth/GoogleRegisterButton";
 

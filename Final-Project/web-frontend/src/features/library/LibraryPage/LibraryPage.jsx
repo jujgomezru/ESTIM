@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import GameCard from "../../../components/GameCard";
-import Button from "../../../components/Button";
+import GameCard from "../../../components/GameCard/GameCard";
+import Button from "../../../components/Button/Button";
 import { fetchMyLibrary } from "../libraryService";
 
 export default function LibraryPage() {

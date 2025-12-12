@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
+import Button from "../../components/Button/Button";
 import { getCart, removeFromCart, clearCart } from "./cartService";
 
 export default function CartPage() {
