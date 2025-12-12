@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 
 // Mock Header component to avoid react-router hooks issues in tests
-jest.mock("../Header", () => {
+jest.mock("../Header/Header", () => {
   return function MockHeader() {
     return (
       <header data-testid="header">
@@ -19,7 +19,8 @@ jest.mock("../Header", () => {
   };
 });
 
-import Header from "../Header";
+// ✅ Actualizar la ruta del import
+import Header from "../Header/Header";
 
 describe("Header component", () => {
   test("renders logo", () => {

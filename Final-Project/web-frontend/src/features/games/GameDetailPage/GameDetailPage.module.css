@@ -1,0 +1,315 @@
+.container {
+  background: #0e0e0e;
+  min-height: 100vh;
+  color: #fff;
+  padding: 20px 40px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 30px;
+  font-size: 13px;
+}
+
+.breadcrumbLink {
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: #fff;
+}
+
+.separator {
+  color: #555;
+}
+
+.breadcrumbCurrent {
+  color: #fff;
+}
+
+.mainLayout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 30px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.gallerySection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mainImageContainer {
+  width: 100%;
+  height: 500px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.mainImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnailsRow {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+
+.thumbnail {
+  height: 90px;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+  background: #1a1a1a;
+}
+
+.thumbnail:hover {
+  border-color: #ff6b35;
+}
+
+.thumbnailActive {
+  border-color: #ff6b35;
+}
+
+.thumbnailImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.aboutSection {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 30px;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+}
+
+.aboutText {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #bbb;
+  margin-bottom: 30px;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.metaLabel {
+  font-size: 13px;
+  color: #888;
+  font-weight: 500;
+}
+
+.metaValue {
+  font-size: 15px;
+  color: #ff6b35;
+  font-weight: 500;
+}
+
+.reviewsSection {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 30px;
+}
+
+.reviewsContent {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.ratingBadge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 107, 53, 0.1);
+  padding: 15px 20px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 107, 53, 0.3);
+}
+
+.thumbsUp {
+  font-size: 24px;
+}
+
+.ratingPercent {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ff6b35;
+}
+
+.reviewsInfo {
+  flex: 1;
+}
+
+.reviewBar {
+  width: 100%;
+  height: 10px;
+  background: #2a2a2a;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.reviewBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b35, #ff8c5a);
+  transition: width 0.5s ease;
+}
+
+.reviewCount {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+.purchasePanel {
+  position: sticky;
+  top: 20px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  height: fit-content;
+}
+
+.panelHeader {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.panelHeaderImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.panelBody {
+  padding: 25px;
+}
+
+.panelTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.panelSubtitle {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 25px;
+}
+
+.infoRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.infoIcon {
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.infoLabel {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.infoValue {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.platformBadges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.priceBox {
+  background: #0e0e0e;
+  border-radius: 6px;
+  padding: 20px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.priceLabel {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.priceValue {
+  font-size: 36px;
+  font-weight: 700;
+  color: #ff6b35;
+}
+
+.actionsBox {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.secondaryRow {
+  display: flex;
+  gap: 8px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  gap: 20px;
+}
+
+.emptyIcon {
+  font-size: 64px;
+  opacity: 0.3;
+}

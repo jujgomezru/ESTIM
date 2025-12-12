@@ -3,89 +3,65 @@
 import os
 import uuid
 from datetime import datetime
-
+import sqlalchemy as sa
 from sqlalchemy import (
-    create_engine,
-    Column,
-    String,
-    Text,
-    Boolean,
-    DateTime,
-    Date,
-    JSON,
-    Numeric,
-    Integer,
-    BigInteger,
+    create_engine, Column, String, Text, Boolean, DateTime, Date,
+    JSON, Numeric, Integer, BigInteger
 )
 from sqlalchemy.orm import declarative_base, sessionmaker
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 
-# ==================== CONFIG DB (USANDO ESQUEMA OFICIAL) ====================
+# ==============================
+# 1) SELECCIÓN AUTOMÁTICA DE DB
+# ==============================
 
-db_user = os.getenv("DB_USER", "estim")
-db_pass = os.getenv("DB_PASS", "estim")
-db_host = os.getenv("DB_HOST", "localhost")
-db_name = os.getenv("DB_NAME", "estim")
-
-db_port_str = os.getenv("DB_PORT", "5432")
-if db_port_str == "None":
-    db_port = 5432
+if os.getenv("GITHUB_ACTIONS") == "true":
+    # >>> USADO SOLO EN CI/CD <<< SQLite
+    DATABASE_URL = "sqlite:///./test.db"
+    print("🟡 Usando SQLite para GitHub Actions")
 else:
-    try:
-        db_port = int(db_port_str)
-    except (ValueError, TypeError):
-        db_port = 5432
+    render_db_url = os.getenv("DATABASE_URL")
+    if render_db_url:
+        DATABASE_URL = render_db_url
+        print("🟣 Usando base de datos de RENDER")
+    else:
+        # Local
+        db_user = os.getenv("DB_USER", "estim")
+        db_pass = os.getenv("DB_PASS", "estim")
+        db_host = os.getenv("DB_HOST", "localhost")
+        db_name = os.getenv("DB_NAME", "estim")
+        db_port = os.getenv("DB_PORT", "5432")
+        DATABASE_URL = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+        print("🟢 Usando base de datos LOCAL")
 
-DATABASE_URL = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+print(f"🔗 Conectando a BD: {DATABASE_URL}")
 
-print(f"🔗 Conectando a PostgreSQL: {db_host}:{db_port}/{db_name}")
+# ==============================
+# 2) TIPO UUID COMPATIBLE
+# ==============================
 
-engine = create_engine(DATABASE_URL)
+if DATABASE_URL.startswith("sqlite"):
+    UUID_TYPE = String(36)  # SQLite no soporta UUID, usamos string
+else:
+    from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+    UUID_TYPE = PG_UUID(as_uuid=True)
+
+# ==============================
+# 3) CONEXIÓN SQLALCHEMY
+# ==============================
+
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {})
+Base = declarative_base()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
-
-
-# ==================== MODELO ORM PARA LA TABLA games ====================
+# ==============================
+# 4) MODELO ORM
+# ==============================
 
 class GameDB(Base):
-    """
-    Mapeo ORM de la tabla games definida en el esquema oficial:
-
-      CREATE TABLE games (
-        id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        publisher_id         UUID NOT NULL REFERENCES publishers(id) ON DELETE CASCADE,
-        title                VARCHAR(255) NOT NULL,
-        description          TEXT,
-        short_description    VARCHAR(500),
-        price                NUMERIC(10,2) NOT NULL,
-        base_price           NUMERIC(10,2),
-        is_published         BOOLEAN NOT NULL DEFAULT FALSE,
-        release_date         DATE,
-        age_rating           age_rating_type,
-        system_requirements  JSONB,
-        metadata             JSONB,
-        average_rating       NUMERIC(3,2) NOT NULL DEFAULT 0.0,
-        review_count         INTEGER NOT NULL DEFAULT 0,
-        total_playtime       BIGINT  NOT NULL DEFAULT 0,
-        download_count       INTEGER NOT NULL DEFAULT 0,
-        created_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at           TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      );
-    """
-
     __tablename__ = "games"
 
-    # Usamos el tipo UUID de PostgreSQL.
-    # IMPORTANTE: Esto NO crea la tabla, solo mapea la existente.
-    id = Column(
-        PG_UUID(as_uuid=True),
-        primary_key=True,
-        index=True,
-        default=uuid.uuid4,  # opcional, DB ya tiene DEFAULT gen_random_uuid()
-    )
-
-    publisher_id = Column(PG_UUID(as_uuid=True), nullable=False, index=True)
+    id = Column(UUID_TYPE, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
+    publisher_id = Column(UUID_TYPE, nullable=False, index=True)
 
     title = Column(String(255), nullable=False, index=True)
     description = Column(Text)
@@ -94,48 +70,39 @@ class GameDB(Base):
     price = Column(Numeric(10, 2), nullable=False, index=True)
     base_price = Column(Numeric(10, 2))
 
-    is_published = Column(Boolean, nullable=False, default=False, index=True)
-
-    # En el esquema es DATE (sin hora)
+    is_published = Column(Boolean, default=False, index=True)
     release_date = Column(Date)
-
-    # En la BD es un enum age_rating_type; aquí lo tratamos como String
-    # (no pasa nada mientras no llamemos create_all).
     age_rating = Column(String(50))
 
-    # JSONB en Postgres → JSON en SQLAlchemy (el dialecto lo mapea a JSONB)
     system_requirements = Column(JSON)
-
-    # Columna se llama EXACTAMENTE "metadata" en el esquema oficial.
-    # No usamos el atributo .metadata de SQLAlchemy, por eso la exponemos
-    # como game_metadata pero en BD se llama "metadata".
     game_metadata = Column("metadata", JSON)
 
-    average_rating = Column(Numeric(3, 2), nullable=False, default=0.0, index=True)
-    review_count = Column(Integer, nullable=False, default=0)
-    total_playtime = Column(BigInteger, nullable=False, default=0)
-    download_count = Column(Integer, nullable=False, default=0)
+    average_rating = Column(Numeric(3, 2), default=0.0)
+    review_count = Column(Integer, default=0)
+    total_playtime = Column(BigInteger, default=0)
+    download_count = Column(Integer, default=0)
 
-    # TIMESTAMPTZ → DateTime(timezone=True)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
-    updated_at = Column(
-        DateTime(timezone=True),
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
-    )
+    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
 
+# ==============================
+# 5) CREAR TABLAS (SI NO EXISTEN)
+# ==============================
 
-# ==================== SESIONES ====================
+Base.metadata.create_all(bind=engine)
+
+# ==============================
+# 6) SESIÓN PARA FASTAPI
+# ==============================
 
 def get_db():
-    """
-    Dependency de FastAPI para obtener una sesión de BD.
-
-    NO crea tablas. Asume que el esquema ya existe porque lo crearon
-    las migraciones oficiales de Postgres.
-    """
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+# CI/CD funcionando correctamente
+
+
+  

@@ -2,11 +2,10 @@ import React from 'react';
 
 const styles = {
   container: {
-    background: '#000',
     minHeight: '100vh',
     color: '#fff',
     padding: '40px',
-    maxWidth: '800px',
+    maxWidth: '1000px',
     margin: '0 auto',
   },
   title: {

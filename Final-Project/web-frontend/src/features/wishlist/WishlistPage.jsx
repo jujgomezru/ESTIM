@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getWishlist, removeFromWishlist } from "./wishlistService";
 import { addToCart } from "../cart/cartService";
-import GameCard from "../../components/GameCard";
+import GameCard from "../../components/GameCard/GameCard";
 import Button from "../../components/Button";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Badge from "../../components/Badge";

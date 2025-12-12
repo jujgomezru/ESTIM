@@ -8,19 +8,23 @@ import LoginPage from "../features/auth/LoginPage";
 import RegisterPage from "../features/auth/RegisterPage";
 
 // GAMES
-import StorePage from "../features/games/StorePage";
-import GamesListPage from "../features/games/GamesListPage";
-import GameDetailPage from "../features/games/GameDetailPage";
+import StorePage from "../features/games/StorePage/StorePage";
+import GamesListPage from "../features/games/GamesListPage/GamesListPage";
+import GameDetailPage from "../features/games/GameDetailPage/GameDetailPage";
 
 // CART
-import CartPage from "../features/cart/CartPage";
+import CartPage from "../features/cart/CartPage/CartPage";
 import PurchaseSuccessPage from "../features/cart/PurchaseSuccessPage";
 
 // LIBRARY
-import LibraryPage from "../features/library/LibraryPage";
+import LibraryPage from "../features/library/LibraryPage/LibraryPage";
 
 // WISHLIST
 import WishlistPage from "../features/wishlist/WishlistPage";
+
+// SUPPORT
+import ContactPage from "../features/support/ContactPage";
+import HelpCenterPage from "../features/support/HelpCenterPage";
 
 // EXTRAS
 import SimpsonsPage from "../features/simpsons/SimpsonsPage";
@@ -48,6 +52,10 @@ export default function AppRoutes() {
 
           {/* WISHLIST */}
           <Route path="/wishlist" element={<WishlistPage />} />
+
+          {/* LIBRARY */}
+          <Route path="/help" element={<HelpCenterPage />} />
+          <Route path="/contact" element={<ContactPage />} />
 
           {/* EXTRAS */}
           <Route path="/simpsons" element={<SimpsonsPage />} />
