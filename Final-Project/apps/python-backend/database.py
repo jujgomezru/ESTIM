@@ -101,3 +101,5 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# CI/CD funcionando correctamente
