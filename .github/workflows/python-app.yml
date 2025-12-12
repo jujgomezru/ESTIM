@@ -11,9 +11,12 @@ on:
 
 permissions:
   contents: read
+  checks: write
+  statuses: write
 
 jobs:
   build:
+    name: CI Checks
     runs-on: ubuntu-latest
 
     defaults:
