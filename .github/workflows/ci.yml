@@ -18,11 +18,11 @@ permissions:
   pages: write
   id-token: write
 
-############################################################
-#                      JAVA BACKEND                        #
-############################################################
-
 jobs:
+  ############################################################
+  #                      JAVA BACKEND                        #
+  ############################################################
+
   java-backend:
     name: Java CI (Gradle)
     runs-on: ubuntu-latest
@@ -49,9 +49,9 @@ jobs:
           cd Final-Project/apps/java-backend
           ./gradlew test
 
-############################################################
-#                    NODE FRONTEND CI                      #
-############################################################
+  ############################################################
+  #                    NODE FRONTEND CI                      #
+  ############################################################
 
   node-frontend:
     name: Node.js CI
@@ -85,9 +85,9 @@ jobs:
       - name: Test
         run: cd Final-Project/web-frontend && npm test -- --no-coverage --watchAll=false
 
-############################################################
-#                     PYTHON BACKEND CI                    #
-############################################################
+  ############################################################
+  #                     PYTHON BACKEND CI                    #
+  ############################################################
 
   python-backend:
     name: CI Checks
@@ -139,40 +139,39 @@ jobs:
             -f Dockerfile \
             .
 
-############################################################
-#               DEPLOY FRONTEND TO GITHUB PAGES            #
-############################################################
+  ############################################################
+  #               DEPLOY FRONTEND TO GITHUB PAGES            #
+  ############################################################
 
-deploy-pages:
-  name: Deploy to GitHub Pages
-  runs-on: ubuntu-latest
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
 
-  steps:
-    - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Setup Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: "20"
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-    - name: Install dependencies
-      working-directory: Final-Project/web-frontend
-      run: npm ci
+      - name: Install dependencies
+        working-directory: Final-Project/web-frontend
+        run: npm ci
 
-    - name: Build frontend
-      working-directory: Final-Project/web-frontend
-      run: npm run build
+      - name: Build frontend
+        working-directory: Final-Project/web-frontend
+        run: npm run build
 
-    - name: Setup Pages
-      id: pages
-      uses: actions/configure-pages@v4
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
 
-    - name: Upload GitHub Pages artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: Final-Project/web-frontend/dist
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: Final-Project/web-frontend/dist
 
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
-
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
