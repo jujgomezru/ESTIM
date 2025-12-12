@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import GameCard from "../../components/GameCard";
-import Button from "../../components/Button";
-import { fetchMyLibrary } from "./libraryService";
+import GameCard from "../../../components/GameCard";
+import Button from "../../../components/Button";
+import { fetchMyLibrary } from "../libraryService";
 
 export default function LibraryPage() {
   const [selectedCollection, setSelectedCollection] = useState("all");

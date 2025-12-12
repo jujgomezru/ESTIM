@@ -8,16 +8,16 @@ import LoginPage from "../features/auth/LoginPage";
 import RegisterPage from "../features/auth/RegisterPage";
 
 // GAMES
-import StorePage from "../features/games/StorePage";
-import GamesListPage from "../features/games/GamesListPage";
-import GameDetailPage from "../features/games/GameDetailPage";
+import StorePage from "../features/games/StorePage/StorePage";
+import GamesListPage from "../features/games/GamesListPage/GamesListPage";
+import GameDetailPage from "../features/games/GameDetailPage/GameDetailPage";
 
 // CART
 import CartPage from "../features/cart/CartPage";
 import PurchaseSuccessPage from "../features/cart/PurchaseSuccessPage";
 
 // LIBRARY
-import LibraryPage from "../features/library/LibraryPage";
+import LibraryPage from "../features/library/LibraryPage/LibraryPage";
 
 // WISHLIST
 import WishlistPage from "../features/wishlist/WishlistPage";

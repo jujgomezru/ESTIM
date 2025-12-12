@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllGames } from "./gamesService";
-import { addToCart } from "../cart/cartService";
-import GameCard from "../../components/GameCard";
-import Button from "../../components/Button";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import { getAllGames } from "../gamesService";
+import { addToCart } from "../../cart/cartService";
+import GameCard from "../../../components/GameCard";
+import Button from "../../../components/Button";
+import LoadingSpinner from "../../../components/LoadingSpinner";
+import styles from "./StorePage.module.css";
 
 export default function StorePage() {
   const [games, setGames] = useState([]);
@@ -51,14 +52,14 @@ export default function StorePage() {
   const popularGames = games.slice(0, 4);
 
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <HeroCarousel 
         games={featuredGames}
         currentSlide={currentSlide}
         setCurrentSlide={setCurrentSlide}
       />
 
-      <div style={styles.content}>
+      <div className={styles.content}>
         <Section 
           icon="⚡"
           title="Special Offers"
@@ -78,7 +79,6 @@ export default function StorePage() {
   );
 }
 
-// Componente: HeroCarousel
 function HeroCarousel({ games, currentSlide, setCurrentSlide }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -97,40 +97,40 @@ function HeroCarousel({ games, currentSlide, setCurrentSlide }) {
 
   return (
     <div 
-      style={styles.heroCarousel}
+      className={styles.heroCarousel}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div style={styles.heroImageContainer}>
+      <div className={styles.heroImageContainer}>
         <img 
           src={currentGame.image || "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&h=600&fit=crop"} 
           alt={currentGame.title}
-          style={styles.heroImage}
+          className={styles.heroImage}
         />
-        <div style={styles.heroOverlay} />
+        <div className={styles.heroOverlay} />
       </div>
 
-      <div style={styles.heroContent}>
-        <div style={styles.heroTags}>
-          <span style={styles.heroTag}>{currentGame.category || "Action"}</span>
-          <span style={styles.heroTag}>RPG</span>
-          <span style={styles.heroTag}>Open World</span>
+      <div className={styles.heroContent}>
+        <div className={styles.heroTags}>
+          <span className={styles.heroTag}>{currentGame.category || "Action"}</span>
+          <span className={styles.heroTag}>RPG</span>
+          <span className={styles.heroTag}>Open World</span>
         </div>
 
-        <h1 style={styles.heroTitle}>{currentGame.title || "Cyber Legends 2077"}</h1>
-        <p style={styles.heroDescription}>
+        <h1 className={styles.heroTitle}>{currentGame.title || "Cyber Legends 2077"}</h1>
+        <p className={styles.heroDescription}>
           {currentGame.description || "Immerse yourself in a futuristic city full of dangers and adventures. Every decision counts."}
         </p>
 
-        <div style={styles.heroPricing}>
+        <div className={styles.heroPricing}>
           {currentGame.discount > 0 && (
-            <div style={styles.heroDiscount}>-{currentGame.discount}%</div>
+            <div className={styles.heroDiscount}>-{currentGame.discount}%</div>
           )}
-          <div style={styles.heroPriceContainer}>
+          <div className={styles.heroPriceContainer}>
             {currentGame.discount > 0 && (
-              <span style={styles.heroOriginalPrice}>${currentGame.price}</span>
+              <span className={styles.heroOriginalPrice}>${currentGame.price}</span>
             )}
-            <span style={styles.heroFinalPrice}>
+            <span className={styles.heroFinalPrice}>
               ${currentGame.discount > 0 
                 ? (currentGame.price * (1 - currentGame.discount / 100)).toFixed(2)
                 : currentGame.price?.toFixed(2) || "59.99"}
@@ -142,14 +142,11 @@ function HeroCarousel({ games, currentSlide, setCurrentSlide }) {
           Buy Now
         </Button>
 
-        <div style={styles.carouselDots}>
+        <div className={styles.carouselDots}>
           {games.map((_, index) => (
             <div
               key={index}
-              style={{
-                ...styles.carouselDot,
-                ...(index === currentSlide && styles.carouselDotActive)
-              }}
+              className={`${styles.carouselDot} ${index === currentSlide ? styles.carouselDotActive : ''}`}
               onClick={() => setCurrentSlide(index)}
             />
           ))}
@@ -168,22 +165,21 @@ function HeroCarousel({ games, currentSlide, setCurrentSlide }) {
   );
 }
 
-// Componente: Section
 function Section({ icon, title, games, onAddToCart, showDiscount }) {
   return (
-    <section style={styles.section}>
-      <div style={styles.sectionHeader}>
-        <div style={styles.sectionTitle}>
-          <span style={styles.sectionIcon}>{icon}</span>
+    <section className={styles.section}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionTitle}>
+          <span className={styles.sectionIcon}>{icon}</span>
           {title}
         </div>
-        <div style={styles.seeAll}>
+        <div className={styles.seeAll}>
           See all
-          <span style={styles.arrowRight}>›</span>
+          <span className={styles.arrowRight}>›</span>
         </div>
       </div>
 
-      <div style={styles.gameGrid}>
+      <div className={styles.gameGrid}>
         {games.map((game) => (
           <GameCard
             key={game.id}
@@ -201,7 +197,6 @@ function Section({ icon, title, games, onAddToCart, showDiscount }) {
   );
 }
 
-// 🎮 DATOS DE EJEMPLO
 const EXAMPLE_GAMES = [
   {
     id: 1,
@@ -304,163 +299,3 @@ const EXAMPLE_GAMES = [
     multiplayer: true
   }
 ];
-
-// Estilos optimizados (sin estilos de loading ni botones)
-const styles = {
-  container: {
-    background: '#000',
-    minHeight: '100vh',
-    color: '#fff'
-  },
-  heroCarousel: {
-    position: 'relative',
-    height: '500px',
-    overflow: 'hidden',
-    background: '#000'
-  },
-  heroImageContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0
-  },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover'
-  },
-  heroOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 40%, transparent 100%)'
-  },
-  heroContent: {
-    position: 'relative',
-    height: '100%',
-    padding: '60px 40px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    maxWidth: '600px',
-    zIndex: 10
-  },
-  heroTags: {
-    display: 'flex',
-    gap: '10px',
-    marginBottom: '15px'
-  },
-  heroTag: {
-    background: 'rgba(255, 107, 53, 0.2)',
-    border: '1px solid rgba(255, 107, 53, 0.5)',
-    padding: '4px 12px',
-    borderRadius: '4px',
-    fontSize: '11px',
-    color: '#ff6b35',
-    fontWeight: '600'
-  },
-  heroTitle: {
-    fontSize: '48px',
-    fontWeight: '700',
-    margin: '0 0 15px 0',
-    lineHeight: '1.1'
-  },
-  heroDescription: {
-    fontSize: '16px',
-    color: '#ccc',
-    lineHeight: '1.6',
-    marginBottom: '25px'
-  },
-  heroPricing: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '15px',
-    marginBottom: '25px'
-  },
-  heroDiscount: {
-    background: '#ff6b35',
-    color: '#000',
-    padding: '8px 16px',
-    borderRadius: '4px',
-    fontSize: '20px',
-    fontWeight: '700'
-  },
-  heroPriceContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2px'
-  },
-  heroOriginalPrice: {
-    fontSize: '14px',
-    color: '#888',
-    textDecoration: 'line-through'
-  },
-  heroFinalPrice: {
-    fontSize: '28px',
-    fontWeight: '700',
-    color: '#fff'
-  },
-  carouselDots: {
-    position: 'absolute',
-    bottom: '30px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    display: 'flex',
-    gap: '10px',
-    zIndex: 20
-  },
-  carouselDot: {
-    width: '40px',
-    height: '4px',
-    background: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: '2px',
-    cursor: 'pointer',
-    transition: 'all 0.3s'
-  },
-  carouselDotActive: {
-    background: '#ff6b35',
-    width: '60px'
-  },
-  content: {
-    padding: '40px 40px 80px'
-  },
-  section: {
-    marginBottom: '60px'
-  },
-  sectionHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '25px'
-  },
-  sectionTitle: {
-    fontSize: '24px',
-    fontWeight: '700',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px'
-  },
-  sectionIcon: {
-    fontSize: '28px'
-  },
-  seeAll: {
-    color: '#ff6b35',
-    fontSize: '14px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '5px',
-    fontWeight: '600'
-  },
-  arrowRight: {
-    fontSize: '18px'
-  },
-  gameGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: '20px'
-  }
-};
