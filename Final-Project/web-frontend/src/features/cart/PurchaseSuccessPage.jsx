@@ -21,7 +21,7 @@ export default function PurchaseSuccessPage() {
 
           <button 
             style={styles.backButton}
-            onClick={() => navigate("/store")}
+            onClick={() => navigate("/")}
           >
             🛒 Seguir comprando
           </button>
