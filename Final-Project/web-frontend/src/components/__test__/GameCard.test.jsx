@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import GameCard from "../GameCard";
+import GameCard from "../GameCard/GameCard";
 
 // Mock the component to avoid useState issues in tests
 jest.mock("../GameCard", () => {
