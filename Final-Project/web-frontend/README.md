@@ -1,62 +1,22 @@
+# Frontend — `web` (React + Vite)
 
-# STEAM / GAMESTORE — Frontend (React + Vite)
+## Overview
+This folder contains the web client for the ESTIM project — a small game store UI implemented with React (v19) and Vite. The frontend is organized into feature folders and reusable components and communicates with the backend via the centralized API endpoints in `src/api/endpoints.js`.
 
-## Summary
-React + Vite frontend for the (Steam/GAMESTORE) platform. This README covers installation, structure, workflow, testing, and common commands.
-
----
-
-## Requirements
-- Node.js (v16+ recommended)
-- Code editor (VSCode, etc.)
+## Prerequisites
+- Node.js 16+ (Node 18 or 20 recommended)
+- npm (v8+) or yarn
+- Docker (optional)
 - Modern browser
 
----
-
-## Quick Installation
+## Quick Start
+From the `Final-Project/web` directory:
 
 ```bash
 # Install dependencies
 npm install
-npm install react-router-dom
 
-# Development server
-npm run dev
-
-# Production build
-
-<!--
-README mejorado para la carpeta `web` (frontend) — en español.
--->
-
-<!--
-Comprehensive English README for the `web` frontend (React + Vite).
--->
-
-# Frontend — `web` (React + Vite)
-
-Overview
---------
-This folder contains the web client for the ESTIM project — a small game store UI implemented with React (v19) and Vite. The frontend is organized into feature folders and reusable components and communicates with the backend via the centralized API endpoints in `src/api/endpoints.js`.
-
-If you are exploring the repository, start here to learn how to run, build, test, and deploy the frontend.
-
-Prerequisites
--------------
-- Node.js 16+ (Node 18 or 20 recommended).
-- npm (v8+) or yarn.
-- Docker (optional, for containerized runs).
-- Modern browser for local testing.
-
-Quick start
------------
-From the `Final-Project/web` directory:
-
-```powershell
-# Install dependencies
-npm install
-
-# Start development server (HMR)
+# Start development server
 npm run dev
 
 # Create production build
@@ -64,7 +24,7 @@ npm run build
 
 # Preview production build locally
 npm run preview
-```
+
 
 Available scripts (in `package.json`)
 -----------------------------------
@@ -191,13 +151,13 @@ See the top-level `LICENSE` file in the repository for licensing details.
 
 Contact / Help
 --------------
-If you want, I can:
-- Add environment variable documentation and example `.env` files.
-- Create a production Dockerfile and nginx config for static serving.
-- Add a small CI workflow that runs tests and lint on PRs.
+For questions, issues, or improvement proposals:
 
-Tell me which of the above you want next and I will implement it.
+- Open an issue describing the problem or request.
+- Submit a pull request with the proposed changes.
+- Use the issue tracker to request:
+  - Environment variable documentation and example `.env` files.
+  - A production Dockerfile and nginx configuration for static serving.
+  - A CI workflow to run linting and tests on pull requests.
 
-
-## Development & lint
 
