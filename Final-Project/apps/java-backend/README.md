@@ -31,6 +31,240 @@ This structure improves testability, maintainability, and makes it straightforwa
 
 ## Architecture overview
 
+Here is the full Java Backend architecture of this project:
+
+```
+com.estim.javaapi
+├── application
+│   ├── auth
+│   │   ├── AuthenticateUserCommand
+│   │   ├── AuthenticateUserService
+│   │   ├── AuthenticationResult
+│   │   ├── DefaultPasswordPolicy
+│   │   ├── GetCurrentUserService
+│   │   ├── LogoutUserCommand
+│   │   ├── LogoutUserService
+│   │   ├── PasswordHasher
+│   │   ├── PasswordPolicy
+│   │   ├── RegisterUserCommand
+│   │   ├── RegisterUserService
+│   │   └── TokenService
+│   │
+│   ├── handlers
+│   │   ├── AddGameToLibraryOnGamePurchased
+│   │   ├── AuditLogOnUserLoggedIn
+│   │   ├── AuditLogger
+│   │   ├── EmailSender
+│   │   ├── SendPasswordResetEmailOnRequested
+│   │   └── SendWelcomeEmailOnUserRegistered
+│   │
+│   ├── library
+│   │   ├── AddGameToLibraryCommand
+│   │   ├── AddGameToLibraryService
+│   │   ├── ListUserLibraryQuery
+│   │   ├── ListUserLibraryService
+│   │   ├── UpdateLibraryEntryCommand
+│   │   └── UpdateLibraryEntryService
+│   │
+│   ├── oauth
+│   │   ├── LinkOAuthAccountCommand
+│   │   ├── LinkOAuthAccountService
+│   │   ├── LoginWithOAuthCommand
+│   │   ├── LoginWithOAuthService
+│   │   ├── RegisterWithOAuthCommand
+│   │   └── RegisterWithOAuthService
+│   │
+│   ├── password
+│   │   ├── DefaultPasswordResetTokenGenerator
+│   │   ├── PasswordResetTokenGenerator
+│   │   ├── RequestPasswordResetCommand
+│   │   ├── RequestPasswordResetService
+│   │   ├── ResetPasswordCommand
+│   │   └── ResetPasswordService
+│   │
+│   ├── payment
+│   │   ├── AddPaymentMethodCommand
+│   │   ├── AddPaymentMethodService
+│   │   ├── ListPaymentMethodsService
+│   │   ├── PaymentProviderClient
+│   │   ├── RemovePaymentMethodCommand
+│   │   └── RemovePaymentMethodService
+│   │
+│   ├── profile
+│   │   ├── GetUserProfileQuery
+│   │   ├── GetUserProfileService
+│   │   ├── UpdateUserProfileCommand
+│   │   └── UpdateUserProfileService
+│   │
+│   └── wishlist
+│       ├── AddToWishlistCommand
+│       ├── AddToWishlistService
+│       ├── IsGameInWishlistQuery
+│       ├── ListWishlistForUserQuery
+│       ├── ListWishlistService
+│       ├── RemoveFromWishlistCommand
+│       ├── RemoveFromWishlistService
+│       ├── UpdateWishlistItemCommand
+│       └── UpdateWishlistItemService
+│
+├── controllers
+│   ├── AuthController
+│   ├── LibraryController
+│   ├── OAuthController
+│   ├── PasswordController
+│   ├── PaymentMethodController
+│   ├── ProfileController
+│   └── WishlistController
+│
+├── presentation
+│   ├── auth
+│   │   ├── AuthenticatedUserSummary
+│   │   ├── CurrentUserResponse
+│   │   ├── LoginRequest
+│   │   ├── LoginResponse
+│   │   ├── OAuthLinkRequest
+│   │   ├── OAuthLoginRequest
+│   │   ├── RegisterUserRequest
+│   │   └── RegisterUserResponse
+│   │
+│   ├── common
+│   │   ├── ErrorResponse
+│   │   ├── PaymentMethodMapper
+│   │   └── UserDtoMapper
+│   │
+│   ├── library
+│   │   ├── AddGameToLibraryRequest
+│   │   ├── LibraryEntryResponse
+│   │   ├── LibraryMapper
+│   │   └── UpdateLibraryEntryRequest
+│   │
+│   ├── password
+│   │   ├── PasswordResetPerformRequest
+│   │   ├── PasswordResetRequest
+│   │   └── PasswordResetResponse
+│   │
+│   ├── payment
+│   │   ├── PaymentMethodRequest
+│   │   └── PaymentMethodResponse
+│   │
+│   ├── profile
+│   │   ├── PrivacySettingsResponse
+│   │   ├── UpdateUserProfileRequest
+│   │   └── UserProfileResponse
+│   │
+│   └── wishlist
+│       ├── WishlistItemRequest
+│       ├── WishlistItemResponse
+│       └── WishlistMapper
+│
+├── domain
+│   ├── common
+│   │   ├── AbstractDomainEvent
+│   │   ├── DomainEvent
+│   │   └── DomainEventPublisher
+│   │
+│   ├── library
+│   │   ├── events
+│   │   │   └── GameAddedToLibrary
+│   │   ├── GameId
+│   │   ├── LibraryEntry
+│   │   ├── LibraryEntryId
+│   │   ├── LibraryEntryStatus
+│   │   └── LibraryRepository
+│   │
+│   ├── user
+│   │   ├── events
+│   │   │   ├── OAuthAccountLinked
+│   │   │   ├── PasswordChanged
+│   │   │   ├── PasswordResetRequested
+│   │   │   ├── PaymentMethodAdded
+│   │   │   ├── PaymentMethodRemoved
+│   │   │   ├── UserLoggedIn
+│   │   │   ├── UserProfileUpdated
+│   │   │   └── UserRegistered
+│   │   ├── Email
+│   │   ├── OAuthAccount
+│   │   ├── OAuthAccountId
+│   │   ├── OAuthAccountRepository
+│   │   ├── OAuthProvider
+│   │   ├── PasswordHash
+│   │   ├── PasswordResetToken
+│   │   ├── PasswordResetTokenId
+│   │   ├── PasswordResetTokenRepository
+│   │   ├── PaymentMethod
+│   │   ├── PaymentMethodId
+│   │   ├── PaymentMethodRepository
+│   │   ├── PaymentProvider
+│   │   ├── PrivacySettings
+│   │   ├── User
+│   │   ├── UserId
+│   │   ├── UserProfile
+│   │   ├── UserRepository
+│   │   └── UserStatus
+│   │
+│   └── wishlist
+│       ├── events
+│       │   ├── GameAddedToWishlist
+│       │   ├── GameRemovedFromWishlist
+│       │   └── WishlistNotificationTriggered
+│       ├── WishlistItem
+│       └── WishlistRepository
+│
+└── infrastructure
+    ├── audit
+    │   └── ConsoleAuditLogger
+    │
+    ├── events
+    │   ├── EventSerializer
+    │   ├── ExternalEventEnvelope
+    │   └── SimpleEventBus
+    │
+    ├── mail
+    │   └── ConsoleEmailSender
+    │
+    ├── oauth
+    │   ├── GoogleOAuthClient
+    │   └── OAuthUserInfo
+    │
+    ├── payment
+    │   └── NoopPaymentProviderClient
+    │
+    ├── persistence
+    │   ├── library
+    │   │   ├── LibraryEntryJpaEntity
+    │   │   ├── LibraryEntryJpaRepository
+    │   │   ├── LibraryEntryMapper
+    │   │   └── LibraryRepositoryImpl
+    │   │
+    │   ├── user
+    │   │   ├── OAuthAccountJpaEntity
+    │   │   ├── OAuthAccountJpaRepository
+    │   │   ├── OAuthAccountRepositoryImpl
+    │   │   ├── PasswordResetTokenJpaEntity
+    │   │   ├── PasswordResetTokenJpaRepository
+    │   │   ├── PasswordResetTokenRepositoryImpl
+    │   │   ├── PaymentMethodJpaEntity
+    │   │   ├── UserJpaEntity
+    │   │   ├── UserJpaRepository
+    │   │   ├── UserMapper
+    │   │   └── UserRepositoryImpl
+    │   │
+    │   └── wishlist
+    │       ├── WishlistItemJpaEntity
+    │       ├── WishlistItemJpaRepository
+    │       └── WishlistRepositoryImpl
+    │
+    └── security
+        ├── AuthenticatedUser
+        ├── BCryptPasswordHasher
+        ├── CorsConfig
+        ├── JwtAuthenticationFilter
+        ├── JwtAuthenticationProvider
+        ├── JwtTokenService
+        ├── SecurityConfig
+        └── SecurityContext
+```
+
 ## Packages and Layers
 
 ### 2.1 Presentation Layer

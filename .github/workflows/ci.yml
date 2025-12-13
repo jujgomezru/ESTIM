@@ -146,6 +146,9 @@ jobs:
   deploy-pages:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -161,6 +164,8 @@ jobs:
 
       - name: Build frontend
         working-directory: Final-Project/web-frontend
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
         run: npm run build
 
       - name: Setup Pages
@@ -175,3 +180,9 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Assert client id is in dist
+        working-directory: Final-Project/web-frontend
+        run: |
+          grep -RIn "apps.googleusercontent.com" dist || (echo "Client ID NOT found in dist" && exit 1)
+          ls -lah dist/assets | head -30
